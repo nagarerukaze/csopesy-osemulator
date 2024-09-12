@@ -42,7 +42,7 @@ void reportUtil() {
 
 void clear() {
     // clear command code here
-    system("clear"); // !! CHANGE TO "cls" FOR WINDOWS !!
+    system("cls"); // !! CHANGE TO "cls" FOR WINDOWS !!
     printHeader();
 }
 
