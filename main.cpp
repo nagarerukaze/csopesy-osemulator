@@ -5,8 +5,13 @@ using namespace std;
 
 void printHeader() {
     // put ascii art here
-    cout << "|| -- CSOPESY OS Emulator Test -- ||" << endl;
-    cout << "Hello, welcome to CSOPESY commandline!" << endl;
+    cout << "  ____ ____   ___  ____  _____ ______   __" << endl;
+    cout << " / ___/ ___| / _ \|  _ \| ____/ ___\ \ / /" << endl;
+    cout << "| |   \___ \| | | | |_) |  _| \___ \\ V / " << endl;
+    cout << "| |___ ___) | |_| |  __/| |___ ___) || |  " << endl;
+    cout << " \____|____/ \___/|_|   |_____|____/ |_|  " << endl;
+    cout << "Hello, Welcome to CSOPESY commandline!" << endl;
+
     cout << "Type 'exit', to quit, 'clear' to clear the screen." << endl;
 }
 
