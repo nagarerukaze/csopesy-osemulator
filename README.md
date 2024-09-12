@@ -1,9 +1,9 @@
-NOTE: change "clear" to "cls" for windows
+NOTE: change "cls" to "clear" for non-windows
 
 ```
 void clear() {
     ...
-    system("clear");
+    system("cls");
     ...
 }
 ```
