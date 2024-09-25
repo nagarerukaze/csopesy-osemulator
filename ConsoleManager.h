@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <memory>
 #include <vector>
 #include <unordered_map>
@@ -7,6 +8,8 @@
 #include "AConsole.h"
 #include "TypedefRepo.h"
 #include "BaseScreen.h"
+
+typedef std::string String;
 
 const String MAIN_CONSOLE = "MAIN_CONSOLE";
 const String MARQUEE_CONSOLE = "MARQUEE_CONSOLE";

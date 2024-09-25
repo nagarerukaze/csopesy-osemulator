@@ -31,7 +31,7 @@ void ConsoleManager::drawConsole() const
 	}
 	else
 	{
-		std::cerr << "There is no assigned console." << std::endl;
+		std::cerr << "There is no assigned console. Please check." << std::endl;
 	}
 }
 
@@ -43,18 +43,18 @@ void ConsoleManager::process() const
 	}
 	else
 	{
-		std::cerr << "There is no assigned console." << std::endl;
+		std::cerr << "There is no assigned console. Please check." << std::endl;
 	}
 }
 
 void ConsoleManager::switchConsole(String consoleName)
 {
-	if (this->consoleTable.contains(consoleName))
+	if(this->consoleTable.contains(consoleName))
 	{
 		system("cls");
 		this->previousConsole = this->currentConsole;
 		this->currentConsole = this->consoleTable[consoleName];
-		this->currentConsole->onEnabled;
+		this->currentConsole->onEnabled();
 	}
 	else
 	{
