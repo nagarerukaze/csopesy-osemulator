@@ -1,6 +1,9 @@
 #include <iostream>
 #include <stdlib.h> 
 #include <cstdlib>
+
+#include "ConsoleManager.h"
+
 using namespace std;
 
 void printHeader() {
@@ -48,12 +51,24 @@ void clear() {
 }
 
 int main() {
-    bool isRunning = true;
+    //InputManager::initialize();
+    //FileSystem::initialize();
+    //GlobalScheduler::initialize();
+    ConsoleManager::initialize();
+    //MessageBuffer::initialize();
+    //ResourceEmulator::initialize();
+    //MemoryManager::initialize();
+
+    bool running = true;
     string command;
     
     clear();
 
-    while (isRunning) {
+    while (running) {
+
+        ConsoleManager::getInstance()->process();
+        ConsoleManager::getInstance()->drawConsole();
+
         cout << "Enter command: ";
         cin >> command;
 
@@ -77,7 +92,7 @@ int main() {
             clear();
         }
         else if (command == "exit") {
-            isRunning = false;
+            running = false;
         }
         else {
             cout << "Unknown command." << endl;
