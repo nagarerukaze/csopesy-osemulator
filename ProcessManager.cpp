@@ -5,11 +5,18 @@
 #include "Process.h"
 
 ProcessManager::ProcessManager() {}
+ProcessManager::ProcessManager(const ProcessManager&) {}
+
+ProcessManager* ProcessManager::sharedInstance = nullptr;
+ProcessManager* ProcessManager::getInstance() {
+    if (sharedInstance == NULL)
+        sharedInstance = new ProcessManager();
+
+    return sharedInstance;
+}
 
 // screen -s <name of new process>
 void ProcessManager::createProcess(std::string name, int linesOfCode) {
-    linesOfCode = 100;
-
     // Create Process object
     Process process = Process(name, linesOfCode);
     //...idk if we're supposed to:
