@@ -5,9 +5,9 @@
 
 Process::Process() {}
 
-Process::Process(std::string name, int currInstructionLine, int linesOfCode) {
+Process::Process(std::string name, int linesOfCode) {
     this->name = name;
-    this->currInstructionLine = currInstructionLine;
+    this->currInstructionLine = 0;
     this->linesOfCode = linesOfCode;
     this->timeCreated = std::time(nullptr);
 }

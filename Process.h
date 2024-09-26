@@ -7,7 +7,7 @@ class Process
 public:
 	Process();
 	~Process() = default;
-	Process(std::string name, int currInstructionLine, int linesOfCode);
+	Process(std::string name, int linesOfCode);
 
 	static void initialize();
 	std::string getName() const;
