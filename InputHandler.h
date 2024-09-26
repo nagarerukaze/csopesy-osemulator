@@ -1,5 +1,7 @@
 #pragma once
-class Commands
+#include <iostream>
+
+class InputHandler
 {
 public:
 	void printHeader();
