@@ -3,8 +3,13 @@
 #include <iomanip>
 #include <sstream>
 
-Process::Process() {
+Process::Process() {}
 
+Process::Process(std::string name, int currInstructionLine, int linesOfCode) {
+    this->name = name;
+    this->currInstructionLine = currInstructionLine;
+    this->linesOfCode = linesOfCode;
+    this->timeCreated = std::time(nullptr);
 }
 
 std::string Process::getName() const {
