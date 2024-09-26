@@ -11,4 +11,5 @@ public:
     void schedulerStop();
     void reportUtil();
     void clear();
+    void newProcess(std::string name, int linesOfCode);
 };

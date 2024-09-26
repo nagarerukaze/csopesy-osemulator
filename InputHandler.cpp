@@ -32,3 +32,6 @@ void InputHandler::clear() {
     
 }
 
+void InputHandler::newProcess(std::string name, int linesOfCode) {
+    ProcessManager::getInstance()->createProcess(name, linesOfCode);
+}
