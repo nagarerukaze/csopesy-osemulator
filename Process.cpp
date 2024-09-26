@@ -1,4 +1,7 @@
 #include "Process.h"
+#include <ctime>
+#include <iomanip>
+#include <sstream>
 
 Process::Process() {
 
@@ -17,5 +20,10 @@ int Process::getLinesOfCode() const {
 }
 
 std::string Process::getTimestamp() const {
-	
+    std::tm* timeInfo = std::localtime(&timeCreated);
+    std::ostringstream oss;
+
+    oss << std::put_time(timeInfo, "%m/%d/%Y, %I:%M:%S %p");
+
+    return oss.str();
 }
