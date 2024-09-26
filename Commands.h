@@ -3,7 +3,6 @@ class Commands
 {
 public:
 	void printHeader();
-    void printHeader();
     void initialize();
     void screen();
     void schedulerTest();
@@ -11,4 +10,3 @@ public:
     void reportUtil();
     void clear();
 };
-
