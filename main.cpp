@@ -3,6 +3,8 @@
 #include <cstdlib>
 using namespace std;
 
+#include "InputHandler.h"
+
 void printHeader() {
     // put ascii art here
     cout << "  ____ ____   ___  ____  _____ ______ __   __" << endl;
