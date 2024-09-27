@@ -3,37 +3,44 @@
 #include <iostream>
 
 #include "Process.h"
+#include "Process.cpp"
 
 ProcessManager::ProcessManager() {}
 ProcessManager::ProcessManager(const ProcessManager&) {}
 
 ProcessManager* ProcessManager::sharedInstance = nullptr;
-ProcessManager* ProcessManager::getInstance() {
-    if (sharedInstance == NULL)
-        sharedInstance = new ProcessManager();
 
+void ProcessManager::initialize() {
+    sharedInstance = new ProcessManager();
+}
+
+ProcessManager* ProcessManager::getInstance() {
     return sharedInstance;
 }
 
 // screen -s <name of new process>
 void ProcessManager::createProcess(std::string name, int linesOfCode) {
     // Create Process object
-    Process process = Process(name, linesOfCode);
+    Process* process = new Process(name, linesOfCode);
     //...idk if we're supposed to:
     //Process* process = new Process(name, currInstructionLine, linesOfCode);
     //Add to activeProcesses
-    activeProcesses.insert({ name, process });
+    activeProcesses[name] = process;
 }
 
 // screen -r <name of existing process>
 // Redraw the console of the associated process
-void ProcessManager::displayProcess(Process process) const {
-    if (activeProcesses.find(process.getName()) == activeProcesses.end()) {
-        std::cout << "Process name: " << process.getName() << std::endl;
-        std::cout << "Current line of instruction / Total line of instruction: " << process.getCurrInstructionLine() << "/ " << process.getLinesOfCode() << std::endl;
-        std::cout << "Timestamp: " << process.getTimestamp() << std::endl;
+
+
+void ProcessManager::displayProcess(std::string processName) const {
+    auto process = activeProcesses.find(processName);
+
+    if (process != activeProcesses.end() && process->second != nullptr) {
+        // change to calling display process from process instance through dereferencing
+        process->second->draw();
     }
+        
     else {
-        std::cout << "Process '" << process.getName() << "' not found." << std::endl;
+        std::cout << "Process '" << processName << "' not found." << std::endl;
     }
 }

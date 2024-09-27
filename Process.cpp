@@ -2,14 +2,26 @@
 #include <ctime>
 #include <iomanip>
 #include <sstream>
+#include <stdlib.h>
 
 Process::Process() {}
 
 Process::Process(std::string name, int linesOfCode) {
     this->name = name;
-    this->currInstructionLine = 0;
+    this->currInstructionLine = 1;
     this->linesOfCode = linesOfCode;
     this->timeCreated = std::time(nullptr);
+}
+
+void Process::draw() const {
+
+    std::system("clear");
+
+    std::cout << "Process name: " << this->getName() << std::endl;
+    std::cout << "Current line of instruction / Total line of instruction: " << this->getCurrInstructionLine() << " / " << this->getLinesOfCode() << std::endl;
+    std::cout << "Timestamp: " << this->getTimestamp() << std::endl;
+
+
 }
 
 std::string Process::getName() const {

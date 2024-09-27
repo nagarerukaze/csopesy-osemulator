@@ -4,6 +4,8 @@
 using namespace std;
 
 #include "InputHandler.h"
+#include "ProcessManager.h"
+#include "ProcessManager.cpp"
 
 void printHeader() {
     // put ascii art here
@@ -44,7 +46,7 @@ void reportUtil() {
 
 void clear() {
     // clear command code here
-    system("cls"); // !! CHANGE TO "cls" FOR WINDOWS !!
+    system("clear"); // !! CHANGE TO "cls" FOR WINDOWS !!
     printHeader();
 }
 
@@ -54,36 +56,14 @@ int main() {
     
     clear();
 
-    while (isRunning) {
-        cout << "Enter command: ";
-        cin >> command;
+    ProcessManager::initialize();
 
-        if (command == "initialize") {
-            initialize();
-        }
-        // add other commands here (c++ doesn't support string with switch case)
-        else if (command == "screen") {
-            screen();
-        }
-        else if (command == "scheduler-test") {
-            schedulerTest();
-        }
-        else if (command == "scheduler-stop") {
-            schedulerStop();
-        }
-        else if (command == "report-util") {
-            reportUtil();
-        }
-        else if (command == "clear") {
-            clear();
-        }
-        else if (command == "exit") {
-            isRunning = false;
-        }
-        else {
-            cout << "Unknown command." << endl;
-        }
-    }
+    ProcessManager::getInstance()->createProcess("process1001", 100);
+    ProcessManager::getInstance()->createProcess("process1002", 200);
+    ProcessManager::getInstance()->createProcess("process1003", 300);
 
-    exit(1);
+    ProcessManager::getInstance()->displayProcess("process1001");
+    ProcessManager::getInstance()->displayProcess("process1004");
+
+    
 }

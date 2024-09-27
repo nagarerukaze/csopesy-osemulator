@@ -8,12 +8,12 @@ class ProcessManager
 public:
     //typedef std::string String;
     //typedef std::unordered_map<std::string, Process> ProcessTable;
-
+    static void initialize();
     static ProcessManager* getInstance();
     void createProcess(std::string name, int linesOfCode);
-    void displayProcess(Process process) const;
+    void displayProcess(std::string processName) const;
 
-    std::unordered_map<std::string, Process> getActiveProcesses;
+    //std::unordered_map<std::string, Process> getActiveProcesses;
 
 private:
     ProcessManager();
@@ -22,6 +22,7 @@ private:
     ~ProcessManager() = default;
     static ProcessManager* sharedInstance;
 
-    std::unordered_map<std::string, Process> activeProcesses;
+    // change Process to Process*
+    std::unordered_map<std::string, Process*> activeProcesses;
     //std::unordered_map<std::string, Process> finishedProcesses;
 };
