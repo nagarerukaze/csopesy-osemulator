@@ -3,9 +3,8 @@
 #include <cstdlib>
 using namespace std;
 
-#include "InputHandler.h"
-#include "ProcessManager.h"
 #include "ProcessManager.cpp"
+#include "Process.cpp"
 
 void printHeader() {
     // put ascii art here
@@ -46,7 +45,7 @@ void reportUtil() {
 
 void clear() {
     // clear command code here
-    system("clear"); // !! CHANGE TO "cls" FOR WINDOWS !!
+    system("cls"); // !! CHANGE TO "cls" FOR WINDOWS !!
     printHeader();
 }
 
