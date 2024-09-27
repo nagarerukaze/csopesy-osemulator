@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <iostream>
 #include <stdlib.h> 
 #include <cstdlib>
@@ -46,9 +48,9 @@ void reportUtil() {
     cout << "\"report-util\" command recognized. Doing something..." << endl;
 }
 
-void clear() {
+void cls() {
     // clear command code here
-    system("clear"); // !! CHANGE TO "cls" FOR WINDOWS !!
+    system("cls"); // !! CHANGE TO "cls" FOR WINDOWS !!
     printHeader();
 }
 
@@ -57,7 +59,7 @@ int main() {
 
     std::string input;
 
-    clear();
+    cls();
 
     while (input != "exit") {
         
@@ -80,7 +82,7 @@ int main() {
                 int isFound = ProcessManager::getInstance()->displayProcess(command[2]);
 
                 if(isFound) {
-                    clear();
+                    cls();
                 }
             }
             else {
