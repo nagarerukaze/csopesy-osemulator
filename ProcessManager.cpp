@@ -20,9 +20,7 @@ ProcessManager* ProcessManager::getInstance() {
 void ProcessManager::createProcess(std::string name, int linesOfCode) {
     // Create Process object
     Process* process = new Process(name, linesOfCode);
-    //...idk if we're supposed to:
-    //Process* process = new Process(name, currInstructionLine, linesOfCode);
-    //Add to activeProcesses
+
     activeProcesses[name] = process;
 }
 
