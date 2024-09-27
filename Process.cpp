@@ -4,8 +4,6 @@
 #include <sstream>
 #include <stdlib.h>
 
-Process::Process() {}
-
 Process::Process(std::string name, int linesOfCode) {
     this->name = name;
     this->currInstructionLine = 1;
@@ -37,10 +35,11 @@ int Process::getLinesOfCode() const {
 }
 
 std::string Process::getTimestamp() const {
-    std::tm* timeInfo = std::localtime(&timeCreated);
-    std::ostringstream oss;
+    std::tm timeInfo;
+    localtime_s(&timeInfo, &timeCreated);
 
-    oss << std::put_time(timeInfo, "%m/%d/%Y, %I:%M:%S %p");
+    std::ostringstream oss;
+    oss << std::put_time(&timeInfo, "%m/%d/%Y, %I:%M:%S %p");
 
     return oss.str();
 }
