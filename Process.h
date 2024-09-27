@@ -6,6 +6,7 @@
 class Process
 {
 public:
+	Process();
 	~Process() = default;
 	Process(std::string name, int linesOfCode);
 

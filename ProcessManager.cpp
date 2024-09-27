@@ -28,16 +28,17 @@ void ProcessManager::createProcess(std::string name, int linesOfCode) {
 // screen -r <name of existing process>
 // Redraw the console of the associated process
 
-
-void ProcessManager::displayProcess(std::string processName) const {
+int ProcessManager::displayProcess(std::string processName) const {
     auto process = activeProcesses.find(processName);
 
     if (process != activeProcesses.end() && process->second != nullptr) {
         // change to calling display process from process instance through dereferencing
         process->second->draw();
+        return 1;
     }
         
     else {
         std::cout << "Process '" << processName << "' not found." << std::endl;
+        return 0;
     }
 }

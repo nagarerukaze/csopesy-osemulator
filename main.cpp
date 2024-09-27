@@ -1,10 +1,13 @@
 #include <iostream>
 #include <stdlib.h> 
 #include <cstdlib>
+#include <sstream>
+#include <vector>
+#include <string>
 using namespace std;
 
+#include "ProcessManager.h"
 #include "ProcessManager.cpp"
-#include "Process.cpp"
 
 void printHeader() {
     // put ascii art here
@@ -13,9 +16,9 @@ void printHeader() {
     cout << "| |   \\___ \\| | | | |_) |  _| \\___/   \\ V / " << endl;
     cout << "| |___ ___) | |_| |  __/| |___ ___) | |   |    " << endl;
     cout << " \\____|____/ \\___/|_|   |_____|____/  |___|  " << endl;
-    cout << "Hello, Welcome to CSOPESY commandline!" << endl;
+    cout << "Hello, Welcome to CSOPESY command-line!" << endl;
 
-    cout << "Type 'exit', to quit, 'clear' to clear the screen." << endl;
+    //cout << "Type 'exit', to quit, 'clear' to clear the screen." << endl;
 }
 
 void initialize() {
@@ -45,24 +48,56 @@ void reportUtil() {
 
 void clear() {
     // clear command code here
-    system("cls"); // !! CHANGE TO "cls" FOR WINDOWS !!
+    system("clear"); // !! CHANGE TO "cls" FOR WINDOWS !!
     printHeader();
 }
 
 int main() {
-    bool isRunning = true;
-    string command;
-    
-    clear();
-
     ProcessManager::initialize();
 
-    ProcessManager::getInstance()->createProcess("process1001", 100);
-    ProcessManager::getInstance()->createProcess("process1002", 200);
-    ProcessManager::getInstance()->createProcess("process1003", 300);
+    std::string input;
 
-    ProcessManager::getInstance()->displayProcess("process1001");
-    ProcessManager::getInstance()->displayProcess("process1004");
+    clear();
 
-    
+    while (input != "exit") {
+        
+        // Get the input string from the user
+        std::cout << "Enter command: ";
+        std::getline(std::cin, input);
+
+        // Create a stringstream to split the input
+        std::stringstream ss(input);
+        std::string word;
+        std::vector<std::string> command;
+
+        // Split the input string by spaces and store the words in the array
+        while (ss >> word) {
+            command.push_back(word);
+        }
+
+        if (command[1] == "-r") {
+            if (command[2] != "" && (2 < command.size())) {
+                int isFound = ProcessManager::getInstance()->displayProcess(command[2]);
+
+                if(isFound) {
+                    clear();
+                }
+            }
+            else {
+                std::cout << "Invalid arguments." << endl;
+            }
+        }
+        else if (command[1] == "-s") {
+            if (command[2] != "" && (2 < command.size())) {
+                ProcessManager::getInstance()->createProcess(command[2], 100);
+            }
+            else {
+                std::cout << "Invalid arguments." << endl;
+            }
+        }
+        else {
+            std::cout << "Invalid command." << endl;
+        }
+    }
+
 }

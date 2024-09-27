@@ -10,8 +10,9 @@ public:
     //typedef std::unordered_map<std::string, Process> ProcessTable;
     static void initialize();
     static ProcessManager* getInstance();
+    static void draw();
     void createProcess(std::string name, int linesOfCode);
-    void displayProcess(std::string processName) const;
+    int displayProcess(std::string processName) const;
 
     //std::unordered_map<std::string, Process> getActiveProcesses;
 
