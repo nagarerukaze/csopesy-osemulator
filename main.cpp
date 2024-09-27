@@ -76,7 +76,7 @@ int main() {
         }
 
         if (command[1] == "-r") {
-            if (command[2] != "" && (2 < command.size())) {
+            if ((2 < command.size()) && command[2] != "") {
                 int isFound = ProcessManager::getInstance()->displayProcess(command[2]);
 
                 if(isFound) {
@@ -86,9 +86,10 @@ int main() {
             else {
                 std::cout << "Invalid arguments." << endl;
             }
+
         }
         else if (command[1] == "-s") {
-            if (command[2] != "" && (2 < command.size())) {
+            if ((2 < command.size()) && command[2] != "") {
                 ProcessManager::getInstance()->createProcess(command[2], 100);
             }
             else {
