@@ -35,7 +35,7 @@ void CPUScheduler::workerFunction(int coreID) {
     // Run while the atomic flag 'running' is set to true
     while (running) {
         std::this_thread::sleep_for(std::chrono::milliseconds(17));  // Simulate work
-        std::cout << "CPU Core " << coreID << " is executing tasks.\n";
+        // std::cout << "CPU Core " << coreID << " is executing tasks.\n";
     }
 }
 

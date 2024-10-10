@@ -20,14 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CPUScheduler.cpp" />
-    <ClCompile Include="CPUWorker.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="ProcessManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPUScheduler.h" />
-    <ClInclude Include="CPUWorker.h" />
     <ClInclude Include="Process.h" />
     <ClInclude Include="ProcessManager.h" />
   </ItemGroup>
