@@ -1,8 +1,4 @@
 #include "CPUScheduler.h"
-#include "Process.h"
-#include <vector>
-#include <thread>
-#include <iostream>
 
 CPUScheduler::CPUScheduler() {}
 CPUScheduler::CPUScheduler(const CPUScheduler&) {}

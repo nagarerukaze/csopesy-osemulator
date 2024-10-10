@@ -1,7 +1,10 @@
 #pragma once
+#include <iostream>
 #include <thread>
 #include <functional>
 #include <atomic>
+#include <vector>
+#include <queue>
 #include "Process.h"
 
 class CPUScheduler
