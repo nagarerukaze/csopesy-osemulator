@@ -1,4 +1,7 @@
 #include "CPUScheduler.h"
+#include <vector>
+#include <thread>
+#include <iostream>
 
 CPUScheduler::CPUScheduler() {}
 CPUScheduler::CPUScheduler(const CPUScheduler&) {}
@@ -14,21 +17,26 @@ CPUScheduler* CPUScheduler::getInstance() {
 }
 
 void CPUScheduler::startWorkerThreads() {
+    // Create and start 4 worker threads (one per core)
+    for (int i = 0; i < 4; ++i) {
+        // Create and add each thread to the workerThreads vector
+        workerThreads.emplace_back([this, i]() { workerFunction(i); });
+    }
 
-	CPUWorker cpuCore1 = CPUWorker();
-	CPUWorker cpuCore2 = CPUWorker();
-	CPUWorker cpuCore3 = CPUWorker();
-	CPUWorker cpuCore4 = CPUWorker();
+    // Detach all threads so they run independently
+    for (auto& thread : workerThreads) {
+        if (thread.joinable()) {
+            thread.detach();  // Detach each thread to allow independent execution
+        }
+    }
+}
 
-	std::thread coreThread1(&CPUWorker::runWorker, cpuCore1);
-	std::thread coreThread2(&CPUWorker::runWorker, cpuCore2);
-	std::thread coreThread3(&CPUWorker::runWorker, cpuCore3);
-	std::thread coreThread4(&CPUWorker::runWorker, cpuCore4);
-
-	coreThread1.detach();
-	coreThread2.detach();
-	coreThread3.detach();
-	coreThread4.detach();
+void CPUScheduler::workerFunction(int coreID) {
+    // Run while the atomic flag 'running' is set to true
+    while (running) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(17));  // Simulate work
+        std::cout << "CPU Core " << coreID << " is executing tasks.\n";
+    }
 }
 
 int CPUScheduler::assignCPUWorker() {

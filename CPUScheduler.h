@@ -1,6 +1,7 @@
 #pragma once
 #include <thread>
 #include <functional>
+#include <atomic>
 
 #include "CPUWorker.h"
 
@@ -19,5 +20,9 @@ private:
     CPUScheduler& operator = (const CPUScheduler&);
     ~CPUScheduler() = default;
     static CPUScheduler* sharedInstance;
+
+    void workerFunction(int coreID);
+    std::vector<std::thread> workerThreads;
+    std::atomic<bool> running{ true };
 };
 
