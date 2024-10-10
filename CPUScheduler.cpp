@@ -20,24 +20,38 @@ void CPUScheduler::enqueueProcess(Process* process) {
 
 void CPUScheduler::startWorkerThreads() {
     // Create and start 4 worker threads (one per core)
-    for (int i = 0; i < 4; ++i) {
-        // Create and add each thread to the workerThreads vector
-        workerThreads.emplace_back([this, i]() { workerFunction(i); });
+    for (int i = 1; i <= 4; i++) {
+        std::thread workerThread(&CPUScheduler::workerFunction, this, i);
+        workerThreads.emplace_back(std::move(workerThread));
     }
 
     // Detach all threads so they run independently
     for (auto& thread : workerThreads) {
         if (thread.joinable()) {
-            thread.detach();  // Detach each thread to allow independent execution
+            thread.detach();
         }
     }
 }
 
+// TODO: This is not doing first come first serve
 void CPUScheduler::workerFunction(int coreID) {
-    // Run while the atomic flag 'running' is set to true
     while (running) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(17));  // Simulate work
-        // std::cout << "CPU Core " << coreID << " is executing tasks.\n";
+        Process* process = nullptr;
+
+        // Check if there are any processes in the queue
+        if (!processQueue.empty()) {
+            process = processQueue.front(); // Get the next process
+            processQueue.pop(); // Remove it from the queue
+
+            std::cout << "Core " << coreID << " is executing process: " << process->getName() << std::endl;
+            // process->executePrintCommands(coreID); // Execute its print commands
+
+            // TODO: set process to finished / add to finishedprocesses
+        }
+        else {
+            // If no process is available, sleep for a while before checking again
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
     }
 }
 
