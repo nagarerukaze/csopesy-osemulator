@@ -19,16 +19,7 @@ CPUScheduler* CPUScheduler::getInstance() {
 
 void CPUScheduler::enqueueProcess(Process* process) {
     processQueue.push(process);
-
-    // Create a temporary queue to iterate over
-    std::queue<Process*> tempQueue = processQueue;
-
-    // Print the names of processes currently in the queue
-    std::cout << "Processes in queue: ";
-    while (!tempQueue.empty()) {
-        std::cout << tempQueue.front()->getName() << " "; // Get the name of the process
-        tempQueue.pop(); // Remove it from the temporary queue
-    }
+    std::cout << "Enqueued process: " << process->getName() << std::endl; // remove later
 }
 
 void CPUScheduler::startWorkerThreads() {
