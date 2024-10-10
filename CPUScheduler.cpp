@@ -1,4 +1,5 @@
 #include "CPUScheduler.h"
+#include "Process.h"
 #include <vector>
 #include <thread>
 #include <iostream>
@@ -14,6 +15,20 @@ void CPUScheduler::initialize() {
 
 CPUScheduler* CPUScheduler::getInstance() {
 	return sharedInstance;
+}
+
+void CPUScheduler::enqueueProcess(Process* process) {
+    processQueue.push(process);
+
+    // Create a temporary queue to iterate over
+    std::queue<Process*> tempQueue = processQueue;
+
+    // Print the names of processes currently in the queue
+    std::cout << "Processes in queue: ";
+    while (!tempQueue.empty()) {
+        std::cout << tempQueue.front()->getName() << " "; // Get the name of the process
+        tempQueue.pop(); // Remove it from the temporary queue
+    }
 }
 
 void CPUScheduler::startWorkerThreads() {
