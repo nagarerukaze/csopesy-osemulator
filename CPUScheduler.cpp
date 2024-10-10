@@ -1,4 +1,5 @@
 #include "CPUScheduler.h"
+#include "Process.h"
 #include <vector>
 #include <thread>
 #include <iostream>
@@ -14,6 +15,11 @@ void CPUScheduler::initialize() {
 
 CPUScheduler* CPUScheduler::getInstance() {
 	return sharedInstance;
+}
+
+void CPUScheduler::enqueueProcess(Process* process) {
+    processQueue.push(process);
+    std::cout << "Enqueued process: " << process->getName() << std::endl; // remove later
 }
 
 void CPUScheduler::startWorkerThreads() {
@@ -35,7 +41,7 @@ void CPUScheduler::workerFunction(int coreID) {
     // Run while the atomic flag 'running' is set to true
     while (running) {
         std::this_thread::sleep_for(std::chrono::milliseconds(17));  // Simulate work
-        std::cout << "CPU Core " << coreID << " is executing tasks.\n";
+        // std::cout << "CPU Core " << coreID << " is executing tasks.\n";
     }
 }
 

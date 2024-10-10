@@ -19,6 +19,7 @@ void ProcessManager::createProcess(std::string name, int linesOfCode) {
     Process* process = new Process(name, linesOfCode);
 
     activeProcesses[name] = process;
+    CPUScheduler::getInstance()->enqueueProcess(process);
 }
 
 // screen -r <name of existing process>

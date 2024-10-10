@@ -15,7 +15,6 @@ public:
 
 	enum ProcessState
 	{
-		NEW,		// Process being created
 		RUNNING,	// Instructions are being executed
 		WAITING,	// Process waiting for an event to occur
 		READY,		// Waiting to be assigned to a processor
