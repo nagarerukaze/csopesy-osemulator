@@ -1,7 +1,4 @@
 #include "ProcessManager.h"
-#include "Process.h"
-#include "Process.cpp"
-#include <iostream>
 
 ProcessManager::ProcessManager() {}
 ProcessManager::ProcessManager(const ProcessManager&) {}

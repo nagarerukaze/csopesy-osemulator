@@ -18,6 +18,19 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CPUScheduler.cpp" />
+    <ClCompile Include="CPUWorker.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Process.cpp" />
+    <ClCompile Include="ProcessManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CPUScheduler.h" />
+    <ClInclude Include="CPUWorker.h" />
+    <ClInclude Include="Process.h" />
+    <ClInclude Include="ProcessManager.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -126,17 +139,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="CPUScheduler.cpp" />
-    <ClCompile Include="CPUWorker.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Process.cpp" />
-    <ClCompile Include="ProcessManager.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Process.h" />
-    <ClInclude Include="ProcessManager.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

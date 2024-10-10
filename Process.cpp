@@ -11,10 +11,10 @@ Process::Process(std::string name, int linesOfCode) {
 
 // PRINT command
 /*
-    Creates a text file where all its 
-    associated print commands are written, 
-    with the timestamp of when it was executed 
-    by the CPU and the CPU core that executed it. 
+    Creates a text file where all its
+    associated print commands are written,
+    with the timestamp of when it was executed
+    by the CPU and the CPU core that executed it.
 */
 void Process::execute() {
     std::ofstream outfile(this->name);
@@ -22,7 +22,7 @@ void Process::execute() {
     outfile << "Process name: " << name << std::endl;
     outfile << "Logs:" << std::endl << std::endl;
 
-    
+
 
     outfile.close();
 }
@@ -61,22 +61,38 @@ void Process::draw() const {
 }
 
 std::string Process::getName() const {
-	return name;
+    return this->name;
+}
+
+Process::ProcessState Process::getState() const {
+    return this->currentState;
+}
+
+bool Process::isFinished() const {
+    if (currentState == ProcessState::TERMINATED) {
+        return true;
+    }
+
+    return false;
 }
 
 int Process::getCurrInstructionLine() const {
-	return currInstructionLine;
+    return this->currInstructionLine;
 }
 
 int Process::getLinesOfCode() const {
-	return this->linesOfCode;
+    return this->linesOfCode;
+}
+
+int Process::getCPUCoreID() const {
+    return this->cpuCoreID;
 }
 
 std::string Process::getTimestamp() const {
-    std::tm* timeInfo = std::localtime(&timeCreated);
+    std::tm timeInfo;
+    localtime_s(&timeInfo, &timeCreated);
     std::ostringstream oss;
-
-    oss << std::put_time(timeInfo, "%m/%d/%Y, %I:%M:%S %p");
+    oss << std::put_time(&timeInfo, "%m/%d/%Y, %I:%M:%S %p");
 
     return oss.str();
 }
