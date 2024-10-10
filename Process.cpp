@@ -16,13 +16,14 @@ Process::Process(std::string name, int linesOfCode) {
     with the timestamp of when it was executed
     by the CPU and the CPU core that executed it.
 */
-void Process::execute() {
+void Process::printToTextFile() {
     std::ofstream outfile(this->name);
 
     outfile << "Process name: " << name << std::endl;
     outfile << "Logs:" << std::endl << std::endl;
 
-
+    // Execution time, core, command output (print)
+    //outfile << execution tiime << this->cpuCoreID << commandOutput;
 
     outfile.close();
 }
@@ -86,6 +87,10 @@ int Process::getLinesOfCode() const {
 
 int Process::getCPUCoreID() const {
     return this->cpuCoreID;
+}
+
+void Process::setCPUCoreID(int cpuCoreID) {
+    this->cpuCoreID = cpuCoreID;
 }
 
 std::string Process::getTimestamp() const {

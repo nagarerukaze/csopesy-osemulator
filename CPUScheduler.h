@@ -2,8 +2,7 @@
 #include <thread>
 #include <functional>
 #include <atomic>
-
-#include "CPUWorker.h"
+#include "Process.h"
 
 class CPUScheduler
 {

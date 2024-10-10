@@ -32,9 +32,10 @@ public:
 	int getCurrInstructionLine() const;
 	int getLinesOfCode() const;
 	int getCPUCoreID() const;
+	void setCPUCoreID(int cpuCoreID);
 	std::string getTimestamp() const;
 
-	void execute();
+	void printToTextFile();
 
 private:
 	std::string name;
