@@ -2,6 +2,12 @@
 #include <string>
 #include <ctime>
 #include <iostream>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
+#include <stdlib.h>
+#include <vector>
+#include <fstream>  
 
 class Process
 {
@@ -10,6 +16,8 @@ public:
 	~Process() = default;
 	Process(std::string name, int linesOfCode);
 
+
+	void execute();
 
 private:
 	std::string name;

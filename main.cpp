@@ -9,7 +9,7 @@
 using namespace std;
 
 #include "ProcessManager.h"
-#include "ProcessManager.cpp"
+#include "CPUScheduler.h"
 
 void printHeader() {
     // put ascii art here
@@ -55,7 +55,9 @@ void cls() {
 }
 
 int main() {
-    ProcessManager::initialize();
+    ProcessManager::getInstance()->initialize();
+    CPUScheduler::getInstance()->initialize();
+    CPUScheduler::getInstance()->startWorkerThreads();
 
     std::string input;
 

@@ -1,10 +1,4 @@
 #include "Process.h"
-#include <ctime>
-#include <iomanip>
-#include <sstream>
-#include <stdlib.h>
-#include <vector>
-#include <string>
 
 Process::Process() {}
 
@@ -13,6 +7,24 @@ Process::Process(std::string name, int linesOfCode) {
     this->currInstructionLine = 1;
     this->linesOfCode = linesOfCode;
     this->timeCreated = std::time(nullptr);
+}
+
+// PRINT command
+/*
+    Creates a text file where all its 
+    associated print commands are written, 
+    with the timestamp of when it was executed 
+    by the CPU and the CPU core that executed it. 
+*/
+void Process::execute() {
+    std::ofstream outfile(this->name);
+
+    outfile << "Process name: " << name << std::endl;
+    outfile << "Logs:" << std::endl << std::endl;
+
+    
+
+    outfile.close();
 }
 
 void Process::draw() const {
@@ -57,7 +69,7 @@ int Process::getCurrInstructionLine() const {
 }
 
 int Process::getLinesOfCode() const {
-	return linesOfCode;
+	return this->linesOfCode;
 }
 
 std::string Process::getTimestamp() const {
