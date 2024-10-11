@@ -123,7 +123,12 @@ int main() {
         else if ((1 < command.size()) && command[0] == "screen" && command[1] == "-s") {
             if ((2 < command.size()) && command[2] != "") {
                 ProcessManager::getInstance()->createProcess(command[2], 100);
-                // ProcessManager::getInstance()->displayProcess(command[2]);
+                
+                int isFound = ProcessManager::getInstance()->displayProcess(command[2]);
+
+                if (isFound) {
+                    clear();
+                }
             }
             else {
                 std::cout << "Invalid arguments." << endl;
