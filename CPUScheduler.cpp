@@ -23,7 +23,7 @@ CPUScheduler* CPUScheduler::getInstance() {
 
 void CPUScheduler::enqueueProcess(Process* process) {
     processQueue.push(process);
-    std::cout << "Enqueued process: " << process->getName() << std::endl; // remove later
+    // std::cout << "Enqueued process: " << process->getName() << std::endl; // remove later
 }
 
 void CPUScheduler::startScheduler() {
@@ -41,7 +41,7 @@ void CPUScheduler::startScheduler() {
                 std::thread thread([worker = cpuWorkers[i]]() { worker->startWorker(); });
                 thread.detach(); // Detach the thread
 
-                std::cout << "Core " << i << " is executing process: " << process->getName() << process->getTimestamp() << std::endl;
+                //std::cout << "Core " << i << " is executing process: " << process->getName() << process->getTimestamp() << std::endl;
                 }
             else {
                 // If no process is available, sleep for a while before checking again

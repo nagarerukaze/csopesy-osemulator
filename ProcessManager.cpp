@@ -18,7 +18,8 @@ void ProcessManager::createProcess(std::string name, int linesOfCode) {
     // Create Process object
     Process* process = new Process(name, linesOfCode);
 
-    activeProcesses[name] = process;
+    activeProcesses.push_back(process);
+    //activeProcesses[name] = process;
     CPUScheduler::getInstance()->enqueueProcess(process);
 }
 
@@ -26,34 +27,72 @@ void ProcessManager::createProcess(std::string name, int linesOfCode) {
 // Redraw the console of the associated process
 
 int ProcessManager::displayProcess(std::string processName) const {
-    auto process = activeProcesses.find(processName);
+    auto it = std::find_if(activeProcesses.begin(), activeProcesses.end(),
+        [&processName](Process* process) { return process->getName() == processName; });
 
-    if (process != activeProcesses.end() && process->second != nullptr) {
-        // change to calling display process from process instance through dereferencing
-        process->second->draw();
+    if (it != activeProcesses.end()) {
+        (*it)->draw(); // Call draw on the found process
         return 1;
     }
-        
-    else {
-        std::cout << "Process '" << processName << "' not found." << std::endl;
-        return 0;
-    }
+
+    std::cout << "Process '" << processName << "' not found." << std::endl;
+    return 0;
+
+    //auto process = activeProcesses.find(processName);
+
+    //if (process != activeProcesses.end() && process->second != nullptr) {
+    //    // change to calling display process from process instance through dereferencing
+    //    process->second->draw();
+    //    return 1;
+    //}
+    //    
+    //else {
+    //    std::cout << "Process '" << processName << "' not found." << std::endl;
+    //    return 0;
+    //}
 }
 
 void ProcessManager::moveToFinished(const std::string& processName) {
-    auto it = activeProcesses.find(processName); // Find the process
+    auto it = std::find_if(activeProcesses.begin(), activeProcesses.end(),
+        [&processName](Process* process) { return process->getName() == processName; });
 
     if (it != activeProcesses.end()) {
-        finishedProcesses.push_back(it->second); // Move to finishedProcesses
+        finishedProcesses.push_back(*it); // Move to finishedProcesses
         activeProcesses.erase(it); // Erase from activeProcesses
     }
     else {
         std::cout << "Process '" << processName << "' not found in active processes." << std::endl;
     }
+    //auto it = activeProcesses.find(processName); // Find the process
+
+    //if (it != activeProcesses.end()) {
+    //    finishedProcesses.push_back(it->second); // Move to finishedProcesses
+    //    activeProcesses.erase(it); // Erase from activeProcesses
+    //}
+    //else {
+    //    std::cout << "Process '" << processName << "' not found in active processes." << std::endl;
+    //}
 }
 
 void ProcessManager::displayAll() {
-    std::cout << "Active Processes:" << std::endl;
+    std::cout << "--------------------------------------" << std::endl;
+    std::cout << "Running processes:" << std::endl;
+    for (const auto& process : activeProcesses) {
+        std::cout << process->getName() << " \t" // TODO: add print timestamp
+                  << "Core: " << (process->getCPUCoreID() == -1 ? "N/A" : std::to_string(process->getCPUCoreID())) << " \t"
+                  << process->getCurrInstructionLine() << "/" << process->getLinesOfCode() << std::endl;
+    }
+
+    std::cout << std::endl;
+
+    std::cout << "Finished processes:" << std::endl;
+    for (const auto& process : finishedProcesses) {
+        std::cout << process->getName() << " \t" // TODO: add print timestamp
+                  << "Finished" << " \t"
+                  << process->getCurrInstructionLine() << "/" << process->getLinesOfCode() << std::endl;
+    }
+    std::cout << "--------------------------------------" << std::endl;
+    /*std::cout << "Active Processes:" << std::endl;
     for (auto i = this->activeProcesses.begin(); i != this->activeProcesses.end(); i++)
         std::cout << i->first << " \t" << i->second->getCPUCoreID() << " \t" << i->second->getCurrInstructionLine() << "/" << i->second->getLinesOfCode() << std::endl;
 
@@ -61,5 +100,5 @@ void ProcessManager::displayAll() {
     for (auto it = finishedProcesses.begin(); it != finishedProcesses.end(); ++it) {
         std::cout << (*it)->getName() << " \t" << (*it)->getCPUCoreID() << " \t"
             << (*it)->getCurrInstructionLine() << "/" << (*it)->getLinesOfCode() << std::endl;
-    }
+    }*/
 }

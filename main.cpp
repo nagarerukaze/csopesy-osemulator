@@ -49,9 +49,9 @@ void reportUtil() {
     cout << "\"report-util\" command recognized. Doing something..." << endl;
 }
 
-void cls() {
+void clear() {
     // clear command code here
-    system("clear"); // !! CHANGE TO "cls" FOR WINDOWS !!
+    system("cls"); // !! CHANGE TO "cls" FOR WINDOWS !!
     printHeader();
 }
 
@@ -68,9 +68,9 @@ int main() {
 
     std::string input;
 
-    cls();
+    clear();
 
-    ProcessManager::getInstance()->createProcess("p1", 100);
+    /*ProcessManager::getInstance()->createProcess("p1", 100);
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     ProcessManager::getInstance()->createProcess("p2", 100);
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -89,7 +89,7 @@ int main() {
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     ProcessManager::getInstance()->createProcess("p9", 100);
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    ProcessManager::getInstance()->createProcess("p10", 100);
+    ProcessManager::getInstance()->createProcess("p10", 100);*/
 
     while (input != "exit") {
         
@@ -112,7 +112,7 @@ int main() {
                 int isFound = ProcessManager::getInstance()->displayProcess(command[2]);
 
                 if(isFound) {
-                    cls();
+                    clear();
                 }
             }
             else {
@@ -123,6 +123,7 @@ int main() {
         else if ((1 < command.size()) && command[0] == "screen" && command[1] == "-s") {
             if ((2 < command.size()) && command[2] != "") {
                 ProcessManager::getInstance()->createProcess(command[2], 100);
+                // ProcessManager::getInstance()->displayProcess(command[2]);
             }
             else {
                 std::cout << "Invalid arguments." << endl;

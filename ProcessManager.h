@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <algorithm>
 #include "Process.h"
 #include "CPUScheduler.h"
 
@@ -29,6 +30,7 @@ private:
     static ProcessManager* sharedInstance;
 
     // change Process to Process*
-    std::unordered_map<std::string, Process*> activeProcesses;
+    // std::vector<std::string, Process*> activeProcesses;
+    std::vector<Process*> activeProcesses;
     std::vector<Process*> finishedProcesses;
 };
