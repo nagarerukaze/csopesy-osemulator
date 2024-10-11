@@ -70,6 +70,27 @@ int main() {
 
     cls();
 
+    ProcessManager::getInstance()->createProcess("p1", 100);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    ProcessManager::getInstance()->createProcess("p2", 100);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    ProcessManager::getInstance()->createProcess("p3", 100);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    ProcessManager::getInstance()->createProcess("p4", 100);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    ProcessManager::getInstance()->createProcess("p5", 100);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+    ProcessManager::getInstance()->createProcess("p6", 100);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    ProcessManager::getInstance()->createProcess("p7", 100);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    ProcessManager::getInstance()->createProcess("p8", 100);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    ProcessManager::getInstance()->createProcess("p9", 100);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    ProcessManager::getInstance()->createProcess("p10", 100);
+
     while (input != "exit") {
         
         // Get the input string from the user
@@ -106,6 +127,9 @@ int main() {
             else {
                 std::cout << "Invalid arguments." << endl;
             }
+        }
+        else if (command[0] == "screen" && command[1] == "-ls") {
+            ProcessManager::getInstance()->displayAll();
         }
         else {
             std::cout << "Invalid command." << endl;

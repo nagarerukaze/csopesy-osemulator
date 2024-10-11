@@ -39,3 +39,8 @@ int ProcessManager::displayProcess(std::string processName) const {
         return 0;
     }
 }
+
+void ProcessManager::displayAll() {
+    for (auto i = this->activeProcesses.begin(); i != this->activeProcesses.end(); i++)
+        std::cout << i->first << " \t" << i->second->getCPUCoreID() << " \t" << i->second->getCurrInstructionLine() << "/" << i->second->getLinesOfCode() << std::endl;
+}

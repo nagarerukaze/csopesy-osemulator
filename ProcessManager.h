@@ -15,6 +15,7 @@ public:
     static void draw();
     void createProcess(std::string name, int linesOfCode);
     int displayProcess(std::string processName) const;
+    void displayAll();
 
     //std::unordered_map<std::string, Process> getActiveProcesses;
 

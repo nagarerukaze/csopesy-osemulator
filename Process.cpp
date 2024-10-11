@@ -24,7 +24,7 @@ Process::Process(std::string name, int linesOfCode) {
 void Process::printToTextFile() {
     std::ofstream outfile(this->name);
 
-    outfile << "Hello World" << name << std::endl;
+    outfile << "(Timestamp Here)" << name << " " << "Core: " << this->cpuCoreID << " " << "Hello World" << std::endl;
 
     // Execution time, core, command output (print)
     //outfile << execution tiime << this->cpuCoreID << commandOutput;
