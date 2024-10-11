@@ -24,7 +24,7 @@ Process::Process(std::string name, int linesOfCode) {
 void Process::printToTextFile() {
     std::ofstream outfile(this->name);
 
-    outfile << "(Timestamp Here)" << name << " " << "Core: " << this->cpuCoreID << " " << "Hello World" << std::endl;
+    outfile << "(" << this->getTimestamp() << ")" << name << " " << "Core: " << this->cpuCoreID << " " << "Hello World" << std::endl;
 
     // Execution time, core, command output (print)
     //outfile << execution tiime << this->cpuCoreID << commandOutput;
@@ -61,8 +61,6 @@ void Process::draw() const {
             std::cout << "Invalid command." << std::endl;
         }
     }
-
-
 }
 
 void Process::nextLine() {
@@ -101,13 +99,16 @@ void Process::setCPUCoreID(int cpuCoreID) {
     this->cpuCoreID = cpuCoreID;
 }
 
-/*
 std::string Process::getTimestamp() const {
-    std::time_t timeInfo;
-    localtime_r(&timeInfo, this->timeCreated);
+    std::tm timeInfo;
+    localtime_s(&timeInfo, &timeCreated);
     std::ostringstream oss;
     oss << std::put_time(&timeInfo, "%m/%d/%Y, %I:%M:%S %p");
 
     return oss.str();
 }
-*/
+
+//void Process::setTimeCreated() {
+//    this->timeCreated = this->getTimestamp();
+//}
+

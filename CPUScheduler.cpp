@@ -41,7 +41,7 @@ void CPUScheduler::startScheduler() {
                 std::thread thread([worker = cpuWorkers[i]]() { worker->startWorker(); });
                 thread.detach(); // Detach the thread
 
-                std::cout << "Core " << i << " is executing process: " << process->getName() << std::endl;
+                std::cout << "Core " << i << " is executing process: " << process->getName() << process->getTimestamp() << std::endl;
                 }
             else {
                 // If no process is available, sleep for a while before checking again
