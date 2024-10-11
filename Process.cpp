@@ -34,7 +34,7 @@ void Process::printToTextFile() {
 
 void Process::draw() const {
 
-    system("clear");
+    system("cls");
 
     std::cout << "Process name: " << this->getName() << std::endl;
     std::cout << "Current line of instruction / Total line of instruction: " << this->getCurrInstructionLine() << " / " << this->getLinesOfCode() << std::endl;

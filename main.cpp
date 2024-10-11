@@ -8,9 +8,9 @@
 #include <string>
 using namespace std;
 
-#include "ProcessManager.cpp"
-#include "CPUScheduler.cpp"
-#include "Process.cpp"
+#include "ProcessManager.h"
+#include "CPUScheduler.h"
+#include "Process.h"
 
 void printHeader() {
     // put ascii art here

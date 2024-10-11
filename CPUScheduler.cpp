@@ -1,5 +1,4 @@
 #include "CPUScheduler.h"
-#include "CPUWorker.cpp"
 
 CPUScheduler::CPUScheduler() {}
 CPUScheduler::CPUScheduler(const CPUScheduler&) {}
