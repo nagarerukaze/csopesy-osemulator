@@ -51,14 +51,20 @@ void reportUtil() {
 
 void cls() {
     // clear command code here
-    system("cls"); // !! CHANGE TO "cls" FOR WINDOWS !!
+    system("clear"); // !! CHANGE TO "cls" FOR WINDOWS !!
     printHeader();
 }
 
 int main() {
     ProcessManager::getInstance()->initialize();
     CPUScheduler::getInstance()->initialize();
-    CPUScheduler::getInstance()->startScheduler();
+    CPUScheduler::getInstance()->initializeCPUWorkers(4);
+    
+    // Start the scheduler in a detached thread
+    std::thread schedulerThread([] {
+        CPUScheduler::getInstance()->startScheduler();
+    });
+    schedulerThread.detach(); // Detach the thread
 
     std::string input;
 

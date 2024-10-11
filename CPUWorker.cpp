@@ -21,7 +21,11 @@ void CPUWorker::startWorker() {
 
     while(currentLine < totalLines) {
         this->process->printToTextFile();
+        currentLine = this->process->getCurrInstructionLine();
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
+
+    std::cout << "Finished process.";
 
     this->process = nullptr;
 }

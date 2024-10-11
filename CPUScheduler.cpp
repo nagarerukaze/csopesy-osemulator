@@ -46,7 +46,7 @@ void CPUScheduler::startScheduler() {
                 }
             else {
                 // If no process is available, sleep for a while before checking again
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                //std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
         }
     }

@@ -22,7 +22,9 @@ Process::Process(std::string name, int linesOfCode) {
     by the CPU and the CPU core that executed it.
 */
 void Process::printToTextFile() {
-    
+    std::ofstream outfile(this->name);
+
+    outfile << "Hello World" << name << std::endl;
 
     // Execution time, core, command output (print)
     //outfile << execution tiime << this->cpuCoreID << commandOutput;
@@ -32,7 +34,7 @@ void Process::printToTextFile() {
 
 void Process::draw() const {
 
-    system("cls");
+    system("clear");
 
     std::cout << "Process name: " << this->getName() << std::endl;
     std::cout << "Current line of instruction / Total line of instruction: " << this->getCurrInstructionLine() << " / " << this->getLinesOfCode() << std::endl;
