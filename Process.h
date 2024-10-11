@@ -38,6 +38,7 @@ public:
 	void terminate();
 	void printCommand(std::ofstream& outfile);
 	void printToTextFile();
+	std::string getCurrentTimestamp() const;
 
 private:
 	std::string name;

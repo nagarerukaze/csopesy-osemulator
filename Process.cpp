@@ -29,14 +29,8 @@ void Process::printCommand(std::ofstream& outfile) {
 void Process::printToTextFile() {
     std::ofstream outfile(this->name, std::ios::app);
 
-    // Check if the file was opened successfully
-    if (!outfile) {
-        std::cerr << "Error opening file: " << this->name << std::endl;
-        return; // Exit the method if the file cannot be opened
-    }
-
     // Write the formatted log entry to the file
-    outfile << "(" << this->getTimestamp() << ") "
+    outfile << "(" << this->getCurrentTimestamp() << ") "
         << name << " "
         << "Core: " << this->cpuCoreID << " "
         << "Hello World" << std::endl;
@@ -44,9 +38,6 @@ void Process::printToTextFile() {
     // Advance the current instruction line
     this->nextLine();
 }
-
-
-
 
 void Process::draw() const {
 
@@ -128,6 +119,17 @@ std::string Process::getTimestamp() const {
 
     return oss.str();
 }
+
+std::string Process::getCurrentTimestamp() const {
+    std::time_t currentTime = std::time(nullptr);
+    std::tm timeInfo;
+    localtime_s(&timeInfo, &currentTime);
+    std::ostringstream oss;
+    oss << std::put_time(&timeInfo, "(%m/%d/%Y, %I:%M:%S %p)");
+
+    return oss.str();
+}
+
 
 //void Process::setTimeCreated() {
 //    this->timeCreated = this->getTimestamp();
