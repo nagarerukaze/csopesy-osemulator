@@ -7,7 +7,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <vector>
-#include <fstream>  
+#include <fstream> 
 
 class Process
 {
@@ -26,6 +26,7 @@ public:
 	Process(std::string name, int linesOfCode);
 
 	std::string getName() const;
+	void setState(ProcessState state);
 	ProcessState getState() const;
 	bool isFinished() const;
 	int getCurrInstructionLine() const;
@@ -34,7 +35,7 @@ public:
 	void setCPUCoreID(int cpuCoreID);
 	std::string getTimestamp() const;
 
-	void printToTextFile();
+	void printToTextFile();	
 
 private:
 	std::string name;
@@ -45,6 +46,7 @@ private:
 	int cpuCoreID = -1;
 
 	void draw() const;
+	void nextLine();
 
 	friend class ProcessManager;
 };

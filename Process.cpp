@@ -7,6 +7,11 @@ Process::Process(std::string name, int linesOfCode) {
     this->currInstructionLine = 1;
     this->linesOfCode = linesOfCode;
     this->timeCreated = std::time(nullptr);
+
+    std::ofstream outfile(this->name);
+
+    outfile << "Process name: " << name << std::endl;
+    outfile << "Logs:" << std::endl << std::endl;
 }
 
 // PRINT command
@@ -17,15 +22,12 @@ Process::Process(std::string name, int linesOfCode) {
     by the CPU and the CPU core that executed it.
 */
 void Process::printToTextFile() {
-    std::ofstream outfile(this->name);
-
-    outfile << "Process name: " << name << std::endl;
-    outfile << "Logs:" << std::endl << std::endl;
+    
 
     // Execution time, core, command output (print)
     //outfile << execution tiime << this->cpuCoreID << commandOutput;
 
-    outfile.close();
+    this->nextLine();
 }
 
 void Process::draw() const {
@@ -34,7 +36,7 @@ void Process::draw() const {
 
     std::cout << "Process name: " << this->getName() << std::endl;
     std::cout << "Current line of instruction / Total line of instruction: " << this->getCurrInstructionLine() << " / " << this->getLinesOfCode() << std::endl;
-    std::cout << "Timestamp: " << this->getTimestamp() << std::endl;
+    //std::cout << "Timestamp: " << this->getTimestamp() << std::endl;
 
     std::string input;
 
@@ -59,6 +61,10 @@ void Process::draw() const {
     }
 
 
+}
+
+void Process::nextLine() {
+    this->currInstructionLine += 1;
 }
 
 std::string Process::getName() const {
@@ -93,11 +99,13 @@ void Process::setCPUCoreID(int cpuCoreID) {
     this->cpuCoreID = cpuCoreID;
 }
 
+/*
 std::string Process::getTimestamp() const {
-    std::tm timeInfo;
-    localtime_s(&timeInfo, &timeCreated);
+    std::time_t timeInfo;
+    localtime_r(&timeInfo, this->timeCreated);
     std::ostringstream oss;
     oss << std::put_time(&timeInfo, "%m/%d/%Y, %I:%M:%S %p");
 
     return oss.str();
 }
+*/
