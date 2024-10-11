@@ -1,4 +1,5 @@
 #include "CPUWorker.h"
+#include "ProcessManager.h"
 
 CPUWorker* CPUWorker::sharedInstance = nullptr; // Initialize static member
 
@@ -27,6 +28,8 @@ void CPUWorker::startWorker() {
 
     this->process->terminate();
     std::cout << "Finished process.";
+    // add to finished processes
+    ProcessManager::getInstance()->moveToFinished(this->process->getName());
 
     this->process = nullptr;
 }

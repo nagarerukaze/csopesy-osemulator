@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <vector>
 #include "Process.h"
 #include "CPUScheduler.h"
 
@@ -15,6 +16,7 @@ public:
     static void draw();
     void createProcess(std::string name, int linesOfCode);
     int displayProcess(std::string processName) const;
+    void moveToFinished(const std::string& processName) ;
     void displayAll();
 
     //std::unordered_map<std::string, Process> getActiveProcesses;
@@ -28,5 +30,5 @@ private:
 
     // change Process to Process*
     std::unordered_map<std::string, Process*> activeProcesses;
-    std::unordered_map<std::string, Process> finishedProcesses;
+    std::vector<Process*> finishedProcesses;
 };

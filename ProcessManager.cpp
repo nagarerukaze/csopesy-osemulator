@@ -40,7 +40,26 @@ int ProcessManager::displayProcess(std::string processName) const {
     }
 }
 
+void ProcessManager::moveToFinished(const std::string& processName) {
+    auto it = activeProcesses.find(processName); // Find the process
+
+    if (it != activeProcesses.end()) {
+        finishedProcesses.push_back(it->second); // Move to finishedProcesses
+        activeProcesses.erase(it); // Erase from activeProcesses
+    }
+    else {
+        std::cout << "Process '" << processName << "' not found in active processes." << std::endl;
+    }
+}
+
 void ProcessManager::displayAll() {
+    std::cout << "Active Processes:" << std::endl;
     for (auto i = this->activeProcesses.begin(); i != this->activeProcesses.end(); i++)
         std::cout << i->first << " \t" << i->second->getCPUCoreID() << " \t" << i->second->getCurrInstructionLine() << "/" << i->second->getLinesOfCode() << std::endl;
+
+    std::cout << "Finished Processes:" << std::endl;
+    for (auto it = finishedProcesses.begin(); it != finishedProcesses.end(); ++it) {
+        std::cout << (*it)->getName() << " \t" << (*it)->getCPUCoreID() << " \t"
+            << (*it)->getCurrInstructionLine() << "/" << (*it)->getLinesOfCode() << std::endl;
+    }
 }
