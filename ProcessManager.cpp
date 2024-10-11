@@ -88,8 +88,6 @@ void ProcessManager::displayAll() {
 
     std::cout << std::endl;
 
-    std::cout << "Finished processes:" << std::endl;
-
     // Iterate over finished processes and print details
     for (const auto& process : finishedProcesses) {
         std::cout << process->getName() << " \t"
