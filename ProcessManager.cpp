@@ -77,28 +77,27 @@ void ProcessManager::moveToFinished(const std::string& processName) {
 void ProcessManager::displayAll() {
     std::cout << "--------------------------------------" << std::endl;
     std::cout << "Running processes:" << std::endl;
+
+    // Iterate over active processes and print details
     for (const auto& process : activeProcesses) {
-        std::cout << process->getName() << " \t" // TODO: add print timestamp
-                  << "Core: " << (process->getCPUCoreID() == -1 ? "N/A" : std::to_string(process->getCPUCoreID())) << " \t"
-                  << process->getCurrInstructionLine() << "/" << process->getLinesOfCode() << std::endl;
+        std::cout << process->getName() << " \t"
+            << process->getTimestamp() << " \t" // Add the timestamp
+            << "Core: " << (process->getCPUCoreID() == -1 ? "N/A" : std::to_string(process->getCPUCoreID())) << " \t"
+            << process->getCurrInstructionLine() << "/" << process->getLinesOfCode() << std::endl;
     }
 
     std::cout << std::endl;
 
     std::cout << "Finished processes:" << std::endl;
-    for (const auto& process : finishedProcesses) {
-        std::cout << process->getName() << " \t" // TODO: add print timestamp
-                  << "Finished" << " \t"
-                  << process->getCurrInstructionLine() << "/" << process->getLinesOfCode() << std::endl;
-    }
-    std::cout << "--------------------------------------" << std::endl;
-    /*std::cout << "Active Processes:" << std::endl;
-    for (auto i = this->activeProcesses.begin(); i != this->activeProcesses.end(); i++)
-        std::cout << i->first << " \t" << i->second->getCPUCoreID() << " \t" << i->second->getCurrInstructionLine() << "/" << i->second->getLinesOfCode() << std::endl;
 
-    std::cout << "Finished Processes:" << std::endl;
-    for (auto it = finishedProcesses.begin(); it != finishedProcesses.end(); ++it) {
-        std::cout << (*it)->getName() << " \t" << (*it)->getCPUCoreID() << " \t"
-            << (*it)->getCurrInstructionLine() << "/" << (*it)->getLinesOfCode() << std::endl;
-    }*/
+    // Iterate over finished processes and print details
+    for (const auto& process : finishedProcesses) {
+        std::cout << process->getName() << " \t"
+            << process->getTimestamp() << " \t" // Add the timestamp
+            << "Finished" << " \t"
+            << process->getCurrInstructionLine() << "/" << process->getLinesOfCode() << std::endl;
+    }
+
+    std::cout << "--------------------------------------" << std::endl;
 }
+

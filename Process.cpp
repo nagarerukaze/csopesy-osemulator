@@ -14,6 +14,11 @@ Process::Process(std::string name, int linesOfCode) {
     outfile << "Logs:" << std::endl << std::endl;
 }
 
+void Process::printCommand(std::ofstream& outfile) {
+    outfile << "(" << this->getTimestamp() << ") " << name << " " << "Core: " << this->cpuCoreID << " " << "Hello World" << std::endl;
+    this->nextLine();
+}
+
 // PRINT command
 /*
     Creates a text file where all its
@@ -22,15 +27,26 @@ Process::Process(std::string name, int linesOfCode) {
     by the CPU and the CPU core that executed it.
 */
 void Process::printToTextFile() {
-    std::ofstream outfile(this->name);
+    std::ofstream outfile(this->name, std::ios::app);
 
-    outfile << "(" << this->getTimestamp() << ")" << name << " " << "Core: " << this->cpuCoreID << " " << "Hello World" << std::endl;
+    // Check if the file was opened successfully
+    if (!outfile) {
+        std::cerr << "Error opening file: " << this->name << std::endl;
+        return; // Exit the method if the file cannot be opened
+    }
 
-    // Execution time, core, command output (print)
-    //outfile << execution tiime << this->cpuCoreID << commandOutput;
+    // Write the formatted log entry to the file
+    outfile << "(" << this->getTimestamp() << ") "
+        << name << " "
+        << "Core: " << this->cpuCoreID << " "
+        << "Hello World" << std::endl;
 
+    // Advance the current instruction line
     this->nextLine();
 }
+
+
+
 
 void Process::draw() const {
 
@@ -108,7 +124,7 @@ std::string Process::getTimestamp() const {
     std::tm timeInfo;
     localtime_s(&timeInfo, &timeCreated);
     std::ostringstream oss;
-    oss << std::put_time(&timeInfo, "%m/%d/%Y, %I:%M:%S %p");
+    oss << std::put_time(&timeInfo, "(%m/%d/%Y, %I:%M:%S %p)");
 
     return oss.str();
 }

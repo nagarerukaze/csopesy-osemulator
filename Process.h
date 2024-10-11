@@ -36,7 +36,8 @@ public:
 	std::string getTimestamp() const;
 	void setTimeCreated();
 	void terminate();
-	void printToTextFile();	
+	void printCommand(std::ofstream& outfile);
+	void printToTextFile();
 
 private:
 	std::string name;

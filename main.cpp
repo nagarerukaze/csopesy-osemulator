@@ -70,7 +70,7 @@ int main() {
 
     clear();
 
-    /*ProcessManager::getInstance()->createProcess("p1", 100);
+    ProcessManager::getInstance()->createProcess("p1", 100);
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     ProcessManager::getInstance()->createProcess("p2", 100);
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -81,6 +81,9 @@ int main() {
     ProcessManager::getInstance()->createProcess("p5", 100);
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
+
+
+
     ProcessManager::getInstance()->createProcess("p6", 100);
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     ProcessManager::getInstance()->createProcess("p7", 100);
@@ -89,7 +92,7 @@ int main() {
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     ProcessManager::getInstance()->createProcess("p9", 100);
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    ProcessManager::getInstance()->createProcess("p10", 100);*/
+    ProcessManager::getInstance()->createProcess("p10", 100);
 
     while (input != "exit") {
         
