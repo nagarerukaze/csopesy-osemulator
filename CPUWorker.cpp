@@ -27,7 +27,7 @@ void CPUWorker::startWorker() {
     }
 
     this->process->terminate();
-    std::cout << "Finished process.";
+    //std::cout << "Finished process.";
     // add to finished processes
     ProcessManager::getInstance()->moveToFinished(this->process->getName());
 
