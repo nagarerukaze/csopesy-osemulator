@@ -25,6 +25,7 @@ void CPUWorker::startWorker() {
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 
+    this->process->terminate();
     std::cout << "Finished process.";
 
     this->process = nullptr;

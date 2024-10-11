@@ -35,7 +35,7 @@ public:
 	void setCPUCoreID(int cpuCoreID);
 	std::string getTimestamp() const;
 	void setTimeCreated();
-
+	void terminate();
 	void printToTextFile();	
 
 private:

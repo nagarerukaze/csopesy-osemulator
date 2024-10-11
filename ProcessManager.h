@@ -28,5 +28,5 @@ private:
 
     // change Process to Process*
     std::unordered_map<std::string, Process*> activeProcesses;
-    //std::unordered_map<std::string, Process> finishedProcesses;
+    std::unordered_map<std::string, Process> finishedProcesses;
 };

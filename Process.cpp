@@ -83,6 +83,10 @@ bool Process::isFinished() const {
     return false;
 }
 
+void Process::terminate() {
+    this->currentState = ProcessState::TERMINATED;
+}
+
 int Process::getCurrInstructionLine() const {
     return this->currInstructionLine;
 }
@@ -98,6 +102,7 @@ int Process::getCPUCoreID() const {
 void Process::setCPUCoreID(int cpuCoreID) {
     this->cpuCoreID = cpuCoreID;
 }
+
 
 std::string Process::getTimestamp() const {
     std::tm timeInfo;
