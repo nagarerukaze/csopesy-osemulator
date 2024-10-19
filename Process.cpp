@@ -64,27 +64,9 @@ int Process::getTotalLinesOfCode() const {
 
 std::string Process::getTimestamp() {
     tm ltm;
-
-    // Use localtime_s for thread-safe conversion
     localtime_s(&ltm, &(this->timeCreated));
     std::ostringstream oss;
-    oss << std::put_time(&ltm, "%m/%d/%Y, %I:%M:%S %p"); // Format with AM/PM
-
-    /*int hour = ltm->tm_hour;
-    std::string ampm = (hour >= 12) ? "PM" : "AM";
-
-    hour = (hour % 12);
-    if (hour == 0) hour = 12;
-
-    std::ostringstream oss;
-    oss << std::setfill('0') << std::setw(2) << ltm->tm_mon + 1 << "/"
-        << std::setfill('0') << std::setw(2) << ltm->tm_mday << "/"
-        << (ltm->tm_year + 1900) << ", "
-        << std::setfill('0') << std::setw(2) << hour << ":"
-        << std::setfill('0') << std::setw(2) << ltm->tm_min << ":"
-        << std::setfill('0') << std::setw(2) << ltm->tm_sec << " "
-        << ampm;*/
-
+    oss << std::put_time(&ltm, "%m/%d/%Y, %I:%M:%S %p");
     return oss.str();
 }
 
