@@ -30,11 +30,7 @@ void printHeader() {
 }
 
 bool initialize() {
-    // TODO: initialize the processor configuration of the app. This must be called before any other command could be recognized, aside from "exit"
-    // Should read from a "config.txt" file, the parameters for your CPU scheduler and process attributes
-    // Instruction length per process can be set in "config.txt"
-    // cpu scheduler algo will be set in this function!
-    std::cout << "\"initialize\" command recognized. Doing something..." << std::endl;
+    std::cout << "\"initialize\" command recognized. Doing something..." << std::endl; // TODO: DELETE
     std::vector<std::string> values;
     std::string line, key, value, scheduler;
     int num_cpu, quantum_cycles, batch_process_freq, min_ins, max_ins, delays_per_exec;
@@ -79,14 +75,33 @@ bool initialize() {
 
     // TODO: initilize processor and scheduler algo
 
-    
-
     return true;
 }
 
-void screen() {
-    // screen command code here
-    // screen -s <process name> : create new process
+void screen(std::string command) {
+    std::cout << "\"screen\" command recognized. Doing something..." << std::endl; // TODO: DELETE
+
+    std::istringstream iss(command);
+    std::vector<std::string> words;
+    std::string word;
+
+    while (iss >> word) {
+        words.push_back(word);
+    }
+
+    if (words[1] == "-ls") {
+        // TODO: screen -ls : list all running processes
+        std::cout << "Show running processes." << std::endl;
+
+        if (words.size() == 2) {
+            
+        }
+        else {
+            std::cout << "Invalid arguments." << std::endl;
+        }
+    }
+    else if (words[1] == "-s") {
+        // screen -s <process name> : create new process
         // In this one, user can type:
         // "process-smi" - prints simple info of the process
             // Process: My own process
@@ -97,10 +112,31 @@ void screen() {
             // Finished!
         // "exit : returns to main menu
         // once user exits a process that has finished, they cannot access it again
-    // screen -ls : list all running processes
-    // screen -r <process name> : access process
+    
+        if (words.size() == 3) {
+            // TODO: Create Process
+            // TODO: Enter Process Screen
+            std::cout << "Create process." << std::endl;
+        }
+        else {
+            std::cout << "Invalid arguments." << std::endl;
+        }
+    }
+    else if (words[1] == "-r") {
+        // screen -r <process name> : access process
         // if process not found/finished execution : print "Process <process name> not found."
-    std::cout << "\"screen\" command recognized. Doing something..." << std::endl;
+
+        if (words.size() == 3) {
+            // TODO: Find Process
+            std::cout << "Find process." << std::endl;
+        }
+        else {
+            std::cout << "Invalid arguments." << std::endl;
+        }
+    }
+    else {
+        std::cout << "Unknown command." << std::endl;
+    }
 }
 
 void schedulerTest() {
@@ -109,20 +145,20 @@ void schedulerTest() {
     // As long as CPU cores are available, each process can be executed and accessible via "screen"
     // only accessible in main menu
     // process names should be "p01, p02, ..., p1240"
-    std::cout << "\"scheduler-test\" command recognized. Doing something..." << std::endl;
+    std::cout << "\"scheduler-test\" command recognized. Doing something..." << std::endl; // TODO: DELETE
 }
 
 void schedulerStop() {
     // TODO: stops generating dummy processes
     // only accessible in main menu
-    std::cout << "\"scheduler-stop\" command recognized. Doing something..." << std::endl;
+    std::cout << "\"scheduler-stop\" command recognized. Doing something..." << std::endl; // TODO: DELETE
 }
 
 void reportUtil() {
     // TODO: generates CPU utilization report
     // This console should be able to generate a utilization report whenever the "report-util command is entered
     // same as screen -ls but is saved into a text file - "csopesy-log.txt"
-    std::cout << "\"report-util\" command recognized. Doing something..." << std::endl;
+    std::cout << "\"report-util\" command recognized. Doing something..." << std::endl; // TODO: DELETE
 }
 
 void clear() {
@@ -150,9 +186,11 @@ int main() {
         }
         else if (initialized) {
             // screen
-
+            if (command.rfind("screen", 0) == 0) {
+                screen(command);
+            }
             // scheduler test
-            if (command == "scheduler-test") {
+            else if (command == "scheduler-test") {
                 schedulerTest();
             }
             // scheduler stop
