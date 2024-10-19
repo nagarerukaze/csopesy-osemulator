@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "Process.h"
+
 void printHeader() {
     std::cout << " _______  _______  _______  _______  _______  _______  __   __ " << std::endl;
     std::cout << "|       ||       ||       ||       ||       ||       ||  | |  |" << std::endl;
@@ -27,6 +29,11 @@ void printHeader() {
     std::cout << "Last updated: 10-20-2024" << std::endl;
     std::cout << "---------------------------------------------------------------" << std::endl;
     std::cout << std::endl;
+}
+
+void clear() {
+    system("cls"); // !! CHANGE TO "cls" FOR WINDOWS !!
+    printHeader();
 }
 
 bool initialize() {
@@ -115,8 +122,13 @@ void screen(std::string command) {
     
         if (words.size() == 3) {
             // TODO: Create Process
-            // TODO: Enter Process Screen
+            // TODO: Display Process Screen
             std::cout << "Create process." << std::endl;
+
+            /*Process* process = new Process(words[2], 100);
+            process->draw();
+            std::cout << "Exited." << std::endl;*/
+            clear();
         }
         else {
             std::cout << "Invalid arguments." << std::endl;
@@ -161,18 +173,14 @@ void reportUtil() {
     std::cout << "\"report-util\" command recognized. Doing something..." << std::endl; // TODO: DELETE
 }
 
-void clear() {
-    system("cls"); // !! CHANGE TO "cls" FOR WINDOWS !!
-    printHeader();
-}
-
 int main() {
     int cpuCycles = 0;
     std::string command;
     bool initialized = false;
+    bool isRunning = true;
 
     clear();
-    while (command != "exit") { // while OS is running
+    while (isRunning) { // while OS is running
         // Get Command Input
         std::cout << "Enter a command: ";
         std::getline(std::cin, command);
@@ -197,9 +205,21 @@ int main() {
             else if (command == "report-util") {
                 reportUtil();
             }
+            else if (command == "clear") {
+                clear();
+            }
+            else if (command == "exit") {
+                isRunning = false;
+            }
+            else {
+                std::cout << "Unknown command." << std::endl;
+            }
         }
         else if (command == "clear") {
             clear();
+        }
+        else if (command == "exit") {
+            isRunning = false;
         }
         else {
             std::cout << "Unknown command." << std::endl;
