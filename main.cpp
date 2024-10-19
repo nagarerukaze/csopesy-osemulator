@@ -185,19 +185,15 @@ int main() {
             }
         }
         else if (initialized) {
-            // screen
             if (command.rfind("screen", 0) == 0) {
                 screen(command);
             }
-            // scheduler test
             else if (command == "scheduler-test") {
                 schedulerTest();
             }
-            // scheduler stop
             else if (command == "scheduler-stop") {
                 schedulerStop();
             }
-            // report util
             else if (command == "report-util") {
                 reportUtil();
             }
