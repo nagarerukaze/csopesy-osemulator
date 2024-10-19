@@ -13,15 +13,26 @@ using namespace std;
 #include "Process.h"
 
 void printHeader() {
-    // put ascii art here
-    cout << "  ____ ____   ___  ____  _____ ______ __   __" << endl;
-    cout << " / ___/ ___| / _ \\|  _ \\| ____/ ___| \\ \\ / /" << endl;
-    cout << "| |   \\___ \\| | | | |_) |  _| \\___/   \\ V / " << endl;
-    cout << "| |___ ___) | |_| |  __/| |___ ___) | |   |    " << endl;
-    cout << " \\____|____/ \\___/|_|   |_____|____/  |___|  " << endl;
-    cout << "Hello, Welcome to CSOPESY command-line!" << endl;
-
-    //cout << "Type 'exit', to quit, 'clear' to clear the screen." << endl;
+    cout << " _______  _______  _______  _______  _______  _______  __   __ " << endl;
+    cout << "|       ||       ||       ||       ||       ||       ||  | |  |" << endl;
+    cout << "|       ||  _____||   _   ||    _  ||    ___||  _____||  |_|  |" << endl;
+    cout << "|       || |_____ |  | |  ||   |_| ||   |___ | |_____ |       |" << endl;
+    cout << "|      _||_____  ||  |_|  ||    ___||    ___||_____  ||_     _|" << endl;
+    cout << "|     |_  _____| ||       ||   |    |   |___  _____| |  |   |  " << endl;
+    cout << "|_______||_______||_______||___|    |_______||_______|  |___|  " << endl;
+    cout << "---------------------------------------------------------------" << endl;
+    cout << "Hello, Welcome to CSOPESY Emulartor!" << endl;
+    cout << endl;
+    cout << "Developers:" << endl;
+    cout << "Jardenil, Aaron Randall (S11)" << endl;
+    cout << "Jocson, Nicole Pedernal (S11)" << endl;
+    cout << "Rebano, Jaeme Patrice (S11)" << endl;
+    cout << "Jaramillo, Brandon Anthony(S12)" << endl;
+    cout << endl;
+    // TODO: Update the Date
+    cout << "Last updated: 10-20-2024" << endl;
+    cout << "---------------------------------------------------------------" << endl;
+    cout << endl;
 }
 
 void initialize() {
