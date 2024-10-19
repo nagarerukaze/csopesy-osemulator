@@ -31,6 +31,9 @@
     <ClInclude Include="Process.h" />
     <ClInclude Include="ProcessManager.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="config.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
