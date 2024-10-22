@@ -30,12 +30,6 @@ private:
 
 
 //#pragma once
-//#include <string>
-//#include <ctime>
-//#include <iostream>
-//#include <ctime>
-//#include <iomanip>
-//#include <sstream>
 //#include <stdlib.h>
 //#include <vector>
 //#include <fstream> 
@@ -52,31 +46,18 @@ private:
 //		TERMINATED	// Finished execution
 //	};
 //
-//	Process();
-//	~Process() = default;
-//	Process(std::string name, int linesOfCode);
-//
-//	std::string getName() const;
 //	void setState(ProcessState state);
 //	ProcessState getState() const;
 //	bool isFinished() const;
-//	int getCurrInstructionLine() const;
-//	int getLinesOfCode() const;
 //	int getCPUCoreID() const;
 //	void setCPUCoreID(int cpuCoreID);
-//	std::string getTimestamp() const;
 //	void setTimeCreated();
 //	void terminate();
 //	void printCommand(std::ofstream& outfile);
 //	void printToTextFile();
-//	std::string getCurrentTimestamp() const;
 //
 //private:
-//	std::string name;
-//	std::time_t timeCreated;
 //	ProcessState currentState;
-//	int currInstructionLine;
-//	int linesOfCode;
 //	int cpuCoreID = -1;
 //
 //	void draw() const;
