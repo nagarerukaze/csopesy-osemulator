@@ -4,24 +4,26 @@
 #include <sstream>
 #include <iomanip>
 
+typedef std::string String;
+
 class Process 
 {
 public:
 	Process();
 	~Process() = default;
-	Process(std::string name, int totalLinesOfCode);
+	Process(String name, int totalLinesOfCode);
 
 	void printInfo();
 	void draw();
 	void nextLine();
 
 	// getters + setters
-	std::string getName() const;
+	String getName() const;
 	int getCurrentInstructionLine() const;
 	int getTotalLinesOfCode() const;
-	std::string getTimestamp();
+	String getTimestamp();
 private:
-	std::string name;
+	String name;
 	int currentInstructionLine;
 	int totalLinesOfCode;
 	time_t timeCreated;

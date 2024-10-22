@@ -2,7 +2,7 @@
 
 Process::Process() {}
 
-Process::Process(std::string name, int totalLinesOfCode) {
+Process::Process(String name, int totalLinesOfCode) {
 	this->name = name;
 	this->currentInstructionLine = 0; // TODO: Not sure if this should be 1
 	this->totalLinesOfCode = totalLinesOfCode;
@@ -25,7 +25,7 @@ void Process::draw() {
     system("cls");
     printInfo();
     bool isRunning = true;
-    std::string command;
+    String command;
 
     while (isRunning) {
         std::cout << "Enter command: ";
@@ -50,7 +50,7 @@ void Process::nextLine() {
 }
 
 // getters and setters
-std::string Process::getName() const {
+String Process::getName() const {
     return this->name;
 }
 
@@ -62,7 +62,7 @@ int Process::getTotalLinesOfCode() const {
     return this->totalLinesOfCode;
 }
 
-std::string Process::getTimestamp() {
+String Process::getTimestamp() {
     tm ltm;
     localtime_s(&ltm, &(this->timeCreated));
     std::ostringstream oss;
