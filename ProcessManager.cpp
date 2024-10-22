@@ -1,3 +1,42 @@
+#include "ProcessManager.h"
+
+void ProcessManager::createProcess(std::string name, int totalLines) {
+    activeProcesses.push_back(new Process(name, totalLines));
+    // queue to scheduler
+}
+
+int ProcessManager::displayProcess(std::string name) {
+    // Find if process is in activeprocesses
+    auto it = std::find(activeProcesses.begin(), activeProcesses.end(), [&name](Process* process) { return process->getName() == name; });
+
+    // If Found: draw console
+    //if (it != activeProcesses.end()) {
+    //    (*it)->draw(); // Call draw on the found process
+    //    return 1;
+    //}
+
+    //std::cout << "Process '" << processName << "' not found." << std::endl;
+    return 0;
+}
+
+void ProcessManager::displayAllProcesses() {
+    std::cout << "CPU Utilization: " << std::endl;
+    std::cout << "Cores used: " << std::endl;
+    std::cout << "Cores available: " << std::endl;
+    std::cout << std::endl;
+    std::cout << "--------------------------------------" << std::endl;
+    std::cout << "Running processes:" << std::endl;
+    // processname timestamp core currline/totalline
+
+    std::cout << std::endl;
+
+    std::cout << "Finished processes:" << std::endl;
+    // processname timestamp Finished currline/totalline
+    std::cout << "--------------------------------------" << std::endl;
+}
+
+
+
 //#include "ProcessManager.h"
 //
 //ProcessManager::ProcessManager() {}

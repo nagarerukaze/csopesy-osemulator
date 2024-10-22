@@ -1,3 +1,20 @@
+#include <string>
+#include <vector>
+
+#include "Process.h"
+
+class ProcessManager 
+{
+public:
+    void createProcess(std::string name, int totalLines);
+    int displayProcess(std::string name);
+    void displayAllProcesses();
+    Process* findProcess(const std::string& name);
+private:
+    std::vector<Process*> activeProcesses;
+    std::vector<Process*> finishedProcesses;
+};
+
 //#pragma once
 //#include <iostream>
 //#include <string>
