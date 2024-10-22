@@ -3,14 +3,26 @@
 
 #include "Process.h"
 
+typedef std::string String;
+
 class ProcessManager 
 {
 public:
-    void createProcess(std::string name, int totalLines);
-    int displayProcess(std::string name);
+    // Singleton stuff
+    static void initialize();
+    static ProcessManager* getInstance();
+
+    void createProcess(String name, int totalLines);
+    int displayProcess(String name);
     void displayAllProcesses();
-    Process* findProcess(const std::string& name);
+    Process* findProcess(const String& name);
 private:
+    ProcessManager();
+    ProcessManager(const ProcessManager&);
+    ProcessManager& operator = (const ProcessManager&);
+    ~ProcessManager() = default;
+    static ProcessManager* sharedInstance;
+
     std::vector<Process*> activeProcesses;
     std::vector<Process*> finishedProcesses;
 };

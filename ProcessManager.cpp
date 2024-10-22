@@ -1,23 +1,41 @@
 #include "ProcessManager.h"
 
-void ProcessManager::createProcess(std::string name, int totalLines) {
+/*
+
+    Singleton stuff
+
+*/
+ProcessManager::ProcessManager() {}
+ProcessManager::ProcessManager(const ProcessManager&) {}
+
+ProcessManager* ProcessManager::sharedInstance = nullptr;
+
+void ProcessManager::initialize() {
+    sharedInstance = new ProcessManager();
+}
+
+ProcessManager* ProcessManager::getInstance() {
+    return sharedInstance;
+}
+
+void ProcessManager::createProcess(String name, int totalLines) {
     activeProcesses.push_back(new Process(name, totalLines));
     // queue to scheduler
 }
 
-int ProcessManager::displayProcess(std::string name) {
-    // Find if process is in activeprocesses
-    auto it = std::find(activeProcesses.begin(), activeProcesses.end(), [&name](Process* process) { return process->getName() == name; });
-
-    // If Found: draw console
-    //if (it != activeProcesses.end()) {
-    //    (*it)->draw(); // Call draw on the found process
-    //    return 1;
-    //}
-
-    //std::cout << "Process '" << processName << "' not found." << std::endl;
-    return 0;
-}
+//int ProcessManager::displayProcess(String name) {
+//    // Find if process is in activeprocesses
+//    auto it = std::find(activeProcesses.begin(), activeProcesses.end(), [&name](Process* process) { return process->getName() == name; });
+//
+//    // If Found: draw console
+//    //if (it != activeProcesses.end()) {
+//    //    (*it)->draw(); // Call draw on the found process
+//    //    return 1;
+//    //}
+//
+//    //std::cout << "Process '" << processName << "' not found." << std::endl;
+//    return 0;
+//}
 
 void ProcessManager::displayAllProcesses() {
     std::cout << "CPU Utilization: " << std::endl;
