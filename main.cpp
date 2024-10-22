@@ -6,40 +6,25 @@
 #include <string>
 #include <vector>
 
+#include "ConsoleManager.h"
 #include "Process.h"
 
-void printHeader() {
-    std::cout << " _______  _______  _______  _______  _______  _______  __   __ " << std::endl;
-    std::cout << "|       ||       ||       ||       ||       ||       ||  | |  |" << std::endl;
-    std::cout << "|       ||  _____||   _   ||    _  ||    ___||  _____||  |_|  |" << std::endl;
-    std::cout << "|       || |_____ |  | |  ||   |_| ||   |___ | |_____ |       |" << std::endl;
-    std::cout << "|      _||_____  ||  |_|  ||    ___||    ___||_____  ||_     _|" << std::endl;
-    std::cout << "|     |_  _____| ||       ||   |    |   |___  _____| |  |   |  " << std::endl;
-    std::cout << "|_______||_______||_______||___|    |_______||_______|  |___|  " << std::endl;
-    std::cout << "---------------------------------------------------------------" << std::endl;
-    std::cout << "Hello, Welcome to CSOPESY Emulartor!" << std::endl;
-    std::cout << std::endl;
-    std::cout << "Developers:" << std::endl;
-    std::cout << "Jardenil, Aaron Randall (S11)" << std::endl;
-    std::cout << "Jocson, Nicole Pedernal (S11)" << std::endl;
-    std::cout << "Rebano, Jaeme Patrice (S11)" << std::endl;
-    std::cout << "Jaramillo, Brandon Anthony (S12)" << std::endl;
-    std::cout << std::endl;
-    // TODO: Update the Date
-    std::cout << "Last updated: 10-20-2024" << std::endl;
-    std::cout << "---------------------------------------------------------------" << std::endl;
-    std::cout << std::endl;
-}
+typedef std::string String;
 
-void clear() {
-    system("cls"); // !! CHANGE TO "cls" FOR WINDOWS !!
-    printHeader();
-}
-
+/*
+    Get the following parameters from the `config.txt` file:
+        (1) num-cpu
+        (2) scheduler
+        (3) quantum-cycles
+        (4) batch-process-freq
+        (5) min-ins
+        (6) max-ins
+        (7) delay-pe-exec
+*/
 bool initialize() {
     std::cout << "\"initialize\" command recognized. Doing something..." << std::endl; // TODO: DELETE
-    std::vector<std::string> values;
-    std::string line, key, value, scheduler;
+    std::vector<String> values;
+    String line, key, value, scheduler;
     int num_cpu, quantum_cycles, batch_process_freq, min_ins, max_ins, delays_per_exec;
 
     std::ifstream f("config.txt");
@@ -85,72 +70,6 @@ bool initialize() {
     return true;
 }
 
-void screen(std::string command) {
-    std::cout << "\"screen\" command recognized. Doing something..." << std::endl; // TODO: DELETE
-
-    std::istringstream iss(command);
-    std::vector<std::string> words;
-    std::string word;
-
-    while (iss >> word) {
-        words.push_back(word);
-    }
-
-    if (words[1] == "-ls") {
-        // TODO: screen -ls : list all running processes
-        std::cout << "Show running processes." << std::endl;
-
-        if (words.size() == 2) {
-            
-        }
-        else {
-            std::cout << "Invalid arguments." << std::endl;
-        }
-    }
-    else if (words[1] == "-s") {
-        // screen -s <process name> : create new process
-        // In this one, user can type:
-        // "process-smi" - prints simple info of the process
-            // Process: My own process
-            // ID: 1
-            // Current instruction line: 769
-            // Lines of code: 1240
-            // or
-            // Finished!
-        // "exit : returns to main menu
-        // once user exits a process that has finished, they cannot access it again
-    
-        if (words.size() == 3) {
-            // TODO: Create Process
-            // TODO: Display Process Screen
-            std::cout << "Create process." << std::endl;
-
-            /*Process* process = new Process(words[2], 100);
-            process->draw();
-            std::cout << "Exited." << std::endl;*/
-            clear();
-        }
-        else {
-            std::cout << "Invalid arguments." << std::endl;
-        }
-    }
-    else if (words[1] == "-r") {
-        // screen -r <process name> : access process
-        // if process not found/finished execution : print "Process <process name> not found."
-
-        if (words.size() == 3) {
-            // TODO: Find Process
-            std::cout << "Find process." << std::endl;
-        }
-        else {
-            std::cout << "Invalid arguments." << std::endl;
-        }
-    }
-    else {
-        std::cout << "Unknown command." << std::endl;
-    }
-}
-
 void schedulerTest() {
     // TODO: continuosly generates a batch of dummy processes for the CPU scheduler
     // Every X CPU cycles, a new process is generated and put into ready queue (Can be set in "config.txt"
@@ -175,12 +94,13 @@ void reportUtil() {
 
 int main() {
     int cpuCycles = 0;
-    std::string command;
+    String command;
     bool initialized = false;
     bool isRunning = true;
 
-    clear();
-    while (isRunning) { // while OS is running
+    ConsoleManager::getInstance()->clear();
+
+    while (isRunning) { // While OS is running
         // Get Command Input
         std::cout << "Enter a command: ";
         std::getline(std::cin, command);
@@ -194,7 +114,7 @@ int main() {
         }
         else if (initialized) {
             if (command.rfind("screen", 0) == 0) {
-                screen(command);
+                ConsoleManager::getInstance()->screen(command);
             }
             else if (command == "scheduler-test") {
                 schedulerTest();
@@ -206,7 +126,7 @@ int main() {
                 reportUtil();
             }
             else if (command == "clear") {
-                clear();
+                ConsoleManager::getInstance()->clear();
             }
             else if (command == "exit") {
                 isRunning = false;
@@ -216,7 +136,7 @@ int main() {
             }
         }
         else if (command == "clear") {
-            clear();
+            ConsoleManager::getInstance()->clear();
         }
         else if (command == "exit") {
             isRunning = false;
@@ -296,3 +216,4 @@ int main() {
     //}
 
 }
+
