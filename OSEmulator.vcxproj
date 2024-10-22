@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ConsoleManager.cpp" />
     <ClCompile Include="CPUScheduler.cpp" />
     <ClCompile Include="CPUWorker.cpp" />
     <ClCompile Include="main.cpp" />
@@ -26,6 +27,7 @@
     <ClCompile Include="ProcessManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ConsoleManager.h" />
     <ClInclude Include="CPUScheduler.h" />
     <ClInclude Include="CPUWorker.h" />
     <ClInclude Include="Process.h" />
