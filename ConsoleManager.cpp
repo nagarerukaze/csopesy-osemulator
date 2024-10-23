@@ -232,7 +232,7 @@ void ConsoleManager::waitForNextCycle() {
 }
 
 void ConsoleManager::schedulerTest() {
-    std::cout << "Generating processes..." << std::endl;
+    std::cout << "Generating dummy processes..." << std::endl;
     if (ProcessManager::getInstance()->getIsGeneratingProcesses()) {
         std::cout << "Scheduler Test is already running." << std::endl;
         return;
@@ -244,14 +244,12 @@ void ConsoleManager::schedulerTest() {
 }
 
 void ConsoleManager::schedulerStop() {
-    // TODO: stops generating dummy processes
-    // only accessible in main menu
-    std::cout << "\"scheduler-stop\" command recognized. Doing something..." << std::endl; // TODO: DELETE
     ProcessManager::getInstance()->setIsGeneratingProcesses(false);
 
     if (this->schedulerTestThread.joinable()) {
         this->schedulerTestThread.join(); // Wait for the thread to finish
     }
+    std::cout << "Stopped generating dummy processes." << std::endl;
 }
 
 void ConsoleManager::reportUtil() {
