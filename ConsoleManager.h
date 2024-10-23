@@ -2,12 +2,12 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <sstream>
 
 #include <fstream>
 #include <sstream>
 #include <stdlib.h> 
 #include <conio.h>
+#include <windows.h>
 
 #include "ProcessManager.h"
 
@@ -28,6 +28,10 @@ public:
 	void schedulerStop();
 	void reportUtil();
 
+	void setCursorPosition(int x, int y);
+	void printAtPosition(int x, int y, const String& text);
+
+
 private:
 	/*
 
@@ -39,6 +43,5 @@ private:
 	ConsoleManager& operator = (const ConsoleManager&);
 	~ConsoleManager() = default;
 	static ConsoleManager* sharedInstance;
-
 };
 

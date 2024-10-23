@@ -227,3 +227,18 @@ void ConsoleManager::reportUtil() {
     // same as screen -ls but is saved into a text file - "csopesy-log.txt"
     std::cout << "\"report-util\" command recognized. Doing something..." << std::endl; // TODO: DELETE
 }
+
+void setCursorPosition(int x, int y) {
+
+    COORD coord;
+    coord.X = x; // Column
+    coord.Y = y; // Row
+
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+void printAtPosition(int x, int y, const String& text) {
+    setCursorPosition(x, y);
+    std::cout << text;
+}
+
