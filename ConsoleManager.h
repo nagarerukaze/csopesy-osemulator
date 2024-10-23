@@ -28,6 +28,8 @@ public:
 	void clear();
 	bool initialize();
 	void screen(String command);
+	void generateProcesses(int count);
+	void waitForNextCycle();
 	void schedulerTest();
 	void schedulerStop();
 	void reportUtil();

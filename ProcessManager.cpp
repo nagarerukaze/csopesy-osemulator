@@ -5,7 +5,7 @@
     Singleton stuff
 
 */
-ProcessManager::ProcessManager(int batch_process_freq, int min_ins, int max_ins) {
+ProcessManager::ProcessManager(long long batch_process_freq, long long min_ins, long long max_ins) {
     this->batch_process_freq = batch_process_freq;
     this->min_ins = min_ins;
     this->max_ins = max_ins;
@@ -15,7 +15,7 @@ ProcessManager::ProcessManager(const ProcessManager&) {}
 
 ProcessManager* ProcessManager::sharedInstance = nullptr;
 
-void ProcessManager::initialize(int batch_process_freq, int min_ins, int max_ins) {
+void ProcessManager::initialize(long long batch_process_freq, long long min_ins, long long max_ins) {
     sharedInstance = new ProcessManager(batch_process_freq, min_ins, max_ins);
 }
 
@@ -88,15 +88,15 @@ void ProcessManager::displayAllProcesses() {
     std::cout << "--------------------------------------" << std::endl;
 }
 
-int ProcessManager::getBatchProcessFreq() const {
+long long ProcessManager::getBatchProcessFreq() const {
     return this->batch_process_freq;
 }
 
-int ProcessManager::getMinInstructions() const {
+long long ProcessManager::getMinInstructions() const {
     return this->min_ins;
 }
 
-int ProcessManager::getMaxInstructions() const {
+long long ProcessManager::getMaxInstructions() const {
     return this->max_ins;
 }
 

@@ -19,7 +19,7 @@ public:
 
 	Process();
 	~Process() = default;
-	Process(String name, int totalLinesOfCode);
+	Process(String name, long long totalLinesOfCode);
 
 	void printInfo();
 	void draw();
@@ -27,16 +27,16 @@ public:
 
 	// getters + setters
 	String getName() const;
-	int getCurrentInstructionLine() const;
-	int getTotalLinesOfCode() const;
+	long long getCurrentInstructionLine() const;
+	long long getTotalLinesOfCode() const;
 	String getTimestamp();
 	ProcessState getState() const;
 
 	void setState(ProcessState state);
 private:
 	String name;
-	int currentInstructionLine;
-	int totalLinesOfCode;
+	long long currentInstructionLine;
+	long long totalLinesOfCode;
 	time_t timeCreated;
 	ProcessState currentState;
 };

@@ -2,7 +2,7 @@
 
 Process::Process() {}
 
-Process::Process(String name, int totalLinesOfCode) {
+Process::Process(String name, long long totalLinesOfCode) {
 	this->name = name;
 	this->currentInstructionLine = 0; // TODO: Not sure if this should be 1
 	this->totalLinesOfCode = totalLinesOfCode;
@@ -58,11 +58,11 @@ String Process::getName() const {
     return this->name;
 }
 
-int Process::getCurrentInstructionLine() const {
+long long Process::getCurrentInstructionLine() const {
     return this->currentInstructionLine;
 }
 
-int Process::getTotalLinesOfCode() const {
+long long Process::getTotalLinesOfCode() const {
     return this->totalLinesOfCode;
 }
 

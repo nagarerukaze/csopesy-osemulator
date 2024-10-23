@@ -72,7 +72,7 @@ void ConsoleManager::clear() {
 bool ConsoleManager::initialize() {
     std::vector<String> values;
     String line, key, value, scheduler;
-    int num_cpu, quantum_cycles, batch_process_freq, min_ins, max_ins, delays_per_exec;
+    long long num_cpu, quantum_cycles, batch_process_freq, min_ins, max_ins, delays_per_exec;
 
     std::ifstream f("config.txt");
 
@@ -94,13 +94,13 @@ bool ConsoleManager::initialize() {
 
     f.close();
 
-    num_cpu = stoi(values[0]);
+    num_cpu = std::stoll(values[0]);
     scheduler = values[1];
-    quantum_cycles = stoi(values[2]);
-    batch_process_freq = stoi(values[3]); // frequency of generating process in "scheduler-test". [1, 2^32] if one, a new process is generated at the end of each CPU cycle
-    min_ins = stoi(values[4]); // min instructions per process [1, 2^32]
-    max_ins = stoi(values[5]); // max instructions per process [1, 2^32]
-    delays_per_exec = stoi(values[6]); // delay before executing next instruction. [0, 2^32] if zero, each instruction is executed per CPU cycle
+    quantum_cycles = std::stoll(values[2]);
+    batch_process_freq = std::stoll(values[3]); // frequency of generating process in "scheduler-test". [1, 2^32] if one, a new process is generated at the end of each CPU cycle
+    min_ins = std::stoll(values[4]); // min instructions per process [1, 2^32]
+    max_ins = std::stoll(values[5]); // max instructions per process [1, 2^32]
+    delays_per_exec = std::stoll(values[6]); // delay before executing next instruction. [0, 2^32] if zero, each instruction is executed per CPU cycle
 
     if (num_cpu < 1 || num_cpu > 128 ||
         (scheduler != "fcfs" && scheduler != "rr") ||
@@ -210,38 +210,37 @@ void ConsoleManager::screen(String command) {
     }
 }
 
+void ConsoleManager::generateProcesses(int count) {
+    while (this->getIsRunning() && ProcessManager::getInstance()->getIsGeneratingProcesses()) {
+        waitForNextCycle(); // Wait until the next cycle based on batch frequency
+
+        String name = (count < 10) ? "p0" + std::to_string(count) : "p" + std::to_string(count);
+        ProcessManager::getInstance()->createProcess(name);
+        std::cout << "Created process at Cycle " << this->getCPUCycle() << std::endl;
+        count++; // Increment count for the next process
+    }
+}
+
+void ConsoleManager::waitForNextCycle() {
+    int currentCycle = this->getCPUCycle();
+    int targetCycle = currentCycle + ProcessManager::getInstance()->getBatchProcessFreq();
+
+    while (this->getCPUCycle() < targetCycle) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Adjust sleep time as needed
+    }
+}
+
 void ConsoleManager::schedulerTest() {
-    std::cout << "Generating processes..." << std::endl; // TODO: DELETE
+    std::cout << "Generating processes..." << std::endl;
+    std::cout << "Batch Frequency: " + ProcessManager::getInstance()->getBatchProcessFreq() << std::endl;
     if (ProcessManager::getInstance()->getIsGeneratingProcesses()) {
         std::cout << "Scheduler Test is already running." << std::endl;
         return;
     }
+
     ProcessManager::getInstance()->setIsGeneratingProcesses(true);
-
-    schedulerTestThread = std::thread([this]() {
-        ProcessManager::getInstance()->createProcess("p01"); // Create First Process
-        int count = 2;
-        while (this->getIsRunning() && ProcessManager::getInstance()->getIsGeneratingProcesses()) {
-            // Wait for the specified number of CPU cycles
-            int currentCycle = this->getCPUCycle();
-            int targetCycle = currentCycle + ProcessManager::getInstance()->getBatchProcessFreq();
-
-            // Keep incrementing the CPU cycles until the target is reached
-            while (this->getCPUCycle() < targetCycle) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Adjust sleep time as needed
-            }
-            String name = "";
-            if (count < 10) {
-                name = "p0" + count;
-            }
-            else {
-                name = "p" + count;
-            }
-            ProcessManager::getInstance()->createProcess(name);
-            std::cout << "Created process at Cycle " + this->getCPUCycle() << std::endl;
-            // std::cout << "Created process: " << name << std::endl; // DELETE!! Log the created process
-        }
-        });
+    ProcessManager::getInstance()->createProcess("p01"); // Create First Process before starting the thread
+    schedulerTestThread = std::thread(&ConsoleManager::generateProcesses, this, 2); // Start count at 1
 }
 
 void ConsoleManager::schedulerStop() {
