@@ -28,7 +28,7 @@ public:
 	void clear();
 	bool initialize();
 	void screen(String command);
-	void generateProcesses(int count);
+	void generateProcesses(long long count);
 	void waitForNextCycle();
 	void schedulerTest();
 	void schedulerStop();
@@ -38,7 +38,7 @@ public:
 	void printAtPosition(int x, int y, const String& text);
 
 	bool getIsRunning() const;
-	int getCPUCycle() const;
+	long long getCPUCycle() const;
 
 	void stopRunning();
 private:
@@ -54,7 +54,7 @@ private:
 	static ConsoleManager* sharedInstance;
 
 	bool isRunning;
-	int cpuCycles;
+	long long cpuCycles;
 	std::thread cpuThread;
 	std::thread schedulerTestThread;
 };

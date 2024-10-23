@@ -114,6 +114,7 @@ bool ConsoleManager::initialize() {
 
     // TODO: initilize processor and scheduler algo
     ProcessManager::getInstance()->initialize(batch_process_freq, min_ins, max_ins);
+
     // CPUScheduler::getInstance()->initialize(num_cpu, scheduler, quantum_cycles, delay_per_exec);
 
     return true;
@@ -210,20 +211,20 @@ void ConsoleManager::screen(String command) {
     }
 }
 
-void ConsoleManager::generateProcesses(int count) {
+void ConsoleManager::generateProcesses(long long count) {
     while (this->getIsRunning() && ProcessManager::getInstance()->getIsGeneratingProcesses()) {
         waitForNextCycle(); // Wait until the next cycle based on batch frequency
 
         String name = (count < 10) ? "p0" + std::to_string(count) : "p" + std::to_string(count);
         ProcessManager::getInstance()->createProcess(name);
-        std::cout << "Created process at Cycle " << this->getCPUCycle() << std::endl;
+        std::cout << "Created process at Cycle " << this->getCPUCycle() << std::endl; // TODO: Delete !!
         count++; // Increment count for the next process
     }
 }
 
 void ConsoleManager::waitForNextCycle() {
-    int currentCycle = this->getCPUCycle();
-    int targetCycle = currentCycle + ProcessManager::getInstance()->getBatchProcessFreq();
+    long long currentCycle = this->getCPUCycle();
+    long long targetCycle = currentCycle + ProcessManager::getInstance()->getBatchProcessFreq();
 
     while (this->getCPUCycle() < targetCycle) {
         std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Adjust sleep time as needed
@@ -232,7 +233,6 @@ void ConsoleManager::waitForNextCycle() {
 
 void ConsoleManager::schedulerTest() {
     std::cout << "Generating processes..." << std::endl;
-    std::cout << "Batch Frequency: " + ProcessManager::getInstance()->getBatchProcessFreq() << std::endl;
     if (ProcessManager::getInstance()->getIsGeneratingProcesses()) {
         std::cout << "Scheduler Test is already running." << std::endl;
         return;
@@ -280,7 +280,7 @@ bool ConsoleManager::getIsRunning() const {
     return this->isRunning;
 }
 
-int ConsoleManager::getCPUCycle() const {
+long long ConsoleManager::getCPUCycle() const {
     return this->cpuCycles;
 }
 
