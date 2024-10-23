@@ -13,7 +13,7 @@ public:
     static ProcessManager* getInstance();
 
     void createProcess(String name);
-    int displayProcess(String name);
+    bool displayProcess(String name) const;
     void displayAllProcesses();
     Process* findProcess(const String& name);
 

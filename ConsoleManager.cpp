@@ -150,27 +150,13 @@ void ConsoleManager::screen(String command) {
         Creates a new process
      */
     else if (words[1] == "-s") {
-
-        // In this one, user can type:
-        // "process-smi" - prints simple info of the process
-            // Process: My own process
-            // ID: 1
-            // Current instruction line: 769
-            // Lines of code: 1240
-            // or
-            // Finished!
-        // "exit : returns to main menu
-        // once user exits a process that has finished, they cannot access it again
-
         if (words.size() == 3) {
-            // TODO: Create Process i.e.g add to active processes
-            // TODO: Display Process Screen
-            std::cout << "Create process." << std::endl;
+            ProcessManager::getInstance()->createProcess(words[2]);
+            bool isFound = ProcessManager::getInstance()->displayProcess(words[2]);
 
-            /*Process* process = new Process(words[2], 100);
-            process->draw();
-            std::cout << "Exited." << std::endl;*/
-            clear();
+            if (isFound) {
+                this->clear();
+            }
         }
 
         // Invalid command input
@@ -191,11 +177,12 @@ void ConsoleManager::screen(String command) {
             * lines of code
      */
     else if (words[1] == "-r") {
-        // if process not found/finished execution : print "Process <process name> not found."
-
         if (words.size() == 3) {
-            // TODO: Find Process
-            std::cout << "Find process." << std::endl;
+            bool isFound = ProcessManager::getInstance()->displayProcess(words[2]);
+
+            if (isFound) {
+                this->clear();
+            }
         }
 
         // Invalid command

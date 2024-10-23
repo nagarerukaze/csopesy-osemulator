@@ -14,9 +14,13 @@ void Process::printInfo() {
     std::cout << "Process: " << this->getName() << std::endl;
     std::cout << std::endl;
     std::cout << "Current instruction line: " << this->getCurrentInstructionLine() << std::endl;
-    std::cout << "Lines of code: " << this->getTotalLinesOfCode() << std::endl;
-
-    // TODO: If FINISHED, only print "FINISHED"
+    
+    if (this->getState() == TERMINATED) {
+        std::cout << "Finished!" << std::endl;
+    }
+    else {
+        std::cout << "Lines of code: " << this->getTotalLinesOfCode() << std::endl;
+    }
     std::cout << std::endl;
     std::cout << "Timestamp: " << this->getTimestamp() << std::endl;
     std::cout << std::endl;

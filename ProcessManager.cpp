@@ -28,19 +28,20 @@ void ProcessManager::createProcess(String name) {
     // queue to scheduler
 }
 
-//int ProcessManager::displayProcess(String name) {
-//    // Find if process is in activeprocesses
-//    auto it = std::find(activeProcesses.begin(), activeProcesses.end(), [&name](Process* process) { return process->getName() == name; });
-//
-//    // If Found: draw console
-//    //if (it != activeProcesses.end()) {
-//    //    (*it)->draw(); // Call draw on the found process
-//    //    return 1;
-//    //}
-//
-//    //std::cout << "Process '" << processName << "' not found." << std::endl;
-//    return 0;
-//}
+bool ProcessManager::displayProcess(String name) const {
+    // Find if process is in activeprocesses
+    auto it = std::find_if(activeProcesses.begin(), activeProcesses.end(),
+        [&name](Process* process) { return process->getName() == name; });
+
+    // If Found: draw console
+    if (it != activeProcesses.end()) {
+        (*it)->draw();
+        return true;
+    }
+
+    std::cout << "Process '" << name << "' not found." << std::endl;
+    return false;
+}
 
 void ProcessManager::displayAllProcesses() {
     std::cout << "CPU Utilization: " << std::endl;
@@ -105,33 +106,7 @@ void ProcessManager::setIsGeneratingProcesses(bool val) {
 //
 //// screen -r <name of existing process>
 //// Redraw the console of the associated process
-//
-//int ProcessManager::displayProcess(std::string processName) const {
-//    auto it = std::find_if(activeProcesses.begin(), activeProcesses.end(),
-//        [&processName](Process* process) { return process->getName() == processName; });
-//
-//    if (it != activeProcesses.end()) {
-//        (*it)->draw(); // Call draw on the found process
-//        return 1;
-//    }
-//
-//    std::cout << "Process '" << processName << "' not found." << std::endl;
-//    return 0;
-//
-//    //auto process = activeProcesses.find(processName);
-//
-//    //if (process != activeProcesses.end() && process->second != nullptr) {
-//    //    // change to calling display process from process instance through dereferencing
-//    //    process->second->draw();
-//    //    return 1;
-//    //}
-//    //    
-//    //else {
-//    //    std::cout << "Process '" << processName << "' not found." << std::endl;
-//    //    return 0;
-//    //}
-//}
-//
+
 //void ProcessManager::moveToFinished(const std::string& processName) {
 //    auto it = std::find_if(activeProcesses.begin(), activeProcesses.end(),
 //        [&processName](Process* process) { return process->getName() == processName; });
