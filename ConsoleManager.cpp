@@ -49,7 +49,7 @@ void ConsoleManager::printHeader() {
     std::cout << "Jocson, Nicole Pedernal (S11)" << std::endl;
     std::cout << "Rebano, Jaeme Patrice (S11)" << std::endl;
     std::cout << "Jaramillo, Brandon Anthony (S12)" << std::endl << std::endl;
-    std::cout << "Last updated: 10-20-2024" << std::endl; // TODO: Update the Date
+    std::cout << "Last updated: 10-24-2024" << std::endl; // TODO: Update the Date
     std::cout << "---------------------------------------------------------------" << std::endl;
     std::cout << std::endl;
 }
