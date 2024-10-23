@@ -7,6 +7,7 @@ Process::Process(String name, int totalLinesOfCode) {
 	this->currentInstructionLine = 0; // TODO: Not sure if this should be 1
 	this->totalLinesOfCode = totalLinesOfCode;
 	this->timeCreated = time(0);
+    this->currentState = READY;
 }
 
 void Process::printInfo() {
@@ -42,7 +43,6 @@ void Process::draw() {
             std::cout << "Unknown command." << std::endl;
         }
     }
-
 }
 
 void Process::nextLine() {
@@ -70,6 +70,14 @@ String Process::getTimestamp() {
     return oss.str();
 }
 
+Process::ProcessState Process::getState() const {
+    return this->currentState;
+}
+
+void Process::setState(ProcessState state) {
+    this->currentState = state;
+}
+
 //void Process::printCommand(std::ofstream& outfile) {
 //    outfile << "(" << this->getTimestamp() << ") " << name << " " << "Core: " << this->cpuCoreID << " " << "Hello World" << std::endl;
 //    this->nextLine();
@@ -77,9 +85,6 @@ String Process::getTimestamp() {
 //
 // PRINT command
 
-//Process::ProcessState Process::getState() const {
-//    return this->currentState;
-//}
 //
 //bool Process::isFinished() const {
 //    if (currentState == ProcessState::TERMINATED) {
@@ -89,9 +94,6 @@ String Process::getTimestamp() {
 //    return false;
 //}
 //
-//void Process::terminate() {
-//    this->currentState = ProcessState::TERMINATED;
-//}
 //
 //int Process::getCPUCoreID() const {
 //    return this->cpuCoreID;

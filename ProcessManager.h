@@ -9,19 +9,31 @@ class ProcessManager
 {
 public:
     // Singleton stuff
-    static void initialize();
+    static void initialize(int batch_process_freq, int min_ins, int max_ins);
     static ProcessManager* getInstance();
 
-    void createProcess(String name, int totalLines);
+    void createProcess(String name);
     int displayProcess(String name);
     void displayAllProcesses();
     Process* findProcess(const String& name);
+
+    int getBatchProcessFreq() const;
+    int getMinInstructions() const;
+    int getMaxInstructions() const;
+    bool getIsGeneratingProcesses() const;
+
+    void setIsGeneratingProcesses(bool val);
 private:
-    ProcessManager();
+    ProcessManager(int batch_process_freq, int min_ins, int max_ins);
     ProcessManager(const ProcessManager&);
     ProcessManager& operator = (const ProcessManager&);
     ~ProcessManager() = default;
     static ProcessManager* sharedInstance;
+    
+    int batch_process_freq;
+    int min_ins;
+    int max_ins;
+    bool isGeneratingProcesses;
 
     std::vector<Process*> activeProcesses;
     std::vector<Process*> finishedProcesses;

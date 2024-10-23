@@ -10,7 +10,7 @@ ConsoleManager::ConsoleManager(const ConsoleManager&) {}
 
 ConsoleManager* ConsoleManager::sharedInstance = nullptr;
 
-void ConsoleManager::initialize() {
+void ConsoleManager::initializeConsole() {
     sharedInstance = new ConsoleManager();
 }
 
@@ -41,6 +41,67 @@ void ConsoleManager::printHeader() {
 void ConsoleManager::clear() {
     system("cls"); // !! CHANGE TO "cls" FOR WINDOWS !!
     this->printHeader();
+}
+
+/*
+    Get the following parameters from the `config.txt` file:
+        (1) num-cpu -> scheduler
+        (2) scheduler -> scheduler
+        (3) quantum-cycles -> in scheduler
+        (4) batch-process-freq -> process manager
+        (5) min-ins -> process manager
+        (6) max-ins -> process manager
+        (7) delay-per-exec -> in scheduler
+*/
+bool ConsoleManager::initialize() {
+    std::cout << "\"initialize\" command recognized. Doing something..." << std::endl; // TODO: DELETE
+    std::vector<String> values;
+    String line, key, value, scheduler;
+    int num_cpu, quantum_cycles, batch_process_freq, min_ins, max_ins, delays_per_exec;
+
+    std::ifstream f("config.txt");
+
+    if (!f.is_open()) {
+        std::cerr << "Error opening the file!";
+        return false;
+    }
+
+    while (getline(f, line)) {
+        std::istringstream iss(line);
+        iss >> key;
+        getline(iss >> std::ws, value);
+
+        if (value.front() == '\"' && value.back() == '\"') {
+            value = value.substr(1, value.length() - 2);
+        }
+        values.push_back(value);
+    }
+
+    f.close();
+
+    num_cpu = stoi(values[0]);
+    scheduler = values[1];
+    quantum_cycles = stoi(values[2]);
+    batch_process_freq = stoi(values[3]); // frequency of generating process in "scheduler-test". [1, 2^32] if one, a new process is generated at the end of each CPU cycle
+    min_ins = stoi(values[4]); // min instructions per process [1, 2^32]
+    max_ins = stoi(values[5]); // max instructions per process [1, 2^32]
+    delays_per_exec = stoi(values[6]); // delay before executing next instruction. [0, 2^32] if zero, each instruction is executed per CPU cycle
+
+    if (num_cpu < 1 || num_cpu > 128 ||
+        (scheduler != "fcfs" && scheduler != "rr") ||
+        quantum_cycles < 1 || quantum_cycles > 4294967296 ||
+        batch_process_freq < 1 || batch_process_freq > 4294967296 ||
+        min_ins < 1 || min_ins > max_ins || min_ins > 4294967296 ||
+        max_ins < 1 || max_ins > 4294967296 ||
+        delays_per_exec < 0 || delays_per_exec > 4294967296) {
+        return false;
+    }
+
+    // TODO: initilize processor and scheduler algo
+    ProcessManager::getInstance()->initialize(batch_process_freq, min_ins, max_ins);
+    // CPUScheduler::getInstance()->initialize(num_cpu, scheduler, quantum_cycles, delay_per_exec);
+
+    return true;
 }
 
 /*
@@ -147,4 +208,38 @@ void ConsoleManager::screen(String command) {
     else {
         std::cout << "Unknown command." << std::endl;
     }
+}
+
+void ConsoleManager::schedulerTest() {
+    // TODO: continuosly generates a batch of dummy processes for the CPU scheduler
+    // Every X CPU cycles, a new process is generated and put into ready queue (Can be set in "config.txt"
+    // As long as CPU cores are available, each process can be executed and accessible via "screen"
+    // only accessible in main menu
+    // process names should be "p01, p02, ..., p1240"
+    std::cout << "\"scheduler-test\" command recognized. Doing something..." << std::endl; // TODO: DELETE
+    /*String name;
+
+    for (int i = 1; i < ProcessManager::getInstance()->getBatchProcessFreq() + 1; i++) {
+        if (i < 9) {
+            name = "p0" + i;
+        }
+        else {
+            name = "p" + i;
+        }
+        ProcessManager::getInstance()->createProcess(name);
+    }*/
+
+}
+
+void ConsoleManager::schedulerStop() {
+    // TODO: stops generating dummy processes
+    // only accessible in main menu
+    std::cout << "\"scheduler-stop\" command recognized. Doing something..." << std::endl; // TODO: DELETE
+}
+
+void ConsoleManager::reportUtil() {
+    // TODO: generates CPU utilization report
+    // This console should be able to generate a utilization report whenever the "report-util command is entered
+    // same as screen -ls but is saved into a text file - "csopesy-log.txt"
+    std::cout << "\"report-util\" command recognized. Doing something..." << std::endl; // TODO: DELETE
 }

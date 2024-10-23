@@ -5,21 +5,26 @@
     Singleton stuff
 
 */
-ProcessManager::ProcessManager() {}
+ProcessManager::ProcessManager(int batch_process_freq, int min_ins, int max_ins) {
+    this->batch_process_freq = batch_process_freq;
+    this->min_ins = min_ins;
+    this->max_ins = max_ins;
+    this->isGeneratingProcesses = false;
+}
 ProcessManager::ProcessManager(const ProcessManager&) {}
 
 ProcessManager* ProcessManager::sharedInstance = nullptr;
 
-void ProcessManager::initialize() {
-    sharedInstance = new ProcessManager();
+void ProcessManager::initialize(int batch_process_freq, int min_ins, int max_ins) {
+    sharedInstance = new ProcessManager(batch_process_freq, min_ins, max_ins);
 }
 
 ProcessManager* ProcessManager::getInstance() {
     return sharedInstance;
 }
 
-void ProcessManager::createProcess(String name, int totalLines) {
-    activeProcesses.push_back(new Process(name, totalLines));
+void ProcessManager::createProcess(String name) {
+    activeProcesses.push_back(new Process(name, rand() % (this->getMaxInstructions() - this->getMinInstructions() + 1) + this->getMinInstructions()));
     // queue to scheduler
 }
 
@@ -46,6 +51,7 @@ void ProcessManager::displayAllProcesses() {
     std::cout << "Running processes:" << std::endl;
     // processname timestamp core currline/totalline
 
+
     std::cout << std::endl;
 
     std::cout << "Finished processes:" << std::endl;
@@ -53,8 +59,25 @@ void ProcessManager::displayAllProcesses() {
     std::cout << "--------------------------------------" << std::endl;
 }
 
+int ProcessManager::getBatchProcessFreq() const {
+    return this->batch_process_freq;
+}
 
+int ProcessManager::getMinInstructions() const {
+    return this->min_ins;
+}
 
+int ProcessManager::getMaxInstructions() const {
+    return this->max_ins;
+}
+
+bool ProcessManager::getIsGeneratingProcesses() const {
+    return this->isGeneratingProcesses;
+}
+
+void ProcessManager::setIsGeneratingProcesses(bool val) {
+    this->isGeneratingProcesses = val;
+}
 //#include "ProcessManager.h"
 //
 //ProcessManager::ProcessManager() {}
