@@ -228,7 +228,7 @@ void ConsoleManager::reportUtil() {
     std::cout << "\"report-util\" command recognized. Doing something..." << std::endl; // TODO: DELETE
 }
 
-void setCursorPosition(int x, int y) {
+void ConsoleManager::setCursorPosition(int x, int y) {
 
     COORD coord;
     coord.X = x; // Column
@@ -237,7 +237,7 @@ void setCursorPosition(int x, int y) {
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-void printAtPosition(int x, int y, const String& text) {
+void ConsoleManager::printAtPosition(int x, int y, const String& text) {
     setCursorPosition(x, y);
     std::cout << text;
 }
