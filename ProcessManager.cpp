@@ -43,20 +43,48 @@ bool ProcessManager::displayProcess(String name) const {
     return false;
 }
 
+/*
+    Used in `screen -ls` command.
+
+    Display the processes inside a list.
+    For each process, display its:
+        (1) Name
+        (2) TODO: time created or response time?
+        (3) Core
+        (4) Current line of instruction / total lines of code
+*/
+void ProcessManager::displayProcessesList(std::vector<Process*> processList) {
+    for (const auto& process : processList) {
+        std::cout << process->getName() << " \t"
+                  << process->getTimestamp() << " \t"
+                  //<< "Core: " << (process->getCPUCoreID() == -1 ? "N/A" : std::to_string(process->getCPUCoreID())) << " \t"
+                  << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
+    }
+}
+
+/*
+    Used in `screen -ls` command.
+
+    Display the following information:
+        (1) CPU Utilization %
+        (2) # of cores used
+        (3) # of cores available
+        (4) List of active processes
+        (5) List of finished processes
+*/
 void ProcessManager::displayAllProcesses() {
-    std::cout << "CPU Utilization: " << std::endl;
+    std::cout << std::endl << "CPU Utilization: " << std::endl;
     std::cout << "Cores used: " << std::endl;
     std::cout << "Cores available: " << std::endl;
     std::cout << std::endl;
     std::cout << "--------------------------------------" << std::endl;
     std::cout << "Running processes:" << std::endl;
-    // processname timestamp core currline/totalline
-
+    displayProcessesList(this->activeProcesses);
 
     std::cout << std::endl;
 
     std::cout << "Finished processes:" << std::endl;
-    // processname timestamp Finished currline/totalline
+    displayProcessesList(this->finishedProcesses);
     std::cout << "--------------------------------------" << std::endl;
 }
 

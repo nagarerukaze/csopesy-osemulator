@@ -14,6 +14,7 @@ public:
 
     void createProcess(String name);
     bool displayProcess(String name) const;
+    void displayProcessesList(std::vector<Process*> processList);
     void displayAllProcesses();
     Process* findProcess(const String& name);
 
@@ -23,6 +24,7 @@ public:
     bool getIsGeneratingProcesses() const;
 
     void setIsGeneratingProcesses(bool val);
+
 private:
     ProcessManager(int batch_process_freq, int min_ins, int max_ins);
     ProcessManager(const ProcessManager&);
