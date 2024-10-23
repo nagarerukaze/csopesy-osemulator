@@ -9,6 +9,9 @@
 #include <conio.h>
 #include <windows.h>
 
+#include <thread>
+#include <chrono>
+
 #include "ProcessManager.h"
 
 typedef std::string String;
@@ -20,6 +23,7 @@ public:
 	static void initializeConsole();
 	static ConsoleManager* getInstance();
 
+	void startCPUCycle();
 	void printHeader();
 	void clear();
 	bool initialize();
@@ -31,7 +35,10 @@ public:
 	void setCursorPosition(int x, int y);
 	void printAtPosition(int x, int y, const String& text);
 
+	bool getIsRunning() const;
+	int getCPUCycle() const;
 
+	void stopRunning();
 private:
 	/*
 
@@ -43,5 +50,10 @@ private:
 	ConsoleManager& operator = (const ConsoleManager&);
 	~ConsoleManager() = default;
 	static ConsoleManager* sharedInstance;
+
+	bool isRunning;
+	int cpuCycles;
+	std::thread cpuThread;
+	std::thread schedulerTestThread;
 };
 

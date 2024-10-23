@@ -5,12 +5,11 @@ typedef std::string String;
 int main() {
     String command;
     bool initialized = false;
-    bool isRunning = true;
 
     ConsoleManager::getInstance()->initializeConsole();
     ConsoleManager::getInstance()->clear();
 
-    while (isRunning) { // While OS is running
+    while (ConsoleManager::getInstance()->getIsRunning()) { // While OS is running
         // Get Command Input
         std::cout << "Enter a command: ";
         std::getline(std::cin, command);
@@ -23,6 +22,7 @@ int main() {
             }
             else {
                 std::cout << "Succesfully initialized." << std::endl;
+                ConsoleManager::getInstance()->startCPUCycle();
             }
         }
         else if (initialized) {
@@ -42,7 +42,10 @@ int main() {
                 ConsoleManager::getInstance()->clear();
             }
             else if (command == "exit") {
-                isRunning = false;
+                ConsoleManager::getInstance()->stopRunning();
+            }
+            else if (command == "cycle") {  //TODO: Delete !!
+                std::cout << ConsoleManager::getInstance()->getCPUCycle() << std::endl;
             }
             else {
                 std::cout << "Unknown command." << std::endl;
@@ -52,7 +55,7 @@ int main() {
             ConsoleManager::getInstance()->clear();
         }
         else if (command == "exit") {
-            isRunning = false;
+            ConsoleManager::getInstance()->stopRunning();
         }
         else {
             std::cout << "Unknown command." << std::endl;

@@ -5,7 +5,10 @@
     Singleton stuff
 
 */
-ConsoleManager::ConsoleManager() {}
+ConsoleManager::ConsoleManager() {
+    this->cpuCycles = 0;
+    this->isRunning = true;
+}
 ConsoleManager::ConsoleManager(const ConsoleManager&) {}
 
 ConsoleManager* ConsoleManager::sharedInstance = nullptr;
@@ -16,6 +19,19 @@ void ConsoleManager::initializeConsole() {
 
 ConsoleManager* ConsoleManager::getInstance() {
     return sharedInstance;
+}
+
+/*
+    TODO: Honestly not sure if this is how the cpu cycles work !!
+*/
+void ConsoleManager::startCPUCycle() {
+    this->cpuThread = std::thread([this]() { // Create the CPU cycle thread
+        int cpuCycle = 0; // Example CPU cycle counter
+        while (this->getIsRunning()) {
+            this->cpuCycles++;
+            std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Simulate CPU cycle
+        }
+        });
 }
 
 void ConsoleManager::printHeader() {
@@ -195,30 +211,48 @@ void ConsoleManager::screen(String command) {
 }
 
 void ConsoleManager::schedulerTest() {
-    // TODO: continuosly generates a batch of dummy processes for the CPU scheduler
-    // Every X CPU cycles, a new process is generated and put into ready queue (Can be set in "config.txt"
-    // As long as CPU cores are available, each process can be executed and accessible via "screen"
-    // only accessible in main menu
-    // process names should be "p01, p02, ..., p1240"
-    std::cout << "\"scheduler-test\" command recognized. Doing something..." << std::endl; // TODO: DELETE
-    /*String name;
+    std::cout << "Generating processes..." << std::endl; // TODO: DELETE
+    if (ProcessManager::getInstance()->getIsGeneratingProcesses()) {
+        std::cout << "Scheduler Test is already running." << std::endl;
+        return;
+    }
+    ProcessManager::getInstance()->setIsGeneratingProcesses(true);
 
-    for (int i = 1; i < ProcessManager::getInstance()->getBatchProcessFreq() + 1; i++) {
-        if (i < 9) {
-            name = "p0" + i;
-        }
-        else {
-            name = "p" + i;
-        }
-        ProcessManager::getInstance()->createProcess(name);
-    }*/
+    schedulerTestThread = std::thread([this]() {
+        ProcessManager::getInstance()->createProcess("p01"); // Create First Process
+        int count = 2;
+        while (this->getIsRunning() && ProcessManager::getInstance()->getIsGeneratingProcesses()) {
+            // Wait for the specified number of CPU cycles
+            int currentCycle = this->getCPUCycle();
+            int targetCycle = currentCycle + ProcessManager::getInstance()->getBatchProcessFreq();
 
+            // Keep incrementing the CPU cycles until the target is reached
+            while (this->getCPUCycle() < targetCycle) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Adjust sleep time as needed
+            }
+            String name = "";
+            if (count < 10) {
+                name = "p0" + count;
+            }
+            else {
+                name = "p" + count;
+            }
+            ProcessManager::getInstance()->createProcess(name);
+            std::cout << "Created process at Cycle " + this->getCPUCycle() << std::endl;
+            // std::cout << "Created process: " << name << std::endl; // DELETE!! Log the created process
+        }
+        });
 }
 
 void ConsoleManager::schedulerStop() {
     // TODO: stops generating dummy processes
     // only accessible in main menu
     std::cout << "\"scheduler-stop\" command recognized. Doing something..." << std::endl; // TODO: DELETE
+    ProcessManager::getInstance()->setIsGeneratingProcesses(false);
+
+    if (this->schedulerTestThread.joinable()) {
+        this->schedulerTestThread.join(); // Wait for the thread to finish
+    }
 }
 
 void ConsoleManager::reportUtil() {
@@ -241,4 +275,22 @@ void ConsoleManager::printAtPosition(int x, int y, const String& text) {
     setCursorPosition(x, y);
     std::cout << text;
 }
+
+
+bool ConsoleManager::getIsRunning() const {
+    return this->isRunning;
+}
+
+int ConsoleManager::getCPUCycle() const {
+    return this->cpuCycles;
+}
+
+void ConsoleManager::stopRunning() {
+    this->isRunning = false;
+
+    if (this->cpuThread.joinable()) {
+        this->cpuThread.join(); // Wait for the thread to finish
+    }
+}
+
 
