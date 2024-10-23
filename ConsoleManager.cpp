@@ -137,11 +137,17 @@ void ConsoleManager::screen(String command) {
     /*
         `screen -ls`
 
-        Handles the 'screen -ls' command to display CPU usage and list all processes.
+        Display the following:
+            (1) CPU utilization
+            (2) Cores used
+            (3) List of active processes
+            (4) List of finished processes
      */
     if (words[1] == "-ls") {
+        // TODO: 
+        std::cout << "Show running processes." << std::endl;
+
         if (words.size() == 2) {
-            std::cout << "Show running processes." << std::endl;
             ProcessManager::getInstance()->displayAllProcesses();
         }
 
@@ -154,7 +160,7 @@ void ConsoleManager::screen(String command) {
     /*
         `screen -s`
 
-        Creates a new process.
+        Creates a new process
      */
     else if (words[1] == "-s") {
         if (words.size() == 3) {
