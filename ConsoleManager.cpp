@@ -217,7 +217,7 @@ void ConsoleManager::generateProcesses(long long count) {
 
         String name = (count < 10) ? "p0" + std::to_string(count) : "p" + std::to_string(count);
         ProcessManager::getInstance()->createProcess(name);
-        std::cout << "Created process at Cycle " << this->getCPUCycle() << std::endl; // TODO: Delete !!
+        // std::cout << "Created process at Cycle " << this->getCPUCycle() << std::endl; // TODO: Delete !!
         count++; // Increment count for the next process
     }
 }
@@ -226,7 +226,7 @@ void ConsoleManager::waitForNextCycle() {
     long long currentCycle = this->getCPUCycle();
     long long targetCycle = currentCycle + ProcessManager::getInstance()->getBatchProcessFreq();
 
-    while (this->getCPUCycle() < targetCycle) {
+    while (this->getCPUCycle() < targetCycle && ProcessManager::getInstance()->getIsGeneratingProcesses()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Adjust sleep time as needed
     }
 }
