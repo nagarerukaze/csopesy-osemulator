@@ -24,13 +24,6 @@ int main() {
                 std::cout << "Succesfully initialized." << std::endl;
                 ConsoleManager::getInstance()->startCPUCycle();
             }
-
-            // TODO: Remove
-            ProcessManager::getInstance()->createProcess("process_1");
-            ProcessManager::getInstance()->createProcess("process_2");
-            ProcessManager::getInstance()->createProcess("process_3");
-            ProcessManager::getInstance()->createProcess("process_4");
-            ProcessManager::getInstance()->createProcess("process_5");
         }
         else if (initialized) {
             if (command.rfind("screen", 0) == 0) {
