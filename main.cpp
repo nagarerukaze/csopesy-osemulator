@@ -19,7 +19,10 @@ int main() {
             initialized = ConsoleManager::getInstance()->initialize();
 
             if (!initialized) {
-                std::cout << "There are invalid parameters in config.txt." << std::endl;
+                std::cout << "Initialization failed. There are invalid parameters in config.txt." << std::endl;
+            }
+            else {
+                std::cout << "Succesfully initialized." << std::endl;
             }
         }
         else if (initialized) {

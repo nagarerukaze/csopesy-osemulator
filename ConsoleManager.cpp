@@ -54,7 +54,6 @@ void ConsoleManager::clear() {
         (7) delay-per-exec -> in scheduler
 */
 bool ConsoleManager::initialize() {
-    std::cout << "\"initialize\" command recognized. Doing something..." << std::endl; // TODO: DELETE
     std::vector<String> values;
     String line, key, value, scheduler;
     int num_cpu, quantum_cycles, batch_process_freq, min_ins, max_ins, delays_per_exec;
@@ -111,8 +110,6 @@ bool ConsoleManager::initialize() {
         (3) screen -r: Access a process
 */
 void ConsoleManager::screen(String command) {
-    std::cout << "\"screen\" command recognized. Doing something..." << std::endl; // TODO: DELETE
-
     std::istringstream iss(command);
     std::vector<String> words;
     String word;
@@ -135,7 +132,7 @@ void ConsoleManager::screen(String command) {
         std::cout << "Show running processes." << std::endl;
 
         if (words.size() == 2) {
-
+            ProcessManager::getInstance()->displayAllProcesses();
         }
 
         // Invalid command input
