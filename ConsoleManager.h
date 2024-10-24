@@ -6,8 +6,13 @@
 #include <fstream>
 #include <sstream>
 #include <stdlib.h> 
+
+// For Windows
+/*
 #include <conio.h>
 #include <windows.h>
+*/
+
 
 #include <thread>
 #include <chrono>

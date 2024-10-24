@@ -68,7 +68,13 @@ long long Process::getTotalLinesOfCode() const {
 
 String Process::getTimestamp() {
     tm ltm;
-    localtime_s(&ltm, &(this->timeCreated));
+    
+    // For Windows
+    //localtime_s(&ltm, &(this->timeCreated));
+
+    // For Mac
+    localtime_r(&(this->timeCreated), &ltm);
+    
     std::ostringstream oss;
     oss << std::put_time(&ltm, "%m/%d/%Y, %I:%M:%S %p");
     return oss.str();
@@ -82,6 +88,14 @@ void Process::setState(ProcessState state) {
     this->currentState = state;
 }
 
+int Process::getCPUCoreID() {
+   return this->cpuCoreID;
+}
+
+void Process::setCPUCoreID(int cpuCoreID) {
+   this->cpuCoreID = cpuCoreID;
+}
+
 //void Process::printCommand(std::ofstream& outfile) {
 //    outfile << "(" << this->getTimestamp() << ") " << name << " " << "Core: " << this->cpuCoreID << " " << "Hello World" << std::endl;
 //    this->nextLine();
@@ -89,25 +103,16 @@ void Process::setState(ProcessState state) {
 //
 // PRINT command
 
-//
-//bool Process::isFinished() const {
+
+// bool Process::isFinished() const {
 //    if (currentState == ProcessState::TERMINATED) {
 //        return true;
 //    }
-//
+
 //    return false;
-//}
-//
-//
-//int Process::getCPUCoreID() const {
-//    return this->cpuCoreID;
-//}
-//
-//void Process::setCPUCoreID(int cpuCoreID) {
-//    this->cpuCoreID = cpuCoreID;
-//}
-//
-//void Process::setTimeCreated() {
+// }
+
+// void Process::setTimeCreated() {
 //    this->timeCreated = this->getTimestamp();
-//}
-//
+// }
+

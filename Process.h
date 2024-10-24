@@ -23,22 +23,37 @@ public:
 
 	void printInfo();
 	void draw();
-	void nextLine();
+	
 
-	// getters + setters
+	// Getters
 	String getName() const;
 	long long getCurrentInstructionLine() const;
 	long long getTotalLinesOfCode() const;
 	String getTimestamp();
 	ProcessState getState() const;
 
+	int getCPUCoreID();
+
+	// Setters
 	void setState(ProcessState state);
+	void setCPUCoreID(int id);
+
+	// Process Operations
+	void nextLine();
+
+	
+
+	
+
 private:
 	String name;
 	long long currentInstructionLine;
 	long long totalLinesOfCode;
 	time_t timeCreated;
 	ProcessState currentState;
+
+	//
+	int cpuCoreID;
 };
 
 
