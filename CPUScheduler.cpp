@@ -1,6 +1,10 @@
 #include "CPUScheduler.h"
+#include "ProcessManager.h"
 
-CPUScheduler::CPUScheduler() {}
+CPUScheduler::CPUScheduler() {
+
+}
+
 CPUScheduler::CPUScheduler(const CPUScheduler&) {}
 
 CPUScheduler* CPUScheduler::sharedInstance = nullptr;
@@ -8,10 +12,10 @@ CPUScheduler* CPUScheduler::sharedInstance = nullptr;
 void CPUScheduler::initialize(String scheduler, int num_cpu, int quantum_cycles, int delay_per_exec) {
 	sharedInstance = new CPUScheduler();
     
-    this->scheduler = scheduler;
-    this->numberOfCores = num_cpu;
-    this->quantum_cycles = quantum_cycles;
-    this->delay_per_exec = delay_per_exec;
+    sharedInstance->scheduler = scheduler;
+    sharedInstance->numberOfCores = num_cpu;
+    sharedInstance->quantum_cycles = quantum_cycles;
+    sharedInstance->delay_per_exec = delay_per_exec;
 }
 
 void CPUScheduler::initializeCPUWorkers(int num) {
@@ -28,39 +32,44 @@ CPUScheduler* CPUScheduler::getInstance() {
 
 void CPUScheduler::enqueueProcess(Process* process) {
     processQueue.push(process);
-    // std::cout << "Enqueued process: " << process->getName() << std::endl; // remove later
+    std::cout << "Enqueued process: " << process->getName() << std::endl; // remove later
 }
 
 void CPUScheduler::startScheduler() {
-    int i = 0;
-    while(running) {
+    this->running = true;
+
+    
+    if (this->scheduler == "fcfs") {
+        FCFSScheduling();
+    }
+    else if (this->scheduler == "rr") {
+        RRScheduling();
+    }
+}
+
+int CPUScheduler::getNumberOfCPUsUsed() {
+    int cpus_used = 0;
+
+    for (int i = 0; i < this->numberOfCores; i++)
+    {
         if(cpuWorkers[i]->hasProcess()) {
-            i = (i + 1) % 4;
-        }
-        else {
-            if (!processQueue.empty()) {
-                Process* process = processQueue.front(); // Get the next process
-                processQueue.pop(); // Remove it from the queue
-
-                cpuWorkers[i]->setProcess(process);
-                std::thread thread([worker = cpuWorkers[i]]() { worker->startWorker(); });
-                thread.detach(); // Detach the thread
-
-                //std::cout << "Core " << i << " is executing process: " << process->getName() << process->getTimestamp() << std::endl;
-            }
-            else {
-                // If no process is available, sleep for a while before checking again
-                //std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            }
+           cpus_used++; 
         }
     }
+
+    return cpus_used;
+    
+}
+
+int CPUScheduler::getNumberOfCores() {
+    return this->numberOfCores;
 }
 
 void CPUScheduler::FCFSScheduling() {
     while(running) {
         if(!processQueue.empty()) {
             for(int i = 0; i < this->numberOfCores; i++) {
-                if(!cpuWorkers[i]->hasProcess()) {
+                if(!cpuWorkers[i]->hasProcess() && !processQueue.empty()) {
                     Process* process = processQueue.front();
                     processQueue.pop();
                     

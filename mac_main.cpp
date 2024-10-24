@@ -9,10 +9,12 @@ int main () {
     CPUScheduler::getInstance()->initializeCPUWorkers(4);
     
     // Start the scheduler in a detached thread
+
     std::thread schedulerThread([] {
        CPUScheduler::getInstance()->startScheduler();
     });
     schedulerThread.detach(); // Detach the thread
+
 
     std::string input;
 

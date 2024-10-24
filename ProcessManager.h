@@ -1,4 +1,4 @@
-1, 1, 100#include <string>
+#include <string>
 #include <vector>
 
 #include "Process.h"
@@ -22,6 +22,7 @@ public:
     long long getMinInstructions() const;
     long long getMaxInstructions() const;
     bool getIsGeneratingProcesses() const;
+    void moveToFinished(const std::string& processName);
 
     void setIsGeneratingProcesses(bool val);
 
@@ -60,7 +61,6 @@ private:
 //    static void draw();
 //    void createProcess(std::string name, int linesOfCode);
 //    int displayProcess(std::string processName) const;
-//    void moveToFinished(const std::string& processName) ;
 //    void displayAll();
 //
 //    //std::unordered_map<std::string, Process> getActiveProcesses;

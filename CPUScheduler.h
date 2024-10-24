@@ -6,7 +6,6 @@
 #include <atomic>
 #include <vector>
 #include <queue>
-#include "Process.h"
 #include "CPUWorker.h"
 
 
@@ -19,7 +18,8 @@ public:
     static CPUScheduler* getInstance();
 	void startScheduler();
     void enqueueProcess(Process* process);
-    int assignCPUWorker();
+    int getNumberOfCPUsUsed();
+    int getNumberOfCores();
 
 private:
     CPUScheduler();

@@ -66,6 +66,17 @@
         "type_traits": "cpp",
         "utility": "cpp",
         "text_encoding": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "__hash_table": "cpp",
+        "__node_handle": "cpp",
+        "complex": "cpp",
+        "deque": "cpp",
+        "fstream": "cpp",
+        "list": "cpp",
+        "stack": "cpp",
+        "unordered_set": "cpp",
+        "format": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp"
     }
 }

@@ -1,4 +1,5 @@
 #include "ProcessManager.h"
+#include "CPUScheduler.h"
 
 /*
 
@@ -24,8 +25,10 @@ ProcessManager* ProcessManager::getInstance() {
 }
 
 void ProcessManager::createProcess(String name) {
-    activeProcesses.push_back(new Process(name, rand() % (this->getMaxInstructions() - this->getMinInstructions() + 1) + this->getMinInstructions()));
+    Process* new_process = new Process(name, rand() % (this->getMaxInstructions() - this->getMinInstructions() + 1) + this->getMinInstructions());
+    activeProcesses.push_back(new_process);
     // queue to scheduler
+    CPUScheduler::getInstance()->enqueueProcess(new_process);
 }
 
 bool ProcessManager::displayProcess(String name) const {
@@ -74,8 +77,8 @@ void ProcessManager::displayProcessesList(std::vector<Process*> processList) {
 */
 void ProcessManager::displayAllProcesses() {
     std::cout << std::endl << "CPU Utilization: " << std::endl;
-    std::cout << "Cores used: " << std::endl;
-    std::cout << "Cores available: " << std::endl;
+    std::cout << "Cores used: " << CPUScheduler::getInstance()->getNumberOfCPUsUsed() << std::endl;
+    std::cout << "Cores available: " << CPUScheduler::getInstance()->getNumberOfCores() << std::endl;
     std::cout << std::endl;
     std::cout << "--------------------------------------" << std::endl;
     std::cout << "Running processes:" << std::endl;
@@ -135,27 +138,27 @@ void ProcessManager::setIsGeneratingProcesses(bool val) {
 //// screen -r <name of existing process>
 //// Redraw the console of the associated process
 
-//void ProcessManager::moveToFinished(const std::string& processName) {
-//    auto it = std::find_if(activeProcesses.begin(), activeProcesses.end(),
-//        [&processName](Process* process) { return process->getName() == processName; });
-//
-//    if (it != activeProcesses.end()) {
-//        finishedProcesses.push_back(*it); // Move to finishedProcesses
-//        activeProcesses.erase(it); // Erase from activeProcesses
-//    }
-//    else {
-//        std::cout << "Process '" << processName << "' not found in active processes." << std::endl;
-//    }
-//    //auto it = activeProcesses.find(processName); // Find the process
-//
-//    //if (it != activeProcesses.end()) {
-//    //    finishedProcesses.push_back(it->second); // Move to finishedProcesses
-//    //    activeProcesses.erase(it); // Erase from activeProcesses
-//    //}
-//    //else {
-//    //    std::cout << "Process '" << processName << "' not found in active processes." << std::endl;
-//    //}
-//}
+void ProcessManager::moveToFinished(const std::string& processName) {
+   auto it = std::find_if(activeProcesses.begin(), activeProcesses.end(),
+       [&processName](Process* process) { return process->getName() == processName; });
+
+   if (it != activeProcesses.end()) {
+       finishedProcesses.push_back(*it); // Move to finishedProcesses
+       activeProcesses.erase(it); // Erase from activeProcesses
+   }
+   else {
+       std::cout << "Process '" << processName << "' not found in active processes." << std::endl;
+   }
+   //auto it = activeProcesses.find(processName); // Find the process
+
+   //if (it != activeProcesses.end()) {
+   //    finishedProcesses.push_back(it->second); // Move to finishedProcesses
+   //    activeProcesses.erase(it); // Erase from activeProcesses
+   //}
+   //else {
+   //    std::cout << "Process '" << processName << "' not found in active processes." << std::endl;
+   //}
+}
 //
 //void ProcessManager::displayAll() {
 //    std::cout << "--------------------------------------" << std::endl;

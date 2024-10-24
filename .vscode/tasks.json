@@ -7,8 +7,12 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "-std=c++11",
+                "-std=c++14",
                 "${file}",
+                "CPUScheduler.cpp",
+                "CPUWorker.cpp",
+                "ProcessManager.cpp",
+                "Process.cpp",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"
             ],

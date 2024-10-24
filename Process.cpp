@@ -7,7 +7,7 @@ Process::Process(String name, long long totalLinesOfCode) {
 	this->currentInstructionLine = 0; // TODO: Not sure if this should be 1
 	this->totalLinesOfCode = totalLinesOfCode;
 	this->timeCreated = time(0);
-    this->currentState = READY;
+    this->currentState = Process::READY;
 }
 
 void Process::printInfo() {
@@ -27,7 +27,7 @@ void Process::printInfo() {
 }
 
 void Process::draw() {
-    system("cls");
+    system("clear");
     printInfo();
     bool isRunning = true;
     String command;
@@ -84,7 +84,7 @@ Process::ProcessState Process::getState() const {
     return this->currentState;
 }
 
-void Process::setState(ProcessState state) {
+void Process::setState(Process::ProcessState state) {
     this->currentState = state;
 }
 

@@ -5,6 +5,7 @@
 #include <atomic>
 #include <vector>
 #include <queue>
+#include <mutex>
 #include "Process.h"
 
 class CPUWorker

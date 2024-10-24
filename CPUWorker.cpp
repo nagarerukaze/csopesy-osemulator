@@ -20,15 +20,17 @@ void CPUWorker::setProcess(Process* process) {
 // START THREADS in CPUscheduler WITH THIS function
 void CPUWorker::startWorker() {
     this->running = true;
-    this->process->setState(Process::RUNNING);
+    this->process->setState(Process::ProcessState::RUNNING);
 
     while(this->running == true) {
         // Execution Here
         this->process->nextLine();
 
         if(this->process->getCurrentInstructionLine() == this->process->getTotalLinesOfCode()) {
-            this->running = false;
             this->process->setState(Process::TERMINATED);
+            ProcessManager::getInstance()->moveToFinished(this->process->getName());
+            this->running = false;
+            this->process = nullptr;
         }
         else {
                 this->process->setState(Process::READY);
@@ -36,9 +38,6 @@ void CPUWorker::startWorker() {
 
         std::this_thread::sleep_for(std::chrono::milliseconds(this->delay_per_exec));
     }
-
-    
-    
 }
 
 bool CPUWorker::hasProcess() {
