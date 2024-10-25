@@ -9,7 +9,7 @@ CPUScheduler::CPUScheduler(const CPUScheduler&) {}
 
 CPUScheduler* CPUScheduler::sharedInstance = nullptr;
 
-void CPUScheduler::initialize(String scheduler, int num_cpu, int quantum_cycles, int delay_per_exec) {
+void CPUScheduler::initialize(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec) {
 	sharedInstance = new CPUScheduler();
     
     sharedInstance->scheduler = scheduler;
@@ -80,7 +80,7 @@ void CPUScheduler::FCFSScheduling() {
         }
 
         this->cpuCycles++;
-        std::this_thread::sleep_for(std::chrono::milliseconds(this->delay_per_exec));
+        //std::this_thread::sleep_for(std::chrono::milliseconds(this->delay_per_exec));
     }
 }
 

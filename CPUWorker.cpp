@@ -3,7 +3,7 @@
 
 CPUWorker* CPUWorker::sharedInstance = nullptr; // Initialize static member
 
-CPUWorker::CPUWorker(int id, int delay_per_exec) {
+CPUWorker::CPUWorker(int id, long long delay_per_exec) {
     this->id = id;
     this->delay_per_exec = delay_per_exec;
     this->running = false;

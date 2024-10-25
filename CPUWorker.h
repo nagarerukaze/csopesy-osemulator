@@ -11,7 +11,7 @@
 class CPUWorker
 {
 public:
-    CPUWorker(int id, int delay_per_exec);            // Constructor
+    CPUWorker(int id, long long delay_per_exec);            // Constructor
     ~CPUWorker() = default;       // Destructor
     void setProcess(Process* process);
     void startWorker();
@@ -27,9 +27,9 @@ private:
     int id;
     std::atomic<bool> running;
 
-    int delay_per_exec;
+    long long delay_per_exec;
     Process* process = nullptr;
     std::mutex mtx;
     std::condition_variable cv;
-    int cpuCycles = 0;
+    long long cpuCycles = 0;
 };

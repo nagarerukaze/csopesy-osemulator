@@ -13,7 +13,7 @@ class CPUScheduler
 {
 public:
 
-    void initialize(String scheduler, int num_cpu, int quantum_cycles, int delay_per_exec);
+    void initialize(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec);
     void initializeCPUWorkers(int numberOfCPUs);
     static CPUScheduler* getInstance();
 	void startScheduler();
@@ -28,11 +28,11 @@ private:
     ~CPUScheduler() = default;
     static CPUScheduler* sharedInstance;
 
-    int cpuCycles = 0;
+    long long cpuCycles = 0;
     String scheduler;
     int numberOfCores;
-    int quantum_cycles;
-    int delay_per_exec;
+    long long quantum_cycles;
+    long long delay_per_exec;
 
     void workerFunction(int coreID);
     std::vector<std::thread> workerThreads;
