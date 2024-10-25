@@ -13,7 +13,7 @@
 #include <chrono>
 
 #include "ProcessManager.h"
-
+#include "CPUScheduler.h"
 typedef std::string String;
 
 class ConsoleManager

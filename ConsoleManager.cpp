@@ -29,7 +29,6 @@ void ConsoleManager::startCPUCycle() {
         int cpuCycle = 0; // Example CPU cycle counter
         while (this->getIsRunning()) {
             this->cpuCycles++;
-            std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Simulate CPU cycle
         }
         });
 }
@@ -72,7 +71,8 @@ void ConsoleManager::clear() {
 bool ConsoleManager::initialize() {
     std::vector<String> values;
     String line, key, value, scheduler;
-    long long num_cpu, quantum_cycles, batch_process_freq, min_ins, max_ins, delays_per_exec;
+    int num_cpu;
+    long long quantum_cycles, batch_process_freq, min_ins, max_ins, delays_per_exec;
 
     std::ifstream f("config.txt");
 
@@ -94,7 +94,7 @@ bool ConsoleManager::initialize() {
 
     f.close();
 
-    num_cpu = std::stoll(values[0]);
+    num_cpu = std::stoi(values[0]);
     scheduler = values[1];
     quantum_cycles = std::stoll(values[2]);
     batch_process_freq = std::stoll(values[3]); // frequency of generating process in "scheduler-test". [1, 2^32] if one, a new process is generated at the end of each CPU cycle
@@ -114,9 +114,16 @@ bool ConsoleManager::initialize() {
 
     // TODO: initilize processor and scheduler algo
     ProcessManager::getInstance()->initialize(batch_process_freq, min_ins, max_ins);
+    /*
+    CPUScheduler::getInstance()->initialize(scheduler, num_cpu, quantum_cycles, delays_per_exec);
+    CPUScheduler::getInstance()->initializeCPUWorkers(num_cpu);
+    // Start the scheduler in a detached thread
 
-    // CPUScheduler::getInstance()->initialize(num_cpu, scheduler, quantum_cycles, delay_per_exec);
-
+    std::thread schedulerThread([] {
+        CPUScheduler::getInstance()->startScheduler();
+        });
+    schedulerThread.detach(); // Detach the thread
+    */
     return true;
 }
 
