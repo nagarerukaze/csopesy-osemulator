@@ -12,17 +12,17 @@ CPUWorker::CPUWorker(int id, int delay_per_exec) {
 
 // Set a CPU's process
 void CPUWorker::setProcess(Process* process) {
-   {    
-        std::unique_lock<std::mutex> lock(mtx);
+    std::unique_lock<std::mutex> lock(mtx);
 
-        // Signal to stop the current thread if it's running
-        if (running) {
-            running = false;
-            cv.wait(lock, [this]() { return !running; }); // Wait until running is false
-        }
+    // Signal to stop the current thread if it's running
+    if (running) {
+        running = false;
+        cv.wait(lock, [this]() { return !running; }); // Wait until `running` is false
+    }
 
-        // Assign new process
-        this->process = process;
+    // Assign new process
+    this->process = process;
+    if (this->process) {
         this->process->setCPUCoreID(this->id);
     }
 }
@@ -33,45 +33,60 @@ void CPUWorker::startWorker() {
         std::lock_guard<std::mutex> lock(mtx);
         running = true;
     }
-    this->process->setState(Process::ProcessState::RUNNING);
+    if (this->process) {
+        this->process->setState(Process::ProcessState::RUNNING);
+    }
+    this->cpuCycles = 1;
 
     while (true) {
+        // Check if the worker should stop running
         {
             std::lock_guard<std::mutex> lock(mtx);
-            if (!running) {
-                break; // Exit if running is false
+            if (!running || !this->process) { 
+                break; // Exit if running is false or no process is assigned
             }
         }
 
-        // Execution code
-        this->process->nextLine();
+        // Execute the current quantum
+        if (cpuCycles == 1 && this->process) {
+            this->process->nextLine();
 
-        if (this->process->getCurrentInstructionLine() == this->process->getTotalLinesOfCode()) {
-            this->process->setState(Process::TERMINATED);
-            ProcessManager::getInstance()->moveToFinished(this->process->getName());
-            this->process = nullptr;
+            // Check if the process has completed its instructions
+            if (this->process->getCurrentInstructionLine() == this->process->getTotalLinesOfCode()) {
+                this->process->setState(Process::ProcessState::TERMINATED);
+                ProcessManager::getInstance()->moveToFinished(this->process->getName());
 
-            std::lock_guard<std::mutex> lock(mtx);
-            running = false;
-            cv.notify_one(); // Notify that worker has completed
-            break;
-        } else {
-            this->process->setState(Process::READY);
+                // Lock and update running status
+                {
+                    std::lock_guard<std::mutex> lock(mtx);
+                    this->process = nullptr;
+                    running = false;
+                    cv.notify_one(); // Notify that worker has completed
+                }
+                break;
+            } else {
+                // If process isn't complete, mark it READY for the next quantum
+                this->process->setState(Process::ProcessState::READY);
+            }
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(this->delay_per_exec));
+        // Increment the cycle counter and reset if needed
+        this->cpuCycles++;
+        if (this->cpuCycles > delay_per_exec) {
+            this->cpuCycles = 1;
+        }
+
+        // Quantum delay
+        //std::this_thread::sleep_for(std::chrono::milliseconds(this->delay_per_exec));
     }
 }
 
 bool CPUWorker::hasProcess() {
-    if(this->process == nullptr) {
-        return false;
-    }
-    else {
-        return true;
-    }
+    std::lock_guard<std::mutex> lock(mtx);
+    return (this->process != nullptr);
 }
 
 Process* CPUWorker::getProcess() {
+    std::lock_guard<std::mutex> lock(mtx);
     return this->process;
 }

@@ -8,13 +8,6 @@ int main () {
     CPUScheduler::getInstance()->initialize("rr", 4, 3000, 500);
     CPUScheduler::getInstance()->initializeCPUWorkers(4);
     
-    // Start the scheduler in a detached thread
-
-    std::thread schedulerThread([] {
-       CPUScheduler::getInstance()->startScheduler();
-    });
-    schedulerThread.detach(); // Detach the thread
-
     // !!FOR TESTING, REMOVE THIS WHEN NOT NEEDED ANYMORE!!
     //
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -41,6 +34,15 @@ int main () {
     std::cout << endl;
     std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     //
+
+    // Start the scheduler in a detached thread
+
+    std::thread schedulerThread([] {
+       CPUScheduler::getInstance()->startScheduler();
+    });
+    schedulerThread.detach(); // Detach the thread
+
+    
 
     std::string input;
 

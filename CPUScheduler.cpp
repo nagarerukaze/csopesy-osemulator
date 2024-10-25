@@ -85,33 +85,34 @@ void CPUScheduler::FCFSScheduling() {
 }
 
 void CPUScheduler::RRScheduling() {
-    while(running) {
-        std::cout << "[CYCLE: " << this->cpuCycles << "]" << std::endl; 
-        for(int i = 0; i < this->numberOfCores; i++) {
-            if(!processQueue.empty()) {
-                Process* process_in = processQueue.front();
-                processQueue.pop();
+    while (running) {
+        if (this->cpuCycles == this->quantum_cycles) {
+            cpuCycles = 1;  // Reset the cycle counter
+        }
 
-                if(cpuWorkers[i]->hasProcess()) {
-                    Process* process_out = cpuWorkers[i]->getProcess();
+        if (this->cpuCycles == 1) {  // Only switch processes at the start of each quantum cycle
+            for (int i = 0; i < this->numberOfCores; i++) {
+                if (!processQueue.empty()) {
+                    Process* process_in = processQueue.front();
+                    processQueue.pop();
 
-                    if(process_out->getState() != Process::TERMINATED) {
-                        processQueue.push(process_out);
-                        std::cout << "Processor #" << i + 1 << "/" << this->numberOfCores << "\tProcess: " << process_in->getName() << "\tLine: " << process_in->getCurrentInstructionLine()<< "/" << process_in->getTotalLinesOfCode() << "\t(Preempteed)" << std::endl;
+                    // If a process is already assigned and isn't finished, put it back in the queue
+                    if (cpuWorkers[i]->hasProcess()) {
+                        Process* process_out = cpuWorkers[i]->getProcess();
+                        if (process_out->getState() == Process::ProcessState::READY) {
+                            processQueue.push(process_out);  // Re-queue the paused process
+                        }
                     }
+
+                    // Assign the new process and start it
+                    cpuWorkers[i]->setProcess(process_in);
+                    std::thread thread([worker = cpuWorkers[i]]() { worker->startWorker(); });
+                    thread.detach();
                 }
-                else {
-                    std::cout << "Processor #" << i + 1 << "/" << this->numberOfCores << "\tProcess: " << process_in->getName() << "\tLine: " << process_in->getCurrentInstructionLine()<< "/" << process_in->getTotalLinesOfCode() << "\t(Free)" << std::endl;
-                }
-                
-                cpuWorkers[i]->setProcess(process_in);
-                std::thread thread([worker = cpuWorkers[i]]() { worker->startWorker(); });
-                thread.detach(); // Detach the thread
             }
         }
 
-        std::cout << "----------------------------------------------------------------------------------------" << std::endl;
         this->cpuCycles++;
-        std::this_thread::sleep_for(std::chrono::milliseconds(this->quantum_cycles));   
+        //std::this_thread::sleep_for(std::chrono::milliseconds(this->quantum_cycles));
     }
 }

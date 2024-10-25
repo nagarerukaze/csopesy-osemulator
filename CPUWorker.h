@@ -31,4 +31,5 @@ private:
     Process* process = nullptr;
     std::mutex mtx;
     std::condition_variable cv;
+    int cpuCycles = 0;
 };
