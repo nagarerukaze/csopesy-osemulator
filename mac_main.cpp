@@ -5,7 +5,7 @@ using namespace std;
 
 int main () {
     ProcessManager::getInstance()->initialize(1, 1, 100);
-    CPUScheduler::getInstance()->initialize("fcfs", 4, 1000, 500);
+    CPUScheduler::getInstance()->initialize("rr", 4, 3000, 500);
     CPUScheduler::getInstance()->initializeCPUWorkers(4);
     
     // Start the scheduler in a detached thread
@@ -15,6 +15,32 @@ int main () {
     });
     schedulerThread.detach(); // Detach the thread
 
+    // !!FOR TESTING, REMOVE THIS WHEN NOT NEEDED ANYMORE!!
+    //
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    ProcessManager::getInstance()->createProcess("P1");
+    ProcessManager::getInstance()->createProcess("P2");
+    ProcessManager::getInstance()->createProcess("P3");
+    ProcessManager::getInstance()->createProcess("P4");
+    ProcessManager::getInstance()->createProcess("P5");
+    ProcessManager::getInstance()->createProcess("P6");
+    ProcessManager::getInstance()->createProcess("P7");
+    ProcessManager::getInstance()->createProcess("P8");
+    ProcessManager::getInstance()->createProcess("P9");
+    ProcessManager::getInstance()->createProcess("P10");
+    ProcessManager::getInstance()->createProcess("P11");
+    ProcessManager::getInstance()->createProcess("P12");
+    ProcessManager::getInstance()->createProcess("P13");
+    ProcessManager::getInstance()->createProcess("P14");
+    ProcessManager::getInstance()->createProcess("P15");
+    ProcessManager::getInstance()->createProcess("P16");
+    ProcessManager::getInstance()->createProcess("P17");
+    ProcessManager::getInstance()->createProcess("P18");
+    ProcessManager::getInstance()->createProcess("P19");
+    ProcessManager::getInstance()->createProcess("P20");
+    std::cout << endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    //
 
     std::string input;
 
@@ -23,7 +49,7 @@ int main () {
     while (input != "exit") {
        
        // Get the input string from the user
-       std::cout << "Enter command: ";
+       std::cout << "Enter command: " << std::endl;
        std::getline(std::cin, input);
 
         //Create a stringstream to split the input

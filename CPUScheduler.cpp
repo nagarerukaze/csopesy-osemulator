@@ -58,7 +58,6 @@ int CPUScheduler::getNumberOfCPUsUsed() {
     }
 
     return cpus_used;
-    
 }
 
 int CPUScheduler::getNumberOfCores() {
@@ -87,6 +86,7 @@ void CPUScheduler::FCFSScheduling() {
 
 void CPUScheduler::RRScheduling() {
     while(running) {
+        std::cout << "[CYCLE: " << this->cpuCycles << "]" << std::endl; 
         for(int i = 0; i < this->numberOfCores; i++) {
             if(!processQueue.empty()) {
                 Process* process_in = processQueue.front();
@@ -97,7 +97,11 @@ void CPUScheduler::RRScheduling() {
 
                     if(process_out->getState() != Process::TERMINATED) {
                         processQueue.push(process_out);
+                        std::cout << "Processor #" << i + 1 << "/" << this->numberOfCores << "\tProcess: " << process_in->getName() << "\tLine: " << process_in->getCurrentInstructionLine()<< "/" << process_in->getTotalLinesOfCode() << "\t(Preempteed)" << std::endl;
                     }
+                }
+                else {
+                    std::cout << "Processor #" << i + 1 << "/" << this->numberOfCores << "\tProcess: " << process_in->getName() << "\tLine: " << process_in->getCurrentInstructionLine()<< "/" << process_in->getTotalLinesOfCode() << "\t(Free)" << std::endl;
                 }
                 
                 cpuWorkers[i]->setProcess(process_in);
@@ -106,6 +110,7 @@ void CPUScheduler::RRScheduling() {
             }
         }
 
+        std::cout << "----------------------------------------------------------------------------------------" << std::endl;
         this->cpuCycles++;
         std::this_thread::sleep_for(std::chrono::milliseconds(this->quantum_cycles));   
     }

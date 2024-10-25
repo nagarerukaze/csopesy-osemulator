@@ -18,6 +18,7 @@ public:
     void switchProcess(Process* process);
     bool hasProcess();
     Process* getProcess();
+   
 
 private:
     CPUWorker(const CPUWorker&);           // Copy constructor
@@ -28,4 +29,6 @@ private:
 
     int delay_per_exec;
     Process* process = nullptr;
+    std::mutex mtx;
+    std::condition_variable cv;
 };
