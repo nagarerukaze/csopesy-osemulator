@@ -152,9 +152,6 @@ void ConsoleManager::screen(String command) {
             (4) List of finished processes
      */
     if (words[1] == "-ls") {
-        // TODO: 
-        std::cout << "Show running processes." << std::endl;
-
         if (words.size() == 2) {
             ProcessManager::getInstance()->displayAllProcesses();
         }
@@ -172,11 +169,17 @@ void ConsoleManager::screen(String command) {
      */
     else if (words[1] == "-s") {
         if (words.size() == 3) {
-            ProcessManager::getInstance()->createProcess(words[2]);
-            bool isFound = ProcessManager::getInstance()->displayProcess(words[2]);
-
+            bool isFound = ProcessManager::getInstance()->findProcess(words[2]);
             if (isFound) {
-                this->clear();
+                std::cout << "A process called \"" << words[2] << "\" already exists. Please choose another name." << std::endl;
+            }
+            else {
+                ProcessManager::getInstance()->createProcess(words[2]);
+                bool isFound = ProcessManager::getInstance()->displayProcess(words[2]);
+
+                if (isFound) {
+                    this->clear();
+                }
             }
         }
 
@@ -259,11 +262,21 @@ void ConsoleManager::schedulerStop() {
     std::cout << "Stopped generating dummy processes." << std::endl;
 }
 
+/*
+    Generate a utilization report same as 
+    screen -ls but is saved into a text 
+    file - "csopesy-log.txt"
+*/
 void ConsoleManager::reportUtil() {
-    // TODO: generates CPU utilization report
-    // This console should be able to generate a utilization report whenever the "report-util command is entered
-    // same as screen -ls but is saved into a text file - "csopesy-log.txt"
-    std::cout << "\"report-util\" command recognized. Doing something..." << std::endl; // TODO: DELETE
+    std::ofstream myfile("csopesy-log.txt");
+    if (myfile.is_open())
+    {
+        //screen("screen -ls");
+        myfile.close();
+    }
+    else {
+        std::cout << "Unable to open file";
+    }
 }
 
 void ConsoleManager::setCursorPosition(int x, int y) {

@@ -28,14 +28,18 @@ void ProcessManager::createProcess(String name) {
     // queue to scheduler
 }
 
-bool ProcessManager::displayProcess(String name) const {
-    // Find if process is in activeprocesses
+Process* ProcessManager::findProcess(const String& name) const {
     auto it = std::find_if(activeProcesses.begin(), activeProcesses.end(),
         [&name](Process* process) { return process->getName() == name; });
+    return (it != activeProcesses.end()) ? *it : nullptr;
+}
+
+bool ProcessManager::displayProcess(const String& name) const {
+    Process* process = findProcess(name);
 
     // If Found: draw console
-    if (it != activeProcesses.end()) {
-        (*it)->draw();
+    if (process) {
+        process->draw();
         return true;
     }
 
