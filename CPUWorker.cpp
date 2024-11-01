@@ -17,7 +17,6 @@ void CPUWorker::setProcess(Process* process) {
     // Signal to stop the current thread if it's running
     if (running) {
         running = false;
-        cv.wait(lock, [this]() { return !running; }); // Wait until `running` is false
     }
 
     // Assign new process

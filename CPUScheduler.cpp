@@ -2,12 +2,10 @@
 #include "ProcessManager.h"
 
 CPUScheduler::CPUScheduler(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec) {
-    sharedInstance->scheduler = scheduler;
-    sharedInstance->numberOfCores = num_cpu;
-    sharedInstance->quantum_cycles = quantum_cycles;
-    sharedInstance->delay_per_exec = delay_per_exec;
-    
-    sharedInstance->initializeCPUWorkers(sharedInstance->numberOfCores);
+    this->scheduler = scheduler;
+    this->numberOfCores = num_cpu;
+    this->quantum_cycles = quantum_cycles;
+    this->delay_per_exec = delay_per_exec;
 }
 
 CPUScheduler::CPUScheduler(const CPUScheduler&) {}
@@ -16,6 +14,7 @@ CPUScheduler* CPUScheduler::sharedInstance = nullptr;
 
 void CPUScheduler::initialize(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec) {
 	sharedInstance = new CPUScheduler(scheduler, num_cpu, quantum_cycles, delay_per_exec);
+    sharedInstance->initializeCPUWorkers(sharedInstance->numberOfCores);
 }
 
 void CPUScheduler::initializeCPUWorkers(int num) {
@@ -78,8 +77,6 @@ void CPUScheduler::FCFSScheduling() {
                 }
             }
         }
-
-        this->cpuCycles++;
         //std::this_thread::sleep_for(std::chrono::milliseconds(this->delay_per_exec));
     }
 }

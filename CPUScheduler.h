@@ -22,7 +22,7 @@ public:
     int getNumberOfCores();
 
 private:
-    CPUScheduler();
+    CPUScheduler(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec);
     CPUScheduler(const CPUScheduler&);
     CPUScheduler& operator = (const CPUScheduler&);
     ~CPUScheduler() = default;
