@@ -31,7 +31,7 @@ CPUScheduler* CPUScheduler::getInstance() {
 
 void CPUScheduler::enqueueProcess(Process* process) {
     processQueue.push(process);
-    std::cout << "Enqueued process: " << process->getName() << std::endl; // remove later
+    //std::cout << "Enqueued process: " << process->getName() << std::endl; // remove later
 }
 
 void CPUScheduler::startScheduler() {
