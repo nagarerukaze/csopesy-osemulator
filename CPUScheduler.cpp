@@ -30,13 +30,13 @@ CPUScheduler* CPUScheduler::getInstance() {
 }
 
 void CPUScheduler::enqueueProcess(Process* process) {
-    processQueue.push(process);
+    std::lock_guard<std::mutex> lock(mtx);
+    this->processQueue.push(process);
     //std::cout << "Enqueued process: " << process->getName() << std::endl; // remove later
 }
 
 void CPUScheduler::startScheduler() {
     this->running = true;
-
     
     if (this->scheduler == "fcfs") {
         FCFSScheduling();
@@ -63,6 +63,11 @@ int CPUScheduler::getNumberOfCores() {
     return this->numberOfCores;
 }
 
+//FOR TESTING
+CPUWorker* CPUScheduler::getCPUWorker(int id) {
+    return cpuWorkers[id];
+}
+
 void CPUScheduler::FCFSScheduling() {
     while(running) {
         if(!processQueue.empty()) {
@@ -85,22 +90,44 @@ void CPUScheduler::RRScheduling() {
     while (running) {
         if (this->cpuCycles == 1) {  // Only switch processes at the start of each quantum cycle
             for (int i = 0; i < this->numberOfCores; i++) {
+                CPUWorker* worker = cpuWorkers[i];
+                Process* process_out = nullptr;
+                Process* process_in = nullptr;
+                
                 if (!processQueue.empty()) {
-                    Process* process_in = processQueue.front();
-                    processQueue.pop();
-
-                    // If a process is already assigned and isn't finished, put it back in the queue
-                    if (cpuWorkers[i]->hasProcess()) {
-                        Process* process_out = cpuWorkers[i]->getProcess();
-                        if (process_out->getState() == Process::ProcessState::READY) {
-                            processQueue.push(process_out);  // Re-queue the paused process
+                    // Safely remove the current process and requeue it if needed
+                    
+                    {
+                        std::lock_guard<std::mutex> lock(mtx);
+                        if (worker->hasProcess()) {
+                            process_out = worker->getProcess();
+                            if (process_out != nullptr && process_out->getCurrentInstructionLine() < process_out->getTotalLinesOfCode()) {
+                                processQueue.push(process_out);
+                                process_out->setState(Process::ProcessState::READY);
+                            }
+                            else {
+                                process_out->setState(Process::ProcessState::TERMINATED);
+                                ProcessManager::getInstance()->moveToFinished(process_out->getName());
+                            }
                         }
+                        process_in = processQueue.front();
+                        processQueue.pop();
+                        worker->setProcess(process_in);
                     }
 
-                    // Assign the new process and start it
-                    cpuWorkers[i]->setProcess(process_in);
-                    std::thread thread([worker = cpuWorkers[i]]() { worker->startWorker(); });
-                    thread.detach();
+                    std::thread(&CPUWorker::startWorker, worker).detach();
+                }
+                else if (worker->hasProcess()) {
+                    process_out = worker->getProcess();
+                    if (process_out != nullptr && process_out->getCurrentInstructionLine() < process_out->getTotalLinesOfCode()) {
+                        processQueue.push(process_out);
+                        process_out->setState(Process::ProcessState::READY);
+                    }
+                    else {
+                        process_out->setState(Process::ProcessState::TERMINATED);
+                        ProcessManager::getInstance()->moveToFinished(process_out->getName());
+                        worker->setProcess(nullptr);
+                    }
                 }
             }
         }

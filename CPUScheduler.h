@@ -20,6 +20,7 @@ public:
     void enqueueProcess(Process* process);
     int getNumberOfCPUsUsed();
     int getNumberOfCores();
+    CPUWorker* getCPUWorker(int id);
 
 private:
     CPUScheduler(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec);
@@ -39,6 +40,7 @@ private:
     std::vector<CPUWorker*> cpuWorkers;
     std::atomic<bool> running{ true };
     std::queue<Process*> processQueue;
+    std::mutex mtx;
 
     void FCFSScheduling();
     void RRScheduling();

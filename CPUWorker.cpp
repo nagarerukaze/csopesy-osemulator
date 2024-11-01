@@ -48,25 +48,10 @@ void CPUWorker::startWorker() {
 
         // Execute the current quantum
         if (cpuCycles == 1 && this->process) {
-            this->process->nextLine();
-
-            // Check if the process has completed its instructions
-            if (this->process->getCurrentInstructionLine() == this->process->getTotalLinesOfCode()) {
-                this->process->setState(Process::ProcessState::TERMINATED);
-                ProcessManager::getInstance()->moveToFinished(this->process->getName());
-
-                // Lock and update running status
-                {
-                    std::lock_guard<std::mutex> lock(mtx);
-                    this->process = nullptr;
-                    running = false;
-                    cv.notify_one(); // Notify that worker has completed
-                }
-                break;
-            } else {
-                // If process isn't complete, mark it READY for the next quantum
-                this->process->setState(Process::ProcessState::READY);
+            if (this->process->getCurrentInstructionLine() < this->process->getTotalLinesOfCode()) {
+                this->process->nextLine();
             }
+            
         }
 
         // Increment the cycle counter and reset if needed

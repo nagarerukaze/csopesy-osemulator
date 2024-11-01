@@ -25,7 +25,7 @@ ProcessManager* ProcessManager::getInstance() {
 }
 
 void ProcessManager::createProcess(String name) {
-    
+
     Process* new_process = new Process(name, rand() % (this->getMaxInstructions() - this->getMinInstructions() + 1) + this->getMinInstructions());
     activeProcesses.push_back(new_process);
     // queue to scheduler
@@ -90,6 +90,13 @@ void ProcessManager::displayAllProcesses() {
     std::cout << "Finished processes:" << std::endl;
     displayProcessesList(this->finishedProcesses);
     std::cout << "--------------------------------------" << std::endl;
+
+    if(CPUScheduler::getInstance()->getNumberOfCPUsUsed() == 0) {
+        std::cout << CPUScheduler::getInstance()->getCPUWorker(0)->hasProcess() << std::endl;
+        std::cout << CPUScheduler::getInstance()->getCPUWorker(1)->hasProcess() << std::endl;
+        std::cout << CPUScheduler::getInstance()->getCPUWorker(2)->hasProcess() << std::endl;
+        std::cout << CPUScheduler::getInstance()->getCPUWorker(3)->hasProcess() << std::endl;
+    }
 }
 
 long long ProcessManager::getBatchProcessFreq() const {
@@ -147,9 +154,9 @@ void ProcessManager::moveToFinished(const std::string& processName) {
        finishedProcesses.push_back(*it); // Move to finishedProcesses
        activeProcesses.erase(it); // Erase from activeProcesses
    }
-   else {
-       std::cout << "Process '" << processName << "' not found in active processes." << std::endl;
-   }
+//    else {
+//        std::cout << "Process '" << processName << "' not found in active processes." << std::endl;
+//    }
    //auto it = activeProcesses.find(processName); // Find the process
 
    //if (it != activeProcesses.end()) {
