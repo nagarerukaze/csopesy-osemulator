@@ -29,7 +29,7 @@ void ConsoleManager::startCPUCycle() {
         int cpuCycle = 0; // Example CPU cycle counter
         while (this->getIsRunning()) {
             this->cpuCycles++;
-            std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Simulate CPU cycle
+            //std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Simulate CPU cycle
         }
         });
 }
@@ -43,7 +43,7 @@ void ConsoleManager::printHeader() {
     std::cout << "|     |_  _____| ||       ||   |    |   |___  _____| |  |   |  " << std::endl;
     std::cout << "|_______||_______||_______||___|    |_______||_______|  |___|  " << std::endl;
     std::cout << "---------------------------------------------------------------" << std::endl;
-    std::cout << "Hello, Welcome to CSOPESY Emulartor!" << std::endl << std::endl;
+    std::cout << "Hello, Welcome to CSOPESY Emulator!" << std::endl << std::endl;
     std::cout << "Developers:" << std::endl;
     std::cout << "Jardenil, Aaron Randall (S11)" << std::endl;
     std::cout << "Jocson, Nicole Pedernal (S11)" << std::endl;
@@ -55,7 +55,8 @@ void ConsoleManager::printHeader() {
 }
 
 void ConsoleManager::clear() {
-    system("cls"); // !! CHANGE TO "cls" FOR WINDOWS !!
+    system("clear");  // !! CHANGE TO "cls" FOR WINDOWS !!
+                    // !! CHANGE TO "clear" FOR MAC !!
     this->printHeader();
 }
 
@@ -72,7 +73,8 @@ void ConsoleManager::clear() {
 bool ConsoleManager::initialize() {
     std::vector<String> values;
     String line, key, value, scheduler;
-    long long num_cpu, quantum_cycles, batch_process_freq, min_ins, max_ins, delays_per_exec;
+    int num_cpu;
+    long long quantum_cycles, batch_process_freq, min_ins, max_ins, delays_per_exec;
 
     std::ifstream f("config.txt");
 
@@ -112,10 +114,15 @@ bool ConsoleManager::initialize() {
         return false;
     }
 
-    // TODO: initilize processor and scheduler algo
+    // Initialize ProcessManager and CPUScheduler
     ProcessManager::getInstance()->initialize(batch_process_freq, min_ins, max_ins);
-
-    // CPUScheduler::getInstance()->initialize(num_cpu, scheduler, quantum_cycles, delay_per_exec);
+    CPUScheduler::getInstance()->initialize(scheduler, num_cpu , quantum_cycles, delays_per_exec);
+    
+    // Start Detached Scheduler Thread
+    std::thread schedulerThread([] {
+       CPUScheduler::getInstance()->startScheduler();
+    });
+    schedulerThread.detach(); // Detach the thread
 
     return true;
 }
@@ -167,6 +174,7 @@ void ConsoleManager::screen(String command) {
         if (words.size() == 3) {
             ProcessManager::getInstance()->createProcess(words[2]);
             bool isFound = ProcessManager::getInstance()->displayProcess(words[2]);
+
 
             if (isFound) {
                 this->clear();
@@ -259,6 +267,7 @@ void ConsoleManager::reportUtil() {
     std::cout << "\"report-util\" command recognized. Doing something..." << std::endl; // TODO: DELETE
 }
 
+// For Windows
 // void ConsoleManager::setCursorPosition(int x, int y) {
 
 //     COORD coord;
@@ -268,10 +277,11 @@ void ConsoleManager::reportUtil() {
 //     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 // }
 
-void ConsoleManager::printAtPosition(int x, int y, const String& text) {
-    setCursorPosition(x, y);
-    std::cout << text;
-}
+// For Windows
+// void ConsoleManager::printAtPosition(int x, int y, const String& text) {
+//     setCursorPosition(x, y);
+//     std::cout << text;
+// }
 
 
 bool ConsoleManager::getIsRunning() const {

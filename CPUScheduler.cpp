@@ -1,8 +1,13 @@
 #include "CPUScheduler.h"
 #include "ProcessManager.h"
 
-CPUScheduler::CPUScheduler() {
-
+CPUScheduler::CPUScheduler(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec) {
+    sharedInstance->scheduler = scheduler;
+    sharedInstance->numberOfCores = num_cpu;
+    sharedInstance->quantum_cycles = quantum_cycles;
+    sharedInstance->delay_per_exec = delay_per_exec;
+    
+    sharedInstance->initializeCPUWorkers(sharedInstance->numberOfCores);
 }
 
 CPUScheduler::CPUScheduler(const CPUScheduler&) {}
@@ -10,12 +15,7 @@ CPUScheduler::CPUScheduler(const CPUScheduler&) {}
 CPUScheduler* CPUScheduler::sharedInstance = nullptr;
 
 void CPUScheduler::initialize(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec) {
-	sharedInstance = new CPUScheduler();
-    
-    sharedInstance->scheduler = scheduler;
-    sharedInstance->numberOfCores = num_cpu;
-    sharedInstance->quantum_cycles = quantum_cycles;
-    sharedInstance->delay_per_exec = delay_per_exec;
+	sharedInstance = new CPUScheduler(scheduler, num_cpu, quantum_cycles, delay_per_exec);
 }
 
 void CPUScheduler::initializeCPUWorkers(int num) {
@@ -86,10 +86,6 @@ void CPUScheduler::FCFSScheduling() {
 
 void CPUScheduler::RRScheduling() {
     while (running) {
-        if (this->cpuCycles == this->quantum_cycles) {
-            cpuCycles = 1;  // Reset the cycle counter
-        }
-
         if (this->cpuCycles == 1) {  // Only switch processes at the start of each quantum cycle
             for (int i = 0; i < this->numberOfCores; i++) {
                 if (!processQueue.empty()) {
@@ -113,6 +109,9 @@ void CPUScheduler::RRScheduling() {
         }
 
         this->cpuCycles++;
+        if (this->cpuCycles > this->quantum_cycles) {
+            this->cpuCycles = 1;  // Reset the cycle counter
+        }
         //std::this_thread::sleep_for(std::chrono::milliseconds(this->quantum_cycles));
     }
 }

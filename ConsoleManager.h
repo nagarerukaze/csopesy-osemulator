@@ -18,6 +18,7 @@
 #include <chrono>
 
 #include "ProcessManager.h"
+#include "CPUScheduler.h"
 
 typedef std::string String;
 
@@ -39,7 +40,9 @@ public:
 	void schedulerStop();
 	void reportUtil();
 
-	void setCursorPosition(int x, int y);
+	// For Windows
+	// void setCursorPosition(int x, int y);
+	//
 	void printAtPosition(int x, int y, const String& text);
 
 	bool getIsRunning() const;
@@ -62,5 +65,6 @@ private:
 	long long cpuCycles;
 	std::thread cpuThread;
 	std::thread schedulerTestThread;
+	std::mutex mtx;
 };
 

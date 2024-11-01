@@ -9,6 +9,7 @@
                 "-g",
                 "-std=c++14",
                 "${file}",
+                "ConsoleManager.cpp",
                 "CPUScheduler.cpp",
                 "CPUWorker.cpp",
                 "ProcessManager.cpp",
