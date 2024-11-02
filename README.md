@@ -4,7 +4,7 @@ MO1 - CSOPESY Emulator
 
 ## Overview
 
-Last updated: 11-02-2024
+This is the Process Scheduler implementation segment of the CSOPESY Emulator.
 
 ## Developers
 - Jardenil, Aaron Randall **(S11)**
