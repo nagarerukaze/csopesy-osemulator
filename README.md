@@ -14,7 +14,7 @@ Last updated: 11-02-2024
 
 ## Notes
 
-Change "cls" to "clear" depending on OS.
+Change "cls" to "clear" in ConsoleManager class depending on OS.
 
 ```
 void clear() {
