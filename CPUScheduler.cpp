@@ -70,9 +70,20 @@ CPUWorker* CPUScheduler::getCPUWorker(int id) {
 
 void CPUScheduler::FCFSScheduling() {
     while(running) {
-        if(!processQueue.empty()) {
+        if(!processQueue.empty() || this->getNumberOfCPUsUsed() > 0) {
             for(int i = 0; i < this->numberOfCores; i++) {
-                if(!cpuWorkers[i]->hasProcess() && !processQueue.empty()) {
+                CPUWorker* worker = this->cpuWorkers[i];
+
+                // when worker is finished with all instructions
+                if (worker->hasProcess() && (worker->getProcess()->getCurrentInstructionLine() == worker->getProcess()->getTotalLinesOfCode())) {
+                    worker->getProcess()->setState(Process::ProcessState::TERMINATED);
+                    ProcessManager::getInstance()->moveToFinished(worker->getProcess()->getName());
+                    worker->setProcess(nullptr);
+                }
+
+                // When worker is idle and processqueue is not empty
+                if(!worker->hasProcess() && !processQueue.empty()) {
+                   
                     Process* process = processQueue.front();
                     processQueue.pop();
                     
@@ -80,6 +91,7 @@ void CPUScheduler::FCFSScheduling() {
                     std::thread thread([worker = cpuWorkers[i]]() { worker->startWorker(); });
                     thread.detach(); // Detach the thread
                 }
+                
             }
         }
         //std::this_thread::sleep_for(std::chrono::milliseconds(this->delay_per_exec));
@@ -118,6 +130,7 @@ void CPUScheduler::RRScheduling() {
                     std::thread(&CPUWorker::startWorker, worker).detach();
                 }
                 else if (worker->hasProcess()) {
+                    // handle the case where the queue is empty but the last 4 processes haven't been terminated properly
                     process_out = worker->getProcess();
                     if (process_out != nullptr && process_out->getCurrentInstructionLine() < process_out->getTotalLinesOfCode()) {
                         processQueue.push(process_out);

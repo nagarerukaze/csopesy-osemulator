@@ -51,6 +51,9 @@ void CPUWorker::startWorker() {
             if (this->process->getCurrentInstructionLine() < this->process->getTotalLinesOfCode()) {
                 this->process->nextLine();
             }
+            else {
+                running = false;
+            }
             
         }
 
