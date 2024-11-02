@@ -6,6 +6,7 @@ CPUScheduler::CPUScheduler(String scheduler, int num_cpu, long long quantum_cycl
     this->numberOfCores = num_cpu;
     this->quantum_cycles = quantum_cycles;
     this->delay_per_exec = delay_per_exec;
+    this->cpuCycles = 0;
 }
 
 CPUScheduler::CPUScheduler(const CPUScheduler&) {}
@@ -32,7 +33,6 @@ CPUScheduler* CPUScheduler::getInstance() {
 void CPUScheduler::enqueueProcess(Process* process) {
     std::lock_guard<std::mutex> lock(mtx);
     this->processQueue.push(process);
-    //std::cout << "Enqueued process: " << process->getName() << std::endl; // remove later
 }
 
 void CPUScheduler::startScheduler() {
@@ -61,11 +61,6 @@ int CPUScheduler::getNumberOfCPUsUsed() {
 
 int CPUScheduler::getNumberOfCores() {
     return this->numberOfCores;
-}
-
-//FOR TESTING
-CPUWorker* CPUScheduler::getCPUWorker(int id) {
-    return cpuWorkers[id];
 }
 
 void CPUScheduler::FCFSScheduling() {
@@ -100,7 +95,8 @@ void CPUScheduler::FCFSScheduling() {
 
 void CPUScheduler::RRScheduling() {
     while (running) {
-        if (this->cpuCycles == 1) {  // Only switch processes at the start of each quantum cycle
+        // Only switch processes at the start of each quantum cycle
+        if (this->cpuCycles == 1) { 
             for (int i = 0; i < this->numberOfCores; i++) {
                 CPUWorker* worker = cpuWorkers[i];
                 Process* process_out = nullptr;
@@ -108,7 +104,6 @@ void CPUScheduler::RRScheduling() {
                 
                 if (!processQueue.empty()) {
                     // Safely remove the current process and requeue it if needed
-                    
                     {
                         std::lock_guard<std::mutex> lock(mtx);
                         if (worker->hasProcess()) {
@@ -149,6 +144,12 @@ void CPUScheduler::RRScheduling() {
         if (this->cpuCycles > this->quantum_cycles) {
             this->cpuCycles = 1;  // Reset the cycle counter
         }
-        //std::this_thread::sleep_for(std::chrono::milliseconds(this->quantum_cycles));
     }
 }
+
+// FOR TESTING
+/*
+CPUWorker* CPUScheduler::getCPUWorker(int id) {
+    return cpuWorkers[id];
+}
+*/

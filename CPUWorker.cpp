@@ -1,13 +1,10 @@
 #include "CPUWorker.h"
 #include "ProcessManager.h"
 
-CPUWorker* CPUWorker::sharedInstance = nullptr; // Initialize static member
-
 CPUWorker::CPUWorker(int id, long long delay_per_exec) {
     this->id = id;
     this->delay_per_exec = delay_per_exec;
     this->running = false;
-
 }
 
 // Set a CPU's process
@@ -46,7 +43,7 @@ void CPUWorker::startWorker() {
             }
         }
 
-        // Execute the current quantum
+        // Execute the current instruction
         if (cpuCycles == 1 && this->process) {
             if (this->process->getCurrentInstructionLine() < this->process->getTotalLinesOfCode()) {
                 this->process->nextLine();
@@ -56,14 +53,11 @@ void CPUWorker::startWorker() {
             }
         }
 
-        // Increment the cycle counter and reset if needed
+        // Increment/Reset cpuCycle counter
         this->cpuCycles++;
         if (this->cpuCycles > delay_per_exec) {
             this->cpuCycles = 1;
         }
-
-        // Quantum delay
-        //std::this_thread::sleep_for(std::chrono::milliseconds(this->delay_per_exec));
     }
 }
 

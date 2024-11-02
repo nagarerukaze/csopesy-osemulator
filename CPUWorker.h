@@ -11,19 +11,17 @@
 class CPUWorker
 {
 public:
-    CPUWorker(int id, long long delay_per_exec);            // Constructor
-    ~CPUWorker() = default;       // Destructor
+    CPUWorker(int id, long long delay_per_exec);    // Constructor
+    ~CPUWorker() = default;                         // Destructor
     void setProcess(Process* process);
     void startWorker();
     void switchProcess(Process* process);
     bool hasProcess();
     Process* getProcess();
-   
 
 private:
-    CPUWorker(const CPUWorker&);           // Copy constructor
-    CPUWorker& operator=(const CPUWorker&); // Assignment operator
-    static CPUWorker* sharedInstance;
+    CPUWorker(const CPUWorker&);                    // Copy constructor
+    CPUWorker& operator=(const CPUWorker&);         // Assignment operator
     int id;
     std::atomic<bool> running;
 
