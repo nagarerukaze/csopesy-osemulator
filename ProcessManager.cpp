@@ -1,11 +1,7 @@
 #include "ProcessManager.h"
 #include "CPUScheduler.h"
 
-/*
-
-    Singleton stuff
-
-*/
+// Singleton stuff
 ProcessManager::ProcessManager(long long batch_process_freq, long long min_ins, long long max_ins) {
     this->batch_process_freq = batch_process_freq;
     this->min_ins = min_ins;
@@ -25,10 +21,10 @@ ProcessManager* ProcessManager::getInstance() {
 }
 
 void ProcessManager::createProcess(String name) {
-
     Process* new_process = new Process(name, rand() % (this->getMaxInstructions() - this->getMinInstructions() + 1) + this->getMinInstructions());
     activeProcesses.push_back(new_process);
-    // queue to scheduler
+
+    // Queue to CPU scheduler
     CPUScheduler::getInstance()->enqueueProcess(new_process);
 }
 
@@ -99,6 +95,16 @@ void ProcessManager::displayAllProcesses() {
     }
 }
 
+void ProcessManager::moveToFinished(const std::string& processName) {
+   auto it = std::find_if(activeProcesses.begin(), activeProcesses.end(),
+       [&processName](Process* process) { return process->getName() == processName; });
+
+   if (it != activeProcesses.end()) {
+       finishedProcesses.push_back(*it); // Move to finishedProcesses
+       activeProcesses.erase(it); // Erase from activeProcesses
+   }
+}
+
 long long ProcessManager::getBatchProcessFreq() const {
     return this->batch_process_freq;
 }
@@ -145,15 +151,6 @@ void ProcessManager::setIsGeneratingProcesses(bool val) {
 //
 //// screen -r <name of existing process>
 //// Redraw the console of the associated process
-
-void ProcessManager::moveToFinished(const std::string& processName) {
-   auto it = std::find_if(activeProcesses.begin(), activeProcesses.end(),
-       [&processName](Process* process) { return process->getName() == processName; });
-
-   if (it != activeProcesses.end()) {
-       finishedProcesses.push_back(*it); // Move to finishedProcesses
-       activeProcesses.erase(it); // Erase from activeProcesses
-   }
 //    else {
 //        std::cout << "Process '" << processName << "' not found in active processes." << std::endl;
 //    }
@@ -166,7 +163,7 @@ void ProcessManager::moveToFinished(const std::string& processName) {
    //else {
    //    std::cout << "Process '" << processName << "' not found in active processes." << std::endl;
    //}
-}
+//
 //
 //void ProcessManager::displayAll() {
 //    std::cout << "--------------------------------------" << std::endl;

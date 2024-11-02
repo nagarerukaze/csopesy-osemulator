@@ -42,44 +42,11 @@ public:
 	// Process Operations
 	void nextLine();
 
-	
-
-	
-
 private:
 	String name;
 	long long currentInstructionLine;
 	long long totalLinesOfCode;
 	time_t timeCreated;
 	ProcessState currentState;
-
-	//
 	int cpuCoreID;
 };
-
-
-
-//#pragma once
-//#include <stdlib.h>
-//#include <vector>
-//#include <fstream> 
-//
-//class Process
-//{
-//public:
-//
-//	bool isFinished() const;
-//	int getCPUCoreID() const;
-//	void setCPUCoreID(int cpuCoreID);
-//	void setTimeCreated();
-//	void printCommand(std::ofstream& outfile);
-//	void printToTextFile();
-//
-//private:
-//	int cpuCoreID = -1;
-//
-//	void draw() const;
-//	void nextLine();
-//
-//	friend class ProcessManager;
-//};

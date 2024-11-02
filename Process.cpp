@@ -4,7 +4,7 @@ Process::Process() {}
 
 Process::Process(String name, long long totalLinesOfCode) {
 	this->name = name;
-	this->currentInstructionLine = 0; // TODO: Not sure if this should be 1
+	this->currentInstructionLine = 1; // TODO: Not sure if this should be 1
 	this->totalLinesOfCode = totalLinesOfCode;
 	this->timeCreated = time(0);
     this->currentState = Process::READY;
@@ -95,24 +95,3 @@ int Process::getCPUCoreID() {
 void Process::setCPUCoreID(int cpuCoreID) {
    this->cpuCoreID = cpuCoreID;
 }
-
-//void Process::printCommand(std::ofstream& outfile) {
-//    outfile << "(" << this->getTimestamp() << ") " << name << " " << "Core: " << this->cpuCoreID << " " << "Hello World" << std::endl;
-//    this->nextLine();
-//}
-//
-// PRINT command
-
-
-// bool Process::isFinished() const {
-//    if (currentState == ProcessState::TERMINATED) {
-//        return true;
-//    }
-
-//    return false;
-// }
-
-// void Process::setTimeCreated() {
-//    this->timeCreated = this->getTimestamp();
-// }
-
