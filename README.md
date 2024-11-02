@@ -12,9 +12,7 @@ Last updated: 11-02-2024
 - Rebano, Jaeme Patrice **(S11)**
 - Jaramillo, Brandon Anthony **(S12)**
 
-## Installation
-
-### Notes
+## Notes
 
 Change "cls" to "clear" depending on OS.
 
