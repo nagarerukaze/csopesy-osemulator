@@ -86,13 +86,6 @@ void ProcessManager::displayAllProcesses() {
     std::cout << "Finished processes:" << std::endl;
     displayProcessesList(this->finishedProcesses);
     std::cout << "--------------------------------------" << std::endl;
-
-    if(CPUScheduler::getInstance()->getNumberOfCPUsUsed() == 0) {
-        std::cout << CPUScheduler::getInstance()->getCPUWorker(0)->hasProcess() << std::endl;
-        std::cout << CPUScheduler::getInstance()->getCPUWorker(1)->hasProcess() << std::endl;
-        std::cout << CPUScheduler::getInstance()->getCPUWorker(2)->hasProcess() << std::endl;
-        std::cout << CPUScheduler::getInstance()->getCPUWorker(3)->hasProcess() << std::endl;
-    }
 }
 
 void ProcessManager::moveToFinished(const std::string& processName) {
