@@ -1,14 +1,11 @@
 #include "ConsoleManager.h"
 
-/*
-
-    Singleton stuff
-
-*/
+// Singleton stuff
 ConsoleManager::ConsoleManager() {
     this->cpuCycles = 0;
     this->isRunning = true;
 }
+
 ConsoleManager::ConsoleManager(const ConsoleManager&) {}
 
 ConsoleManager* ConsoleManager::sharedInstance = nullptr;
@@ -55,8 +52,9 @@ void ConsoleManager::printHeader() {
 }
 
 void ConsoleManager::clear() {
-    system("clear");  // !! CHANGE TO "cls" FOR WINDOWS !!
-                    // !! CHANGE TO "clear" FOR MAC !!
+    // !! CHANGE TO "cls" FOR WINDOWS !!
+    // !! CHANGE TO "clear" FOR MAC !!
+    system("clear");  
     this->printHeader();
 }
 
@@ -76,6 +74,7 @@ bool ConsoleManager::initialize() {
     int num_cpu;
     long long quantum_cycles, batch_process_freq, min_ins, max_ins, delays_per_exec;
 
+    // Get values from config.txt
     std::ifstream f("config.txt");
 
     if (!f.is_open()) {
@@ -104,6 +103,7 @@ bool ConsoleManager::initialize() {
     max_ins = std::stoll(values[5]); // max instructions per process [1, 2^32]
     delays_per_exec = std::stoll(values[6]); // delay before executing next instruction. [0, 2^32] if zero, each instruction is executed per CPU cycle
 
+    // Value validation
     if (num_cpu < 1 || num_cpu > 128 ||
         (scheduler != "fcfs" && scheduler != "rr") ||
         quantum_cycles < 1 || quantum_cycles > 4294967296 ||
@@ -122,6 +122,7 @@ bool ConsoleManager::initialize() {
     std::thread schedulerThread([] {
        CPUScheduler::getInstance()->startScheduler();
     });
+
     schedulerThread.detach(); // Detach the thread
 
     return true;
@@ -299,5 +300,3 @@ void ConsoleManager::stopRunning() {
         this->cpuThread.join(); // Wait for the thread to finish
     }
 }
-
-

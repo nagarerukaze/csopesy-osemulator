@@ -54,7 +54,6 @@ void CPUWorker::startWorker() {
             else {
                 running = false;
             }
-            
         }
 
         // Increment the cycle counter and reset if needed

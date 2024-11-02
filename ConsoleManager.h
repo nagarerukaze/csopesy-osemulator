@@ -13,7 +13,6 @@
 #include <windows.h>
 */
 
-
 #include <thread>
 #include <chrono>
 
@@ -43,18 +42,14 @@ public:
 	// For Windows
 	// void setCursorPosition(int x, int y);
 	//
-	void printAtPosition(int x, int y, const String& text);
+	// void printAtPosition(int x, int y, const String& text);
 
 	bool getIsRunning() const;
 	long long getCPUCycle() const;
 
 	void stopRunning();
 private:
-	/*
-
-	Singleton stuff
-
-	*/
+	// Singleton stuff
 	ConsoleManager();
 	ConsoleManager(const ConsoleManager&);
 	ConsoleManager& operator = (const ConsoleManager&);
