@@ -16,6 +16,9 @@ CPUScheduler* CPUScheduler::sharedInstance = nullptr;
 void CPUScheduler::initialize(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec) {
 	sharedInstance = new CPUScheduler(scheduler, num_cpu, quantum_cycles, delay_per_exec);
     sharedInstance->initializeCPUWorkers(sharedInstance->numberOfCores);
+    
+    // For Testing
+    //std::cout << "quantum cycles: " << quantum_cycles;
 }
 
 void CPUScheduler::initializeCPUWorkers(int num) {
@@ -102,6 +105,8 @@ void CPUScheduler::RRScheduling() {
                 Process* process_out = nullptr;
                 Process* process_in = nullptr;
                 
+
+                
                 if (!processQueue.empty()) {
                     // Safely remove the current process and requeue it if needed
                     {
@@ -123,6 +128,9 @@ void CPUScheduler::RRScheduling() {
                     }
 
                     std::thread(&CPUWorker::startWorker, worker).detach();
+                    
+                    // For Testing
+                    //std::cout<<"CPU #"<< i+1 << ": " << worker->getProcess()->getName() << std::endl;
                 }
                 else if (worker->hasProcess()) {
                     // handle the case where the queue is empty but the last 4 processes haven't been terminated properly
@@ -138,12 +146,14 @@ void CPUScheduler::RRScheduling() {
                     }
                 }
             }
+
         }
 
         this->cpuCycles++;
         if (this->cpuCycles > this->quantum_cycles) {
             this->cpuCycles = 1;  // Reset the cycle counter
         }
+        
     }
 }
 
