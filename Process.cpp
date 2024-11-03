@@ -13,12 +13,12 @@ Process::Process(String name, long long totalLinesOfCode) {
 void Process::printInfo() {
     std::cout << "Process: " << this->getName() << std::endl;
     std::cout << std::endl;
-    std::cout << "Current instruction line: " << this->getCurrentInstructionLine() << std::endl;
     
     if (this->getState() == TERMINATED) {
         std::cout << "Finished!" << std::endl;
     }
     else {
+        std::cout << "Current instruction line: " << this->getCurrentInstructionLine() << std::endl;
         std::cout << "Lines of code: " << this->getTotalLinesOfCode() << std::endl;
     }
     std::cout << std::endl;
