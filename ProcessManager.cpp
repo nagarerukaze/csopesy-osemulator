@@ -97,14 +97,16 @@ void ProcessManager::displayAllProcesses() {
     std::cout << "--------------------------------------" << std::endl;
 }
 
-void ProcessManager::moveToFinished(const std::string& processName) {
-   auto it = std::find_if(activeProcesses.begin(), activeProcesses.end(),
-       [&processName](Process* process) { return process->getName() == processName; });
+void ProcessManager::moveToFinished(const String& processName) {
+    Process* process = findProcess(processName);
 
-   if (it != activeProcesses.end()) {
-       finishedProcesses.push_back(*it); // Move to finishedProcesses
-       activeProcesses.erase(it); // Erase from activeProcesses
-   }
+    if (process) {
+        finishedProcesses.push_back(process); // Move to finishedProcesses
+        auto it = std::find(activeProcesses.begin(), activeProcesses.end(), process);
+        if (it != activeProcesses.end()) {
+            activeProcesses.erase(it); // Erase from activeProcesses
+        }
+    }
 }
 
 long long ProcessManager::getBatchProcessFreq() const {

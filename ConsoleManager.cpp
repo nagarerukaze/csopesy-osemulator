@@ -238,7 +238,7 @@ void ConsoleManager::waitForNextCycle() {
     long long targetCycle = currentCycle + ProcessManager::getInstance()->getBatchProcessFreq();
 
     while (this->getCPUCycle() < targetCycle && ProcessManager::getInstance()->getIsGeneratingProcesses()) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
 
