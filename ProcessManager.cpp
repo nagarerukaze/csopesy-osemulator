@@ -75,7 +75,7 @@ void ProcessManager::displayFinishedProcessesList() {
     if (!this->finishedProcesses.empty()) {
         for (const auto& process : this->finishedProcesses) {
             std::cout << process->getName() << "\t"
-                << process->getTimestamp() << "\t"
+                << "(" << process->getTimestamp() << ")\t"
                 << "Finished!\t"
                 << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
         }
@@ -110,7 +110,7 @@ void ProcessManager::printFinishedProcessesList(std::ofstream& outFile) {
     if (!this->finishedProcesses.empty()) {
         for (const auto& process : this->finishedProcesses) {
             outFile << process->getName() << "\t"
-                << process->getTimestamp() << "\t"
+                << "(" <<process->getTimestamp() << ")\t"
                 << "Finished!\t"
                 << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
         }
