@@ -33,8 +33,8 @@ int main() {
             else if (command == "exit") {
                 ConsoleManager::getInstance()->stopRunning();
             }
-            else if (command == "cycle") {  //TODO: Delete !!
-                std::cout << ConsoleManager::getInstance()->getCPUCycle() << std::endl;
+            else if (command == "initialize") {
+                std::cout << "Already initialized." << std::endl;
             }
             else {
                 std::cout << "Unknown command." << std::endl;
