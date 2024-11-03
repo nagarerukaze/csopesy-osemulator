@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "Process.h"
+#include "CPUWorker.h"
 
 typedef std::string String;
 
@@ -15,7 +16,8 @@ public:
     void createProcess(String name);
     Process* findProcess(const String& name) const;
     bool displayProcess(const String& name) const;
-    void displayProcessesList(std::vector<Process*> processList);
+    void displayActiveProcessesList();
+    void displayFinishedProcessesList();
     void displayAllProcesses();
 
     long long getBatchProcessFreq() const;

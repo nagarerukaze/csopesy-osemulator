@@ -50,27 +50,34 @@ bool ProcessManager::displayProcess(const String& name) const {
 /*
     Used in `screen -ls` command.
 
-    Display the processes inside a list.
-    For each process, display its:
-        (1) Name
-        (2) TODO: time created or response time?
-        (3) Core
-        (4) Current line of instruction / total lines of code
+    Display the activeProcesses (i.e., processes inside a CPU core).
 */
-void ProcessManager::displayProcessesList(std::vector<Process*> processList) {
-    if (!processList.empty()) {
-        for (const auto& process : processList) {
-            if (process->getState() == Process::ProcessState::RUNNING) {
-                std::cout << process->getName() << "\t"
-                    << process->getTimestamp() << "\t";
-                if (process->getState() == Process::ProcessState::TERMINATED) {
-                    std::cout << "Finished!" << "\t";
-                }
-                else {
-                    std::cout << "Core: " << std::to_string(process->getCPUCoreID()) << " \t";
-                }
-                std::cout << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
-            }
+void ProcessManager::displayActiveProcessesList() {
+    std::vector<CPUWorker*> workers = CPUScheduler::getInstance()->getCPUWorkers();
+
+    for (const auto& worker : workers) {
+        if (worker->hasProcess()) {
+            Process* process = worker->getProcess();
+            std::cout << process->getName() << " \t"
+                << process->getTimestamp() << " \t"
+                << "Core: " << (process->getCPUCoreID() == -1 ? "N/A" : std::to_string(process->getCPUCoreID())) << " \t"
+                << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
+        }
+    }
+}
+
+/*
+    Used in `screen -ls` command.
+
+    Display the processes inside the finishedProcesses list.
+*/
+void ProcessManager::displayFinishedProcessesList() {
+    if (!this->finishedProcesses.empty()) {
+        for (const auto& process : this->finishedProcesses) {
+            std::cout << process->getName() << " \t"
+                << process->getTimestamp() << " \t"
+                << "Core: " << (process->getCPUCoreID() == -1 ? "N/A" : std::to_string(process->getCPUCoreID())) << " \t"
+                << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
         }
     }
 }
@@ -84,25 +91,31 @@ void ProcessManager::displayProcessesList(std::vector<Process*> processList) {
         (3) # of cores available
         (4) List of active processes
         (5) List of finished processes
+
+        For each process, display its:
+            (1) Name
+            (2) TODO: time created or response time?
+            (3) Core
+            (4) Current line of instruction / total lines of code
 */
 void ProcessManager::displayAllProcesses() {
     int coresUsed = CPUScheduler::getInstance()->getNumberOfCPUsUsed();
     int totalCores = CPUScheduler::getInstance()->getNumberOfCores();
-    double cpuUtilization = (coresUsed / totalCores) * 100 ;
-    
-    std::cout << std::endl << "CPU Utilization: " << (int) cpuUtilization << "%" << std::endl;
+    double cpuUtilization = (coresUsed / totalCores) * 100;
+
+    std::cout << std::endl << "CPU Utilization: " << (int)cpuUtilization << "%" << std::endl;
 
     std::cout << "Cores used: " << coresUsed << std::endl;
-    std::cout << "Cores available: " << totalCores << std::endl;
+    std::cout << "Cores available: " << totalCores - coresUsed << std::endl;
     std::cout << std::endl;
     std::cout << "--------------------------------------" << std::endl;
     std::cout << "Running processes:" << std::endl;
-    displayProcessesList(this->activeProcesses);
+    displayActiveProcessesList();
 
     std::cout << std::endl;
 
     std::cout << "Finished processes:" << std::endl;
-    displayProcessesList(this->finishedProcesses);
+    displayFinishedProcessesList();
     std::cout << "--------------------------------------" << std::endl;
 }
 
