@@ -58,9 +58,9 @@ void ProcessManager::displayActiveProcessesList() {
     for (const auto& worker : workers) {
         if (worker->hasProcess()) {
             Process* process = worker->getProcess();
-            std::cout << process->getName() << " \t"
-                << process->getTimestamp() << " \t"
-                << "Core: " << (process->getCPUCoreID() == -1 ? "N/A" : std::to_string(process->getCPUCoreID())) << " \t"
+            std::cout << process->getName() << "\t"
+                << process->getTimestamp() << "\t"
+                << "Core: " << std::to_string(process->getCPUCoreID()) << "\t"
                 << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
         }
     }
@@ -74,9 +74,44 @@ void ProcessManager::displayActiveProcessesList() {
 void ProcessManager::displayFinishedProcessesList() {
     if (!this->finishedProcesses.empty()) {
         for (const auto& process : this->finishedProcesses) {
-            std::cout << process->getName() << " \t"
-                << process->getTimestamp() << " \t"
-                << "Core: " << (process->getCPUCoreID() == -1 ? "N/A" : std::to_string(process->getCPUCoreID())) << " \t"
+            std::cout << process->getName() << "\t"
+                << process->getTimestamp() << "\t"
+                << "Finished!\t"
+                << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
+        }
+    }
+}
+
+/*
+    Used in `report-util` command.
+
+    Print the activeProcesses (i.e., processes inside a CPU core).
+*/
+void ProcessManager::printActiveProcessesList(std::ofstream& outFile) {
+    std::vector<CPUWorker*> workers = CPUScheduler::getInstance()->getCPUWorkers();
+
+    for (const auto& worker : workers) {
+        if (worker->hasProcess()) {
+            Process* process = worker->getProcess();
+            outFile << process->getName() << "\t"
+                << process->getTimestamp() << "\t"
+                << "Core: " << std::to_string(process->getCPUCoreID()) << "\t"
+                << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
+        }
+    }
+}
+
+/*
+    Used in `report-util` command.
+
+    Print the processes inside the finishedProcesses list.
+*/
+void ProcessManager::printFinishedProcessesList(std::ofstream& outFile) {
+    if (!this->finishedProcesses.empty()) {
+        for (const auto& process : this->finishedProcesses) {
+            outFile << process->getName() << "\t"
+                << process->getTimestamp() << "\t"
+                << "Finished!\t"
                 << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
         }
     }
@@ -103,7 +138,7 @@ void ProcessManager::displayAllProcesses() {
     int totalCores = CPUScheduler::getInstance()->getNumberOfCores();
     double cpuUtilization = (coresUsed / totalCores) * 100;
 
-    std::cout << std::endl << "CPU Utilization: " << (int)cpuUtilization << "%" << std::endl;
+    std::cout << "CPU Utilization: " << (int)cpuUtilization << "%" << std::endl;
 
     std::cout << "Cores used: " << coresUsed << std::endl;
     std::cout << "Cores available: " << totalCores - coresUsed << std::endl;
@@ -150,69 +185,3 @@ bool ProcessManager::getIsGeneratingProcesses() const {
 void ProcessManager::setIsGeneratingProcesses(bool val) {
     this->isGeneratingProcesses = val;
 }
-//#include "ProcessManager.h"
-//
-//ProcessManager::ProcessManager() {}
-//ProcessManager::ProcessManager(const ProcessManager&) {}
-//
-//ProcessManager* ProcessManager::sharedInstance = nullptr;
-//
-//void ProcessManager::initialize() {
-//    sharedInstance = new ProcessManager();
-//}
-//
-//ProcessManager* ProcessManager::getInstance() {
-//    return sharedInstance;
-//}
-//
-//// screen -s <name of new process>
-//void ProcessManager::createProcess(std::string name, int linesOfCode) {
-//    // Create Process object
-//    Process* process = new Process(name, linesOfCode);
-//
-//    activeProcesses.push_back(process);
-//    //activeProcesses[name] = process;
-//    CPUScheduler::getInstance()->enqueueProcess(process);
-//}
-//
-//// screen -r <name of existing process>
-//// Redraw the console of the associated process
-//    else {
-//        std::cout << "Process '" << processName << "' not found in active processes." << std::endl;
-//    }
-   //auto it = activeProcesses.find(processName); // Find the process
-
-   //if (it != activeProcesses.end()) {
-   //    finishedProcesses.push_back(it->second); // Move to finishedProcesses
-   //    activeProcesses.erase(it); // Erase from activeProcesses
-   //}
-   //else {
-   //    std::cout << "Process '" << processName << "' not found in active processes." << std::endl;
-   //}
-//
-//
-//void ProcessManager::displayAll() {
-//    std::cout << "--------------------------------------" << std::endl;
-//    std::cout << "Running processes:" << std::endl;
-//
-//    // Iterate over active processes and print details
-//    for (const auto& process : activeProcesses) {
-//        std::cout << process->getName() << " \t"
-//            << process->getTimestamp() << " \t" // Add the timestamp
-//            << "Core: " << (process->getCPUCoreID() == -1 ? "N/A" : std::to_string(process->getCPUCoreID())) << " \t"
-//            << process->getCurrInstructionLine() << "/" << process->getLinesOfCode() << std::endl;
-//    }
-//
-//    std::cout << std::endl;
-//
-//    // Iterate over finished processes and print details
-//    for (const auto& process : finishedProcesses) {
-//        std::cout << process->getName() << " \t"
-//            << process->getTimestamp() << " \t" // Add the timestamp
-//            << "Finished" << " \t"
-//            << process->getCurrInstructionLine() << "/" << process->getLinesOfCode() << std::endl;
-//    }
-//
-//    std::cout << "--------------------------------------" << std::endl;
-//}
-//

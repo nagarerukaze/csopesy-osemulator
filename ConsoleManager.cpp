@@ -42,15 +42,18 @@ void ConsoleManager::printHeader() {
     std::cout << "Jocson, Nicole Pedernal (S11)" << std::endl;
     std::cout << "Rebano, Jaeme Patrice (S11)" << std::endl;
     std::cout << "Jaramillo, Brandon Anthony (S12)" << std::endl << std::endl;
-    std::cout << "Last updated: 11-02-2024" << std::endl; // TODO: Update the Date
+    std::cout << "Last updated: 11-03-2024" << std::endl; // TODO: Update the Date
     std::cout << "---------------------------------------------------------------" << std::endl;
     std::cout << std::endl;
 }
 
 void ConsoleManager::clear() {
-    // !! CHANGE TO "cls" FOR WINDOWS !!
-    // !! CHANGE TO "clear" FOR MAC !!
-    system("clear");  
+    // For Windows
+    system("cls");
+
+    // For Mac
+    system("clear");
+
     this->printHeader();
 }
 
@@ -149,9 +152,6 @@ void ConsoleManager::screen(String command) {
             (4) List of finished processes
      */
     if (words[1] == "-ls") {
-        // TODO: 
-        std::cout << "Show running processes." << std::endl;
-
         if (words.size() == 2) {
             ProcessManager::getInstance()->displayAllProcesses();
         }
@@ -272,7 +272,23 @@ void ConsoleManager::reportUtil() {
     std::ofstream myfile("csopesy-log.txt");
     if (myfile.is_open())
     {
-        //screen("screen -ls");
+        int coresUsed = CPUScheduler::getInstance()->getNumberOfCPUsUsed();
+        int totalCores = CPUScheduler::getInstance()->getNumberOfCores();
+        double cpuUtilization = (coresUsed / totalCores) * 100;
+
+        myfile << "CPU Utilization: " << (int)cpuUtilization << "%\n";
+
+        myfile << "Cores used: " << coresUsed << "\n";
+        myfile << "Cores available: " << totalCores - coresUsed << "\n\n";
+        myfile << "--------------------------------------\n";
+        myfile << "Running processes:\n";
+        ProcessManager::getInstance()->printActiveProcessesList(myfile);
+
+        myfile << "\n";
+
+        myfile << "Finished processes:\n";
+        ProcessManager::getInstance()->printFinishedProcessesList(myfile);
+        myfile << "--------------------------------------\n";
         myfile.close();
     }
     else {

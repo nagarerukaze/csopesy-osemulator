@@ -18,6 +18,8 @@ public:
     bool displayProcess(const String& name) const;
     void displayActiveProcessesList();
     void displayFinishedProcessesList();
+    void printActiveProcessesList(std::ofstream& outFile);
+    void printFinishedProcessesList(std::ofstream& outFile);
     void displayAllProcesses();
 
     long long getBatchProcessFreq() const;
