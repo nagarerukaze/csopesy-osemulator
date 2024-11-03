@@ -19,7 +19,7 @@ public:
     void enqueueProcess(Process* process);
     int getNumberOfCPUsUsed();
     int getNumberOfCores();
-    CPUWorker* getCPUWorker(int id);
+    std::vector<CPUWorker*> getCPUWorkers();
 
 private:
     CPUScheduler(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec);

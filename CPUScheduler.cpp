@@ -66,6 +66,10 @@ int CPUScheduler::getNumberOfCores() {
     return this->numberOfCores;
 }
 
+std::vector<CPUWorker*> CPUScheduler::getCPUWorkers() {
+    return this->cpuWorkers;
+}
+
 void CPUScheduler::FCFSScheduling() {
     while(running) {
         if(!processQueue.empty() || this->getNumberOfCPUsUsed() > 0) {
@@ -157,9 +161,3 @@ void CPUScheduler::RRScheduling() {
     }
 }
 
-// FOR TESTING
-/*
-CPUWorker* CPUScheduler::getCPUWorker(int id) {
-    return cpuWorkers[id];
-}
-*/
