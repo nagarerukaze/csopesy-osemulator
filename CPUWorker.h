@@ -16,7 +16,6 @@ public:
     ~CPUWorker() = default;                         // Destructor
     void setProcess(Process* process);
     void startWorker();
-    void switchProcess(Process* process);
     bool hasProcess();
     Process* getProcess();
 

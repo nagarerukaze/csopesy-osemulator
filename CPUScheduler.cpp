@@ -16,9 +16,6 @@ CPUScheduler* CPUScheduler::sharedInstance = nullptr;
 void CPUScheduler::initialize(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec) {
 	sharedInstance = new CPUScheduler(scheduler, num_cpu, quantum_cycles, delay_per_exec);
     sharedInstance->initializeCPUWorkers(sharedInstance->numberOfCores);
-    
-    // For Testing
-    //std::cout << "quantum cycles: " << quantum_cycles;
 }
 
 void CPUScheduler::initializeCPUWorkers(int num) {

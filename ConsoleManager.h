@@ -7,12 +7,6 @@
 #include <sstream>
 #include <stdlib.h> 
 
-// For Windows
-/*
-#include <conio.h>
-#include <windows.h>
-*/
-
 #include <thread>
 #include <chrono>
 
@@ -36,11 +30,6 @@ public:
 	void schedulerTest();
 	void schedulerStop();
 	void reportUtil();
-
-	// For Windows
-	// void setCursorPosition(int x, int y);
-	//
-	// void printAtPosition(int x, int y, const String& text);
 
 	bool getIsRunning() const;
 	long long getCPUCycle() const;

@@ -88,10 +88,10 @@ bool ConsoleManager::initialize() {
     num_cpu = std::stoi(values[0]);
     scheduler = values[1];
     quantum_cycles = std::stoll(values[2]);
-    batch_process_freq = std::stoll(values[3]); // frequency of generating process in "scheduler-test". [1, 2^32] if one, a new process is generated at the end of each CPU cycle
-    min_ins = std::stoll(values[4]); // min instructions per process [1, 2^32]
-    max_ins = std::stoll(values[5]); // max instructions per process [1, 2^32]
-    delays_per_exec = std::stoll(values[6]); // delay before executing next instruction. [0, 2^32] if zero, each instruction is executed per CPU cycle
+    batch_process_freq = std::stoll(values[3]); // frequency of generating process in "scheduler-test"
+    min_ins = std::stoll(values[4]); // min instructions per process 
+    max_ins = std::stoll(values[5]); // max instructions per process
+    delays_per_exec = std::stoll(values[6]); // delay before executing next instruction
 
     // Value validation
     if (num_cpu < 1 || num_cpu > 128 ||
@@ -283,23 +283,6 @@ void ConsoleManager::reportUtil() {
         std::cout << "Unable to open file";
     }
 }
-
-// For Windows
-// void ConsoleManager::setCursorPosition(int x, int y) {
-
-//     COORD coord;
-//     coord.X = x; // Column
-//     coord.Y = y; // Row
-
-//     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-// }
-
-// For Windows
-// void ConsoleManager::printAtPosition(int x, int y, const String& text) {
-//     setCursorPosition(x, y);
-//     std::cout << text;
-// }
-
 
 bool ConsoleManager::getIsRunning() const {
     return this->isRunning;
