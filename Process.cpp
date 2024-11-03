@@ -27,7 +27,12 @@ void Process::printInfo() {
 }
 
 void Process::draw() {
+    // For Windows
     system("cls");
+
+    // For Mac
+    system("clear");
+    
     printInfo();
     bool isRunning = true;
     String command;
