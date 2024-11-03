@@ -129,7 +129,7 @@ void ProcessManager::printFinishedProcessesList(std::ofstream& outFile) {
 
         For each process, display its:
             (1) Name
-            (2) TODO: time created or response time?
+            (2) Time created
             (3) Core
             (4) Current line of instruction / total lines of code
 */
