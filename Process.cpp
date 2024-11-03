@@ -81,7 +81,7 @@ String Process::getTimestamp() {
     // localtime_r(&(this->timeCreated), &ltm);
     
     std::ostringstream oss;
-    oss << std::put_time(&ltm, "%m/%d/%Y, %I:%M:%S %p");
+    oss << std::put_time(&ltm, "%m/%d/%Y, %I:%M:%S%p");
     return oss.str();
 }
 

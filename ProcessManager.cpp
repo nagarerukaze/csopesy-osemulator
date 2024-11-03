@@ -59,7 +59,7 @@ void ProcessManager::displayActiveProcessesList() {
         if (worker->hasProcess()) {
             Process* process = worker->getProcess();
             std::cout << process->getName() << "\t"
-                << process->getTimestamp() << "\t"
+                << "(" << process->getTimestamp() << ")\t"
                 << "Core: " << std::to_string(process->getCPUCoreID()) << "\t"
                 << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
         }
@@ -94,7 +94,7 @@ void ProcessManager::printActiveProcessesList(std::ofstream& outFile) {
         if (worker->hasProcess()) {
             Process* process = worker->getProcess();
             outFile << process->getName() << "\t"
-                << process->getTimestamp() << "\t"
+                << "(" << process->getTimestamp() << ")\t"
                 << "Core: " << std::to_string(process->getCPUCoreID()) << "\t"
                 << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
         }
