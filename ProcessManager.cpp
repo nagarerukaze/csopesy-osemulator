@@ -60,10 +60,17 @@ bool ProcessManager::displayProcess(const String& name) const {
 void ProcessManager::displayProcessesList(std::vector<Process*> processList) {
     if (!processList.empty()) {
         for (const auto& process : processList) {
-            std::cout << process->getName() << " \t"
-                << process->getTimestamp() << " \t"
-                << "Core: " << (process->getCPUCoreID() == -1 ? "N/A" : std::to_string(process->getCPUCoreID())) << " \t"
-                << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
+            if (process->getState() == Process::ProcessState::RUNNING) {
+                std::cout << process->getName() << "\t"
+                    << process->getTimestamp() << "\t";
+                if (process->getState() == Process::ProcessState::TERMINATED) {
+                    std::cout << "Finished!" << "\t";
+                }
+                else {
+                    std::cout << "Core: " << std::to_string(process->getCPUCoreID()) << " \t";
+                }
+                std::cout << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
+            }
         }
     }
 }
