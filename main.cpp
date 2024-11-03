@@ -48,7 +48,6 @@ int main() {
             }
             else {
                 std::cout << "Succesfully initialized." << std::endl;
-                ConsoleManager::getInstance()->startCPUCycle();
             }
         }
         else if (command == "clear") {

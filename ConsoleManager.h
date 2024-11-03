@@ -28,13 +28,11 @@ public:
 	static void initializeConsole();
 	static ConsoleManager* getInstance();
 
-	void startCPUCycle();
 	void printHeader();
 	void clear();
 	bool initialize();
 	void screen(String command);
-	void generateProcesses(long long count);
-	void waitForNextCycle();
+	void generateProcesses();
 	void schedulerTest();
 	void schedulerStop();
 	void reportUtil();
