@@ -14,18 +14,7 @@ int main() {
         std::cout << "Enter a command: ";
         std::getline(std::cin, command);
 
-        if (command == "initialize") {
-            initialized = ConsoleManager::getInstance()->initialize();
-
-            if (!initialized) {
-                std::cout << "Initialization failed. There are invalid parameters in config.txt." << std::endl;
-            }
-            else {
-                std::cout << "Succesfully initialized." << std::endl;
-                ConsoleManager::getInstance()->startCPUCycle();
-            }
-        }
-        else if (initialized) {
+        if (initialized) {
             if (command.rfind("screen", 0) == 0) {
                 ConsoleManager::getInstance()->screen(command);
             }
@@ -49,6 +38,16 @@ int main() {
             }
             else {
                 std::cout << "Unknown command." << std::endl;
+            }
+        } else if (command == "initialize") {
+            initialized = ConsoleManager::getInstance()->initialize();
+
+            if (!initialized) {
+                std::cout << "Initialization failed. There are invalid parameters in config.txt." << std::endl;
+            }
+            else {
+                std::cout << "Succesfully initialized." << std::endl;
+                ConsoleManager::getInstance()->startCPUCycle();
             }
         }
         else if (command == "clear") {

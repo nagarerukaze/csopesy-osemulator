@@ -28,20 +28,18 @@ void ProcessManager::createProcess(String name) {
     CPUScheduler::getInstance()->enqueueProcess(new_process);
 }
 
-bool ProcessManager::displayProcess(String name) const {
-    // Find if process is in activeprocesses
+Process* ProcessManager::findProcess(const String& name) const {
     auto it = std::find_if(activeProcesses.begin(), activeProcesses.end(),
         [&name](Process* process) { return process->getName() == name; });
+    return (it != activeProcesses.end()) ? *it : nullptr;
+}
 
-    auto it2 = std::find_if(finishedProcesses.begin(), finishedProcesses.end(),
-        [&name](Process* process) { return process->getName() == name; });
+bool ProcessManager::displayProcess(const String& name) const {
+    Process* process = findProcess(name);
 
-    if (it != activeProcesses.end()) {
-        (*it)->draw();
-        return true;
-    }
-    else if (it2 != finishedProcesses.end()) {
-        (*it2)->draw();
+    // If Found: draw console
+    if (process) {
+        process->draw();
         return true;
     }
 

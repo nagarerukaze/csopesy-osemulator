@@ -13,10 +13,10 @@ public:
     static ProcessManager* getInstance();
 
     void createProcess(String name);
-    bool displayProcess(String name) const;
+    Process* findProcess(const String& name) const;
+    bool displayProcess(const String& name) const;
     void displayProcessesList(std::vector<Process*> processList);
     void displayAllProcesses();
-    Process* findProcess(const String& name);
 
     long long getBatchProcessFreq() const;
     long long getMinInstructions() const;

@@ -18,15 +18,11 @@ ConsoleManager* ConsoleManager::getInstance() {
     return sharedInstance;
 }
 
-/*
-    TODO: Honestly not sure if this is how the cpu cycles work !!
-*/
 void ConsoleManager::startCPUCycle() {
     this->cpuThread = std::thread([this]() { // Create the CPU cycle thread
         int cpuCycle = 0; // Example CPU cycle counter
         while (this->getIsRunning()) {
             this->cpuCycles++;
-            //std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Simulate CPU cycle
         }
         });
 }
@@ -54,7 +50,7 @@ void ConsoleManager::printHeader() {
 void ConsoleManager::clear() {
     // !! CHANGE TO "cls" FOR WINDOWS !!
     // !! CHANGE TO "clear" FOR MAC !!
-    system("clear");  
+    system("cls");  
     this->printHeader();
 }
 
@@ -95,7 +91,7 @@ bool ConsoleManager::initialize() {
 
     f.close();
 
-    num_cpu = std::stoll(values[0]);
+    num_cpu = std::stoi(values[0]);
     scheduler = values[1];
     quantum_cycles = std::stoll(values[2]);
     batch_process_freq = std::stoll(values[3]); // frequency of generating process in "scheduler-test". [1, 2^32] if one, a new process is generated at the end of each CPU cycle
@@ -173,12 +169,18 @@ void ConsoleManager::screen(String command) {
      */
     else if (words[1] == "-s") {
         if (words.size() == 3) {
-            ProcessManager::getInstance()->createProcess(words[2]);
-            bool isFound = ProcessManager::getInstance()->displayProcess(words[2]);
-
-
+            bool isFound = ProcessManager::getInstance()->findProcess(words[2]);
             if (isFound) {
-                this->clear();
+                std::cout << "A process called \"" << words[2] << "\" already exists. Please choose another name." << std::endl;
+            }
+            else {
+                ProcessManager::getInstance()->createProcess(words[2]);
+                bool isFound = ProcessManager::getInstance()->displayProcess(words[2]);
+
+
+                if (isFound) {
+                    this->clear();
+                }
             }
         }
 
@@ -261,11 +263,21 @@ void ConsoleManager::schedulerStop() {
     std::cout << "Stopped generating dummy processes." << std::endl;
 }
 
+/*
+    Generate a utilization report same as
+    screen -ls but is saved into a text
+    file - "csopesy-log.txt"
+*/
 void ConsoleManager::reportUtil() {
-    // TODO: generates CPU utilization report
-    // This console should be able to generate a utilization report whenever the "report-util command is entered
-    // same as screen -ls but is saved into a text file - "csopesy-log.txt"
-    std::cout << "\"report-util\" command recognized. Doing something..." << std::endl; // TODO: DELETE
+    std::ofstream myfile("csopesy-log.txt");
+    if (myfile.is_open())
+    {
+        //screen("screen -ls");
+        myfile.close();
+    }
+    else {
+        std::cout << "Unable to open file";
+    }
 }
 
 // For Windows
