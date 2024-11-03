@@ -22,7 +22,7 @@ public:
     long long getMinInstructions() const;
     long long getMaxInstructions() const;
     bool getIsGeneratingProcesses() const;
-    void moveToFinished(const String& processName);
+    void moveToFinished(const std::string& processName);
 
     void setIsGeneratingProcesses(bool val);
 
