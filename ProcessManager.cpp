@@ -38,7 +38,7 @@ bool ProcessManager::displayProcess(const String& name) const {
     Process* process = findProcess(name);
 
     // If Found: draw console
-    if (process) {
+    if (process != nullptr) {
         process->draw();
         return true;
     }
@@ -58,11 +58,13 @@ bool ProcessManager::displayProcess(const String& name) const {
         (4) Current line of instruction / total lines of code
 */
 void ProcessManager::displayProcessesList(std::vector<Process*> processList) {
-    for (const auto& process : processList) {
-        std::cout << process->getName() << " \t"
-                  << process->getTimestamp() << " \t"
-                  //<< "Core: " << (process->getCPUCoreID() == -1 ? "N/A" : std::to_string(process->getCPUCoreID())) << " \t"
-                  << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
+    if (!processList.empty()) {
+        for (const auto& process : processList) {
+            std::cout << process->getName() << " \t"
+                << process->getTimestamp() << " \t"
+                << "Core: " << (process->getCPUCoreID() == -1 ? "N/A" : std::to_string(process->getCPUCoreID())) << " \t"
+                << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
+        }
     }
 }
 
@@ -100,7 +102,7 @@ void ProcessManager::displayAllProcesses() {
 void ProcessManager::moveToFinished(const String& processName) {
     Process* process = findProcess(processName);
 
-    if (process) {
+    if (process != nullptr) {
         finishedProcesses.push_back(process); // Move to finishedProcesses
         auto it = std::find(activeProcesses.begin(), activeProcesses.end(), process);
         if (it != activeProcesses.end()) {

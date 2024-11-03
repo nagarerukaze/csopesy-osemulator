@@ -75,10 +75,10 @@ String Process::getTimestamp() {
     tm ltm;
     
     // For Windows
-    //localtime_s(&ltm, &(this->timeCreated));
+    localtime_s(&ltm, &(this->timeCreated));
 
     // For Mac
-    localtime_r(&(this->timeCreated), &ltm);
+    // localtime_r(&(this->timeCreated), &ltm);
     
     std::ostringstream oss;
     oss << std::put_time(&ltm, "%m/%d/%Y, %I:%M:%S %p");
