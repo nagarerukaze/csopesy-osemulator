@@ -4,7 +4,7 @@ Process::Process() {}
 
 Process::Process(String name, long long totalLinesOfCode) {
 	this->name = name;
-	this->currentInstructionLine = 1; // TODO: Not sure if this should be 1
+	this->currentInstructionLine = 0;
 	this->totalLinesOfCode = totalLinesOfCode;
 	this->timeCreated = time(0);
     this->currentState = Process::READY;
