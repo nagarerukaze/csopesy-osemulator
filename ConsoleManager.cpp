@@ -232,17 +232,21 @@ void ConsoleManager::generateProcesses() {
 
 
 void ConsoleManager::schedulerTest() {
-    std::cout << "Generating dummy processes..." << std::endl;
     if (ProcessManager::getInstance()->getIsGeneratingProcesses()) {
         std::cout << "Scheduler Test is already running." << std::endl;
         return;
     }
 
     ProcessManager::getInstance()->setIsGeneratingProcesses(true);
+    std::cout << "Generating dummy processes..." << std::endl;
     schedulerTestThread = std::thread(&ConsoleManager::generateProcesses, this);
 }
 
 void ConsoleManager::schedulerStop() {
+    if(!ProcessManager::getInstance()->getIsGeneratingProcesses()) {
+        std::cout << "Scheduler Test is not currently running." << std::endl;
+        return;
+    }
     ProcessManager::getInstance()->setIsGeneratingProcesses(false);
 
     if (this->schedulerTestThread.joinable()) {
