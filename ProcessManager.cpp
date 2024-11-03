@@ -79,9 +79,9 @@ void ProcessManager::displayProcessesList(std::vector<Process*> processList) {
 void ProcessManager::displayAllProcesses() {
     int coresUsed = CPUScheduler::getInstance()->getNumberOfCPUsUsed();
     int totalCores = CPUScheduler::getInstance()->getNumberOfCores();
-    float cpuUtilization = (float) coresUsed / (float) cpuUtilization;
+    double cpuUtilization = (coresUsed / totalCores) * 100 ;
     
-    std::cout << std::endl << "CPU Utilization: " << cpuUtilization << "%" << std::endl;
+    std::cout << std::endl << "CPU Utilization: " << (int) cpuUtilization << "%" << std::endl;
 
     std::cout << "Cores used: " << coresUsed << std::endl;
     std::cout << "Cores available: " << totalCores << std::endl;

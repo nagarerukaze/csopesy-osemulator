@@ -928,7 +928,7 @@ relocations:
   - { offsetInCU: 0x4C3C, offset: 0x3529E, size: 0x8, addend: 0x0, symName: __ZNSt3__118condition_variableC2B8ue170006Ev, symObjAddr: 0x4F0, symBinAddr: 0x100012170, symSize: 0x30 }
   - { offsetInCU: 0x4C66, offset: 0x352C8, size: 0x8, addend: 0x0, symName: __ZNSt3__111unique_lockINS_5mutexEEC2B8ue170006ERS1_, symObjAddr: 0x5D0, symBinAddr: 0x1000121A0, symSize: 0x30 }
   - { offsetInCU: 0x4C9E, offset: 0x35300, size: 0x8, addend: 0x0, symName: __ZNSt3__111unique_lockINS_5mutexEED2B8ue170006Ev, symObjAddr: 0x600, symBinAddr: 0x1000121D0, symSize: 0x30 }
-  - { offsetInCU: 0x39, offset: 0x35372, size: 0x8, addend: 0x0, symName: __ZN14ProcessManager14sharedInstanceE, symObjAddr: 0x33700, symBinAddr: 0x100019010, symSize: 0x0 }
+  - { offsetInCU: 0x39, offset: 0x35372, size: 0x8, addend: 0x0, symName: __ZN14ProcessManager14sharedInstanceE, symObjAddr: 0x33708, symBinAddr: 0x100019010, symSize: 0x0 }
   - { offsetInCU: 0x47F3, offset: 0x39B2C, size: 0x8, addend: 0x0, symName: '__ZNSt3__17find_ifB8ue170006INS_11__wrap_iterIPKP7ProcessEEZNK14ProcessManager11findProcessERKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EET_SH_SH_T0_', symObjAddr: 0x440, symBinAddr: 0x100012640, symSize: 0x80 }
   - { offsetInCU: 0x484E, offset: 0x39B87, size: 0x8, addend: 0x0, symName: __ZNSt3__1neB8ue170006IPKP7ProcessEEbRKNS_11__wrap_iterIT_EES9_, symObjAddr: 0x520, symBinAddr: 0x100012720, symSize: 0x30 }
   - { offsetInCU: 0x4891, offset: 0x39BCA, size: 0x8, addend: 0x0, symName: __ZNSt3__1neB8ue170006IPP7ProcessEEbRKNS_11__wrap_iterIT_EES8_, symObjAddr: 0x960, symBinAddr: 0x100012A60, symSize: 0x30 }
@@ -969,7 +969,7 @@ relocations:
   - { offsetInCU: 0x58C4, offset: 0x3ABFD, size: 0x8, addend: 0x0, symName: __ZNSt3__16__moveB8ue170006INS_17_ClassicAlgPolicyEPP7ProcessS4_S4_EENS_4pairIT0_T2_EES6_T1_S7_, symObjAddr: 0x4580, symBinAddr: 0x100015620, symSize: 0x40 }
   - { offsetInCU: 0x5930, offset: 0x3AC69, size: 0x8, addend: 0x0, symName: __ZNSt3__123__dispatch_copy_or_moveB8ue170006INS_17_ClassicAlgPolicyENS_11__move_loopIS1_EENS_14__move_trivialEPP7ProcessS7_S7_EENS_4pairIT2_T4_EES9_T3_SA_, symObjAddr: 0x45C0, symBinAddr: 0x100015660, symSize: 0x40 }
   - { offsetInCU: 0x59AE, offset: 0x3ACE7, size: 0x8, addend: 0x0, symName: __ZNSt3__121__unwrap_and_dispatchB8ue170006INS_10__overloadINS_11__move_loopINS_17_ClassicAlgPolicyEEENS_14__move_trivialEEEPP7ProcessS9_S9_Li0EEENS_4pairIT0_T2_EESB_T1_SC_, symObjAddr: 0x4600, symBinAddr: 0x1000156A0, symSize: 0xB0 }
-  - { offsetInCU: 0x601B, offset: 0x3B354, size: 0x8, addend: 0x0, symName: __ZNSt3__16vectorIP7ProcessNS_9allocatorIS2_EEE26__swap_out_circular_bufferERNS_14__split_bufferIS2_RS4_EE, symObjAddr: 0x1970, symBinAddr: 0x100013860, symSize: 0x120 }
+  - { offsetInCU: 0x6014, offset: 0x3B34D, size: 0x8, addend: 0x0, symName: __ZNSt3__16vectorIP7ProcessNS_9allocatorIS2_EEE26__swap_out_circular_bufferERNS_14__split_bufferIS2_RS4_EE, symObjAddr: 0x1970, symBinAddr: 0x100013860, symSize: 0x120 }
   - { offsetInCU: 0x7DF6, offset: 0x3D12F, size: 0x8, addend: 0x0, symName: __ZN14ProcessManagerC2Exxx, symObjAddr: 0x0, symBinAddr: 0x100012200, symSize: 0x60 }
   - { offsetInCU: 0x7E4C, offset: 0x3D185, size: 0x8, addend: 0x0, symName: __ZNSt3__16vectorIP7ProcessNS_9allocatorIS2_EEEC1B8ue170006Ev, symObjAddr: 0x60, symBinAddr: 0x100012260, symSize: 0x20 }
   - { offsetInCU: 0x7E76, offset: 0x3D1AF, size: 0x8, addend: 0x0, symName: __ZN14ProcessManagerC1Exxx, symObjAddr: 0x80, symBinAddr: 0x100012280, symSize: 0x40 }
