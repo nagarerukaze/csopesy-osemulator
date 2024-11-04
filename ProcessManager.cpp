@@ -21,6 +21,7 @@ ProcessManager* ProcessManager::getInstance() {
 }
 
 void ProcessManager::createProcess(String name) {
+    
     Process* new_process = new Process(name, rand() % (this->getMaxInstructions() - this->getMinInstructions() + 1) + this->getMinInstructions());
     activeProcesses.push_back(new_process);
 

@@ -82,7 +82,7 @@ void CPUScheduler::FCFSScheduling() {
 
                 // When worker is idle and processqueue is not empty
                 if(!worker->hasProcess() && !processQueue.empty()) {
-                   
+                   std::lock_guard<std::mutex> lock(mtx);
                     Process* process = processQueue.front();
                     processQueue.pop();
                     
@@ -105,8 +105,6 @@ void CPUScheduler::RRScheduling() {
                 CPUWorker* worker = cpuWorkers[i];
                 Process* process_out = nullptr;
                 Process* process_in = nullptr;
-                
-
                 
                 if (!processQueue.empty()) {
                     // Safely remove the current process and requeue it if needed

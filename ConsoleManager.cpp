@@ -219,6 +219,7 @@ void ConsoleManager::generateProcesses() {
     
     while (this->getIsRunning() && ProcessManager::getInstance()->getIsGeneratingProcesses()) {
 
+        std::lock_guard<std::mutex> lock(mtx);
         if (this->cpuCycles % ProcessManager::getInstance()->getBatchProcessFreq() == 0) {
             String name = (count < 10) ? "p0" + std::to_string(count) : "p" + std::to_string(count);
             ProcessManager::getInstance()->createProcess(name);
