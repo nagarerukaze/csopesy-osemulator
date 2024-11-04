@@ -282,9 +282,10 @@ void ConsoleManager::reportUtil() {
         ProcessManager::getInstance()->printFinishedProcessesList(myfile);
         myfile << "--------------------------------------\n";
         myfile.close();
+        std::cout << "Report generated in csopesy-log.txt" << std::endl;
     }
     else {
-        std::cout << "Unable to open file";
+        std::cout << "Unable to open file. Report was not successfully generated.";
     }
 }
 
