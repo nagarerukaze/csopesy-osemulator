@@ -48,7 +48,7 @@ void ConsoleManager::clear() {
     system("cls");
 
     // For Mac
-    system("clear");
+    //system("clear");
 
     this->printHeader();
 }

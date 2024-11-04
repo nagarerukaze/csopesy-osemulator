@@ -31,7 +31,7 @@ void Process::draw() {
     system("cls");
 
     // For Mac
-    //system("clear");
+    system("clear");
     
     printInfo();
     bool isRunning = true;
