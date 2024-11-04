@@ -157,17 +157,14 @@ void ProcessManager::displayAllProcesses() {
 
 void ProcessManager::moveToFinished(const String& processName) {
     std::lock_guard<std::mutex> lock(mtx);
-    Process* process = findProcess(processName);
 
-    for (auto it = activeProcesses.begin(); it != activeProcesses.end(); ) {
-        // Check if the process name matches the given process name
-        if ((*it)->getName() == processName) {
-            finishedProcesses.push_back(*it);
-            it = activeProcesses.erase(it);
-            return;
-        }
-        else {
-            ++it; // Only increment if not erased
+    for (size_t index = 0; index < activeProcesses.size(); ++index) {
+        if (activeProcesses[index]->getName() == processName) {
+            // Move the process to finishedProcesses
+            finishedProcesses.push_back(activeProcesses[index]);
+            // Erase the process from activeProcesses using its index
+            activeProcesses.erase(activeProcesses.begin() + index);
+            return; // Exit after moving the process
         }
     }
 }
