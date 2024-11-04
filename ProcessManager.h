@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <mutex>
 
 #include "Process.h"
 #include "CPUWorker.h"
@@ -44,4 +45,5 @@ private:
 
     std::vector<Process*> activeProcesses;
     std::vector<Process*> finishedProcesses;
+    std::mutex mtx;
 };
