@@ -27,11 +27,12 @@ public:
     long long getMinInstructions() const;
     long long getMaxInstructions() const;
     bool getIsGeneratingProcesses() const;
-    void moveToFinished(const String& processName);
+    void moveToFinished(Process* processLala);
 
     void setIsGeneratingProcesses(bool val);
 
 private:
+    ProcessManager();
     ProcessManager(long long batch_process_freq, long long min_ins, long long max_ins);
     ProcessManager(const ProcessManager&);
     ProcessManager& operator = (const ProcessManager&);

@@ -1,6 +1,8 @@
 #include "ProcessManager.h"
 #include "CPUScheduler.h"
 
+ProcessManager::ProcessManager() {}
+
 // Singleton stuff
 ProcessManager::ProcessManager(long long batch_process_freq, long long min_ins, long long max_ins) {
     this->batch_process_freq = batch_process_freq;
@@ -17,11 +19,16 @@ void ProcessManager::initialize(long long batch_process_freq, long long min_ins,
 }
 
 ProcessManager* ProcessManager::getInstance() {
+    if (sharedInstance == NULL)
+    {
+        sharedInstance = new ProcessManager;
+    }
+
     return sharedInstance;
 }
 
 void ProcessManager::createProcess(String name) {
-    
+
     Process* new_process = new Process(name, rand() % (this->getMaxInstructions() - this->getMinInstructions() + 1) + this->getMinInstructions());
     activeProcesses.push_back(new_process);
 
@@ -155,17 +162,27 @@ void ProcessManager::displayAllProcesses() {
     std::cout << "--------------------------------------" << std::endl;
 }
 
-void ProcessManager::moveToFinished(const String& processName) {
+void ProcessManager::moveToFinished(Process* processLala) {
     std::lock_guard<std::mutex> lock(mtx);
 
-    for (size_t index = 0; index < activeProcesses.size(); ++index) {
-        if (activeProcesses[index]->getName() == processName) {
+    int index = 0;
+
+    for (Process* process : this->activeProcesses) {
+    
+        if (process == processLala) {
+
             // Move the process to finishedProcesses
-            finishedProcesses.push_back(activeProcesses[index]);
+            this->finishedProcesses.push_back(process);
+     
             // Erase the process from activeProcesses using its index
-            activeProcesses.erase(activeProcesses.begin() + index);
+            this->activeProcesses.erase(this->activeProcesses.begin() + index);
+     
             return; // Exit after moving the process
         }
+        else { 
+            index++;
+        }
+            
     }
 }
 

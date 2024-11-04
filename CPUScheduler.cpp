@@ -1,6 +1,8 @@
 #include "CPUScheduler.h"
 #include "ProcessManager.h"
 
+CPUScheduler::CPUScheduler() {}
+
 CPUScheduler::CPUScheduler(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec) {
     this->scheduler = scheduler;
     this->numberOfCores = num_cpu;
@@ -27,7 +29,12 @@ void CPUScheduler::initializeCPUWorkers(int num) {
 }
 
 CPUScheduler* CPUScheduler::getInstance() {
-	return sharedInstance;
+    if (sharedInstance == NULL)
+    {
+        sharedInstance = new CPUScheduler;
+    }
+
+    return sharedInstance;
 }
 
 void CPUScheduler::enqueueProcess(Process* process) {
@@ -76,7 +83,7 @@ void CPUScheduler::FCFSScheduling() {
                 // when worker is finished with all instructions
                 if (worker->hasProcess() && (worker->getProcess()->getCurrentInstructionLine() == worker->getProcess()->getTotalLinesOfCode())) {
                     worker->getProcess()->setState(Process::ProcessState::TERMINATED);
-                    ProcessManager::getInstance()->moveToFinished(worker->getProcess()->getName());
+                    ProcessManager::getInstance()->moveToFinished(worker->getProcess());
                     worker->setProcess(nullptr);
                 }
 
@@ -118,7 +125,7 @@ void CPUScheduler::RRScheduling() {
                             }
                             else {
                                 process_out->setState(Process::ProcessState::TERMINATED);
-                                ProcessManager::getInstance()->moveToFinished(process_out->getName());
+                                ProcessManager::getInstance()->moveToFinished(process_out);
                             }
                         }
                         process_in = processQueue.front();
@@ -140,7 +147,7 @@ void CPUScheduler::RRScheduling() {
                     }
                     else {
                         process_out->setState(Process::ProcessState::TERMINATED);
-                        ProcessManager::getInstance()->moveToFinished(process_out->getName());
+                        ProcessManager::getInstance()->moveToFinished(process_out);
                         worker->setProcess(nullptr);
                     }
                 }

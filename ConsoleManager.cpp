@@ -15,6 +15,11 @@ void ConsoleManager::initializeConsole() {
 }
 
 ConsoleManager* ConsoleManager::getInstance() {
+    if (sharedInstance == NULL)
+    {
+        sharedInstance = new ConsoleManager;
+    }
+
     return sharedInstance;
 }
 
@@ -43,7 +48,7 @@ void ConsoleManager::clear() {
     system("cls");
 
     // For Mac
-    //system("clear");
+    system("clear");
 
     this->printHeader();
 }
@@ -227,6 +232,7 @@ void ConsoleManager::generateProcesses() {
             this->cpuCycles = 0;
         }
 
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
         this->cpuCycles++;
     }
 }

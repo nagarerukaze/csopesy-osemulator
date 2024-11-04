@@ -22,6 +22,7 @@ public:
     std::vector<CPUWorker*> getCPUWorkers();
 
 private:
+    CPUScheduler();
     CPUScheduler(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec);
     CPUScheduler(const CPUScheduler&);
     CPUScheduler& operator = (const CPUScheduler&);
