@@ -121,7 +121,7 @@ bool ConsoleManager::initialize() {
     // Initialize ProcessManager and CPUScheduler
     ProcessManager::getInstance()->initialize(batch_process_freq, min_ins, max_ins);
     CPUScheduler::getInstance()->initialize(scheduler, num_cpu , quantum_cycles, delays_per_exec);
-    // MemoryManager::getInstance()->initialize();
+    MemoryManager::getInstance()->initialize(max_overall_mem, mem_per_frame, mem_per_proc);
     
     //Start Detached Scheduler Thread
     std::thread schedulerThread([] {

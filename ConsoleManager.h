@@ -12,6 +12,7 @@
 
 #include "ProcessManager.h"
 #include "CPUScheduler.h"
+#include "MemoryManager.h"
 
 typedef std::string String;
 

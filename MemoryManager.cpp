@@ -1,12 +1,31 @@
 #include "MemoryManager.h"
 #include <iostream>
 
+MemoryManager::MemoryManager() {}
+
 MemoryManager::MemoryManager(size_t totalMemory, size_t frameSize, size_t memPerProc) {
     this->totalMemory = totalMemory;
     this->frameSize = frameSize;
     this->memPerProc = memPerProc;
     this->numFrames = totalMemory / frameSize;
     this->memoryBlocks.resize(numFrames, "");  // Initialize all frames as free (empty string)
+}
+
+MemoryManager::MemoryManager(const MemoryManager&) {}
+
+MemoryManager* MemoryManager::sharedInstance = nullptr;
+
+void MemoryManager::initialize(size_t totalMemory, size_t frameSize, size_t memPerProc) {
+    sharedInstance = new MemoryManager(totalMemory, frameSize, memPerProc);
+}
+
+MemoryManager* MemoryManager::getInstance() {
+    if (sharedInstance == NULL)
+    {
+        sharedInstance = new MemoryManager;
+    }
+
+    return sharedInstance;
 }
 
 bool MemoryManager::allocateMemory(Process* process) {
