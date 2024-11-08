@@ -135,6 +135,7 @@ void CPUScheduler::RRScheduling() {
 
                     std::thread(&CPUWorker::startWorker, worker).detach();
                     
+                    generateMemorySnapshot(this->cpuCycles);
                     // For Testing
                     //std::cout<<"CPU #"<< i+1 << ": " << worker->getProcess()->getName() << std::endl;
                 }
@@ -150,6 +151,8 @@ void CPUScheduler::RRScheduling() {
                         ProcessManager::getInstance()->moveToFinished(process_out);
                         worker->setProcess(nullptr);
                     }
+
+                    generateMemorySnapshot(this->cpuCycles);
                 }
             }
 

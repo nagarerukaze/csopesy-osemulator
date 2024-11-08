@@ -11,9 +11,9 @@ MemoryManager::MemoryManager(size_t totalMemory, size_t frameSize, size_t memPer
     this->memoryBlocks.resize(numFrames, "");  // Initialize all frames as free (empty string)
 }
 
-MemoryManager::MemoryManager(const MemoryManager&) {}
+//MemoryManager::MemoryManager(const MemoryManager&) {}
 
-MemoryManager* MemoryManager::sharedInstance = nullptr;
+//MemoryManager* MemoryManager::sharedInstance = nullptr;
 
 void MemoryManager::initialize(size_t totalMemory, size_t frameSize, size_t memPerProc) {
     sharedInstance = new MemoryManager(totalMemory, frameSize, memPerProc);
@@ -94,4 +94,52 @@ size_t MemoryManager::calculateExternalFragmentation() const {
 
     return fragmentation / 1024;  // Convert to KB for the fragmentation report
 }
+
+// Generate memory snapshot
+void MemoryManager::generateMemorySnapshot(int quantumCycle) const {
+    // Create the file with the quantum cycle in the filename
+    std::ofstream snapshotFile("memory_stamp_" + std::to_string(quantumCycle) + ".txt");
+
+    if (!snapshotFile.is_open()) {
+        std::cerr << "Unable to open file for writing memory snapshot." << std::endl;
+        return;
+    }
+
+    // Timestamp
+    auto now = std::chrono::system_clock::now();
+    std::time_t currentTime = std::chrono::system_clock::to_time_t(now);
+    snapshotFile << "Timestamp: " << std::put_time(std::localtime(&currentTime), "%m/%d/%Y %I:%M:%S%p") << "\n";
+
+    // Number of processes in memory
+    size_t processCount = 0;
+    for (const auto& block : memoryBlocks) {
+        if (!block.empty()) {
+            processCount++;
+        }
+    }
+    snapshotFile << "Number of processes in memory: " << processCount << "\n";
+
+    // External fragmentation
+    snapshotFile << "Total external fragmentation in KB: " << std::fixed << std::setprecision(2)
+        << calculateExternalFragmentation() / 1024.0 << "\n\n";
+
+    // Memory layout ASCII printout
+    snapshotFile << "----end---- = 16384\n\n";
+
+    // Print memory layout details in requested format
+    for (const auto& block : memoryBlocks) {
+        // Each block has an address, process ID (or "Empty"), and size
+        snapshotFile << block.endAddress << "\n";
+        snapshotFile << (block.empty() ? "Empty" : block.processID) << "\n";
+        snapshotFile << block.size << "\n\n";
+    }
+
+    snapshotFile << "----start---- = 0\n";
+
+    snapshotFile.close();
+    std::cout << "Memory snapshot saved to memory_stamp_" << quantumCycle << ".txt" << std::endl;
+}
+
+
+
 

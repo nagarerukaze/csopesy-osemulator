@@ -9,6 +9,7 @@
 
 #include <thread>
 #include <chrono>
+#include <mutex>
 
 #include "ProcessManager.h"
 #include "CPUScheduler.h"
@@ -39,8 +40,8 @@ public:
 private:
 	// Singleton stuff
 	ConsoleManager();
-	ConsoleManager(const ConsoleManager&);
-	ConsoleManager& operator = (const ConsoleManager&);
+	ConsoleManager(const ConsoleManager&) = delete;
+	ConsoleManager& operator = (const ConsoleManager&) = delete;
 	~ConsoleManager() = default;
 	static ConsoleManager* sharedInstance;
 
