@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <unordered_map>
 #include "Process.h"
 
 typedef std::string String;
@@ -7,25 +8,30 @@ typedef std::string String;
 class MemoryManager
 {
 public:
-	void initialize(size_t totalMemory, size_t frameSize, size_t memPerProc);
+	void initialize(size_t maximumSize, size_t allocatedSize);
 	static MemoryManager* getInstance();
-	bool allocateMemory(Process* process);
-	void freeMemory(Process* process);
-	size_t calculateExternalFragmentation() const;
-	void printMemory() const;
+
+
+	void* allocate(size_t size);
+	void deallocate(void* ptr);
+	String visualizeMemory();
 private:
 
 	MemoryManager();
-	MemoryManager(size_t totalMemory, size_t frameSize, size_t memPerProc);
-	MemoryManager(const MemoryManager&);
+	MemoryManager(size_t totalMemory, size_t allocatedSize);
+	MemoryManager(const MemoryManager&) = delete;
 	MemoryManager& operator = (const MemoryManager&);
-	~MemoryManager() = default;
+	~MemoryManager();
 	static MemoryManager* sharedInstance;
 
-	size_t totalMemory;
-	size_t frameSize;
-	size_t memPerProc;
-	size_t numFrames;
-	std::vector<String> memoryBlocks;
+	size_t maximumSize;
+	size_t allocatedSize;
+	std::vector<char> memory;
+	std::unordered_map<size_t, bool> allocationMap;
+
+	void initializeMemory();
+	bool canAllocateAt(size_t index, size_t size) const;
+	void allocateAt(size_t index, size_t size);
+	void deallocateAt(size_t index);
 };
 

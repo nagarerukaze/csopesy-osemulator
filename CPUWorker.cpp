@@ -7,8 +7,8 @@ CPUWorker::CPUWorker(int id, long long delay_per_exec) {
     this->running = false;
 }
 
-// Set a CPU's process
-void CPUWorker::setProcess(Process* process) {
+// Set a CPU's process (now accepts shared_ptr<Process>)
+void CPUWorker::setProcess(std::shared_ptr<Process> process) {
     std::unique_lock<std::mutex> lock(mtx);
 
     // Signal to stop the current thread if it's running
@@ -23,7 +23,7 @@ void CPUWorker::setProcess(Process* process) {
     }
 }
 
-// START THREADS in CPUscheduler WITH THIS function
+// Start the worker's thread and process execution
 void CPUWorker::startWorker() {
     {
         std::lock_guard<std::mutex> lock(mtx);
@@ -32,41 +32,41 @@ void CPUWorker::startWorker() {
     if (this->process) {
         this->process->setState(Process::ProcessState::RUNNING);
     }
-    this->cpuCycles = 1;
+    this->cpuCycles = 0;
 
     while (true) {
         // Check if the worker should stop running
         {
             std::lock_guard<std::mutex> lock(mtx);
-            if (!running || !this->process) { 
+            if (!running || !this->process) {
                 break; // Exit if running is false or no process is assigned
             }
         }
 
         // Execute the current instruction
-        if (cpuCycles == 1 && this->process) {
+        if (cpuCycles == delay_per_exec && this->process) {
             if (this->process->getCurrentInstructionLine() < this->process->getTotalLinesOfCode()) {
                 this->process->nextLine();
             }
             else {
                 running = false;
             }
+            this->cpuCycles = -1;
         }
 
         // Increment/Reset cpuCycle counter
         this->cpuCycles++;
-        if (this->cpuCycles > delay_per_exec) {
-            this->cpuCycles = 1;
-        }
     }
 }
 
+// Check if the worker has a process assigned
 bool CPUWorker::hasProcess() {
     std::lock_guard<std::mutex> lock(mtx);
     return (this->process != nullptr);
 }
 
-Process* CPUWorker::getProcess() {
+// Return the current process (as shared_ptr)
+std::shared_ptr<Process> CPUWorker::getProcess() {
     std::lock_guard<std::mutex> lock(mtx);
     return this->process;
 }

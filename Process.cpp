@@ -2,12 +2,13 @@
 
 Process::Process() {}
 
-Process::Process(String name, long long totalLinesOfCode) {
+Process::Process(const String& name, long long totalLinesOfCode, size_t memoryRequired) {
 	this->name = name;
 	this->currentInstructionLine = 0;
 	this->totalLinesOfCode = totalLinesOfCode;
 	this->timeCreated = time(0);
     this->currentState = Process::READY;
+    this->memoryRequired = memoryRequired;
 }
 
 void Process::printInfo() {
@@ -31,7 +32,7 @@ void Process::draw() {
     system("cls");
 
     // For Mac
-    system("clear");
+    // system("clear");
     
     printInfo();
     bool isRunning = true;
@@ -84,14 +85,6 @@ String Process::getTimestamp() {
     oss << std::put_time(&ltm, "%m/%d/%Y %I:%M:%S%p");
     return oss.str();
 }
-
-void Process::setMemoryRange(size_t startFrame, size_t endFrame) {
-    this->startFrame = startFrame;
-    this->endFrame = endFrame;
-}
-
-size_t Process::getStartFrame() const { return startFrame; }
-size_t Process::getEndFrame() const { return endFrame; }
 
 
 Process::ProcessState Process::getState() const {

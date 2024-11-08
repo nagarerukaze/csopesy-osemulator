@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <mutex>
+#include <memory>
 
 #include "Process.h"
 #include "CPUWorker.h"
@@ -11,11 +12,11 @@ class ProcessManager
 {
 public:
     // Singleton stuff
-    static void initialize(long long batch_process_freq, long long min_ins, long long max_ins);
+    static void initialize(long long batch_process_freq, long long min_ins, long long max_ins, size_t mem_per_proc);
     static ProcessManager* getInstance();
 
-    void createProcess(String name);
-    Process* findProcess(const String& name) const;
+    void createProcess(const String& name);
+    std::shared_ptr<Process> findProcess(const String& name) const;
     bool displayProcess(const String& name) const;
     void displayActiveProcessesList();
     void displayFinishedProcessesList();
@@ -27,13 +28,13 @@ public:
     long long getMinInstructions() const;
     long long getMaxInstructions() const;
     bool getIsGeneratingProcesses() const;
-    void moveToFinished(Process* processLala);
+    void moveToFinished(std::shared_ptr<Process> process);
 
     void setIsGeneratingProcesses(bool val);
 
 private:
     ProcessManager();
-    ProcessManager(long long batch_process_freq, long long min_ins, long long max_ins);
+    ProcessManager(long long batch_process_freq, long long min_ins, long long max_ins, size_t mem_per_proc);
     ProcessManager(const ProcessManager&);
     ProcessManager& operator = (const ProcessManager&);
     ~ProcessManager() = default;
@@ -43,8 +44,9 @@ private:
     long long min_ins;
     long long max_ins;
     bool isGeneratingProcesses;
+    size_t mem_per_proc;
 
-    std::vector<Process*> activeProcesses;
-    std::vector<Process*> finishedProcesses;
+    std::vector<std::shared_ptr<Process>> activeProcesses;
+    std::vector<std::shared_ptr<Process>> finishedProcesses;
     std::mutex mtx;
 };

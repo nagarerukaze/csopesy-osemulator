@@ -34,20 +34,16 @@ public:
 	void reportUtil();
 
 	bool getIsRunning() const;
-	long long getCPUCycle() const;
 
 	void stopRunning();
 private:
 	// Singleton stuff
 	ConsoleManager();
-	ConsoleManager(const ConsoleManager&) = delete;
-	ConsoleManager& operator = (const ConsoleManager&) = delete;
+	ConsoleManager(const ConsoleManager&);
 	~ConsoleManager() = default;
 	static ConsoleManager* sharedInstance;
 
 	bool isRunning;
-	long long cpuCycles;
-	std::thread cpuThread;
 	std::thread schedulerTestThread;
 	std::mutex mtx;
 };

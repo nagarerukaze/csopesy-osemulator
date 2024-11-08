@@ -8,12 +8,13 @@ CPUScheduler::CPUScheduler(String scheduler, int num_cpu, long long quantum_cycl
     this->numberOfCores = num_cpu;
     this->quantum_cycles = quantum_cycles;
     this->delay_per_exec = delay_per_exec;
-    this->cpuCycles = 0;
 }
 
 CPUScheduler::CPUScheduler(const CPUScheduler&) {}
 
 CPUScheduler* CPUScheduler::sharedInstance = nullptr;
+
+std::atomic<long long> CPUScheduler::cpuCycles{ 0 };
 
 void CPUScheduler::initialize(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec) {
 	sharedInstance = new CPUScheduler(scheduler, num_cpu, quantum_cycles, delay_per_exec);
@@ -37,10 +38,12 @@ CPUScheduler* CPUScheduler::getInstance() {
     return sharedInstance;
 }
 
-void CPUScheduler::enqueueProcess(Process* process) {
+void CPUScheduler::enqueueProcess(std::shared_ptr<Process> process) {
     std::lock_guard<std::mutex> lock(mtx);
+    //std::cout << "Enqueuing process: " << process->getName() << std::endl;
     this->processQueue.push(process);
 }
+
 
 void CPUScheduler::startScheduler() {
     this->running = true;
@@ -50,6 +53,27 @@ void CPUScheduler::startScheduler() {
     }
     else if (this->scheduler == "rr") {
         RRScheduling();
+    }
+}
+
+void CPUScheduler::stopScheduler() {
+    // Set the running flag to false, which will stop the scheduler's main loop
+    this->running = false;
+
+    // Clean up CPU workers by checking their process states
+    for (auto& worker : cpuWorkers) {
+        // If the worker has a process assigned
+        if (worker->hasProcess()) {
+            auto process = worker->getProcess();  // Get shared_ptr to the current process
+
+            if (process && process->getCurrentInstructionLine() < process->getTotalLinesOfCode()) {
+                // Mark process as terminated
+                process->setState(Process::ProcessState::TERMINATED);
+                ProcessManager::getInstance()->moveToFinished(process);  // Move process to finished state
+            }
+
+            worker->setProcess(nullptr);  // Remove process from worker
+        }
     }
 }
 
@@ -74,37 +98,75 @@ std::vector<CPUWorker*> CPUScheduler::getCPUWorkers() {
     return this->cpuWorkers;
 }
 
+long long CPUScheduler::getQuantumCycles() {
+    return this->quantum_cycles;
+}
+
 void CPUScheduler::FCFSScheduling() {
-    while(running) {
-        if(!processQueue.empty() || this->getNumberOfCPUsUsed() > 0) {
-            for(int i = 0; i < this->numberOfCores; i++) {
+    while (running) {
+        // std::cout << "SCHEDULER CYCLE IN FCFS: " << CPUScheduler::cpuCycles << std::endl;
+        if (!processQueue.empty() || this->getNumberOfCPUsUsed() > 0) {
+            for (int i = 0; i < this->numberOfCores; i++) {
                 CPUWorker* worker = this->cpuWorkers[i];
 
-                // when worker is finished with all instructions
-                if (worker->hasProcess() && (worker->getProcess()->getCurrentInstructionLine() == worker->getProcess()->getTotalLinesOfCode())) {
+                // When worker is finished with all instructions
+                if (worker->hasProcess() &&
+                    (worker->getProcess()->getCurrentInstructionLine() == worker->getProcess()->getTotalLinesOfCode())) {
                     worker->getProcess()->setState(Process::ProcessState::TERMINATED);
                     ProcessManager::getInstance()->moveToFinished(worker->getProcess());
-                    worker->setProcess(nullptr);
+                    worker->setProcess(nullptr);  // Clear process after termination
                 }
 
-                // When worker is idle and processqueue is not empty
-                if(!worker->hasProcess() && !processQueue.empty()) {
-                   std::lock_guard<std::mutex> lock(mtx);
-                    Process* process = processQueue.front();
-                    processQueue.pop();
-                    
-                    cpuWorkers[i]->setProcess(process);
-                    std::thread thread([worker = cpuWorkers[i]]() { worker->startWorker(); });
-                    thread.detach(); // Detach the thread
+                // When worker is idle and processQueue is not empty
+                if (!worker->hasProcess() && !processQueue.empty()) {
+                    std::lock_guard<std::mutex> lock(mtx); // Protect access to the queue
+                    std::shared_ptr<Process> process = processQueue.front();  // Get shared_ptr from the queue
+                    processQueue.pop();  // Remove the process from the queue
+
+                    worker->setProcess(process);  // Set the shared_ptr in the worker
+                    std::thread([worker, process]() {
+                        worker->startWorker(); // Start worker with the shared_ptr process
+                        }).detach();  // Detach the thread to run concurrently
                 }
-                
             }
         }
-        //std::this_thread::sleep_for(std::chrono::milliseconds(this->delay_per_exec));
+        this->cpuCycles++;
     }
 }
 
+//void CPUScheduler::FCFSScheduling() {
+    //    while(running) {
+    //        if(!processQueue.empty() || this->getNumberOfCPUsUsed() > 0) {
+    //            for(int i = 0; i < this->numberOfCores; i++) {
+    //                CPUWorker* worker = this->cpuWorkers[i];
+    //
+    //                // when worker is finished with all instructions
+    //                if (worker->hasProcess() && (worker->getProcess()->getCurrentInstructionLine() == worker->getProcess()->getTotalLinesOfCode())) {
+    //                    worker->getProcess()->setState(Process::ProcessState::TERMINATED);
+    //                    ProcessManager::getInstance()->moveToFinished(worker->getProcess());
+    //                    worker->setProcess(nullptr);
+    //                }
+    //
+    //                // When worker is idle and processqueue is not empty
+    //                if(!worker->hasProcess() && !processQueue.empty()) {
+    //                   std::lock_guard<std::mutex> lock(mtx);
+    //                    Process* process = processQueue.front();
+    //                    processQueue.pop();
+    //                    
+    //                    cpuWorkers[i]->setProcess(process);
+    //                    std::thread thread([worker = cpuWorkers[i]]() { worker->startWorker(); });
+    //                    thread.detach(); // Detach the thread
+    //                }
+    //                
+    //            }
+    //        }
+    //    }
+    //}
+    //
+//}
+
 void CPUScheduler::RRScheduling() {
+    /*
     while (running) {
         // Only switch processes at the start of each quantum cycle
         if (this->cpuCycles == 1) { 
@@ -164,5 +226,6 @@ void CPUScheduler::RRScheduling() {
         }
         
     }
+    */
 }
 

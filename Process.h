@@ -20,7 +20,7 @@ public:
 
 	Process();
 	~Process() = default;
-	Process(String name, long long totalLinesOfCode);
+	Process(const String& name, long long totalLinesOfCode, size_t memoryRequired);
 
 	void printInfo();
 	void draw();
@@ -41,11 +41,6 @@ public:
 	// Process Operations
 	void nextLine();
 
-	// Memory range getters and setters
-	size_t getStartFrame() const;
-	size_t getEndFrame() const;
-	void setMemoryRange(size_t startFrame, size_t endFrame);
-
 private:
 	String name;
 	long long currentInstructionLine;
@@ -53,6 +48,6 @@ private:
 	time_t timeCreated;
 	ProcessState currentState;
 	int cpuCoreID;
-	size_t startFrame;  // Start frame in memory
-	size_t endFrame;    // End frame in memory
+	size_t memoryRequired;
+	
 };
