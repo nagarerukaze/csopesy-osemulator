@@ -55,6 +55,7 @@ int main() {
         }
         else if (command == "exit") {
             ConsoleManager::getInstance()->stopRunning();
+            std::cout << "Shutting down..." << std::endl;
         }
         else {
             std::cout << "Unknown command." << std::endl;

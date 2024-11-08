@@ -8,6 +8,7 @@
 #include <queue>
 #include "CPUWorker.h"
 
+typedef std::string String;
 
 class CPUScheduler
 {

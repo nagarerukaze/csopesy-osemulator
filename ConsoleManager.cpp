@@ -73,7 +73,7 @@ bool ConsoleManager::initialize() {
     std::ifstream f("config.txt");
 
     if (!f.is_open()) {
-        std::cerr << "Error opening the file!";
+        std::cerr << "Error: config.txt could not be opened!" << std::endl;
         return false;
     }
 
@@ -232,7 +232,7 @@ void ConsoleManager::generateProcesses() {
             this->cpuCycles = 0;
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        //std::this_thread::sleep_for(std::chrono::milliseconds(1));
         this->cpuCycles++;
     }
 }
