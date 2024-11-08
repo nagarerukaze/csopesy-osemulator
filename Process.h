@@ -7,7 +7,7 @@
 
 typedef std::string String;
 
-class Process 
+class Process
 {
 public:
 	enum ProcessState
@@ -24,7 +24,6 @@ public:
 
 	void printInfo();
 	void draw();
-	
 
 	// Getters
 	String getName() const;
@@ -42,6 +41,11 @@ public:
 	// Process Operations
 	void nextLine();
 
+	// Memory range getters and setters
+	size_t getStartFrame() const;
+	size_t getEndFrame() const;
+	void setMemoryRange(size_t startFrame, size_t endFrame);
+
 private:
 	String name;
 	long long currentInstructionLine;
@@ -49,4 +53,6 @@ private:
 	time_t timeCreated;
 	ProcessState currentState;
 	int cpuCoreID;
+	size_t startFrame;  // Start frame in memory
+	size_t endFrame;    // End frame in memory
 };

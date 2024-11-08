@@ -1,4 +1,5 @@
 #include "ConsoleManager.h"
+#include "MemoryManager.h"
 
 typedef std::string String;
 

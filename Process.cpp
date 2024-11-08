@@ -85,6 +85,15 @@ String Process::getTimestamp() {
     return oss.str();
 }
 
+void Process::setMemoryRange(size_t startFrame, size_t endFrame) {
+    this->startFrame = startFrame;
+    this->endFrame = endFrame;
+}
+
+size_t Process::getStartFrame() const { return startFrame; }
+size_t Process::getEndFrame() const { return endFrame; }
+
+
 Process::ProcessState Process::getState() const {
     return this->currentState;
 }

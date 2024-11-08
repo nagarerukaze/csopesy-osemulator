@@ -66,7 +66,7 @@ void ConsoleManager::clear() {
 bool ConsoleManager::initialize() {
     std::vector<String> values;
     String line, key, value, scheduler;
-    int num_cpu;
+    int num_cpu, max_overall_mem, mem_per_frame, mem_per_proc;
     long long quantum_cycles, batch_process_freq, min_ins, max_ins, delays_per_exec;
 
     // Get values from config.txt
@@ -90,13 +90,22 @@ bool ConsoleManager::initialize() {
 
     f.close();
 
-    num_cpu = std::stoi(values[0]);
-    scheduler = values[1];
-    quantum_cycles = std::stoll(values[2]);
-    batch_process_freq = std::stoll(values[3]); // frequency of generating process in "scheduler-test"
-    min_ins = std::stoll(values[4]); // min instructions per process 
-    max_ins = std::stoll(values[5]); // max instructions per process
-    delays_per_exec = std::stoll(values[6]); // delay before executing next instruction
+    try {
+        num_cpu = std::stoi(values[0]);
+        scheduler = values[1];
+        quantum_cycles = std::stoll(values[2]);
+        batch_process_freq = std::stoll(values[3]);
+        min_ins = std::stoll(values[4]);
+        max_ins = std::stoll(values[5]);
+        delays_per_exec = std::stoll(values[6]);
+        max_overall_mem = std::stoi(values[7]);
+        mem_per_frame = std::stoi(values[8]);
+        mem_per_proc = std::stoi(values[9]);
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error: Conversion error - " << e.what() << std::endl;
+        return false;
+    }
 
     // Value validation
     if (num_cpu < 1 || num_cpu > 128 ||
@@ -112,6 +121,7 @@ bool ConsoleManager::initialize() {
     // Initialize ProcessManager and CPUScheduler
     ProcessManager::getInstance()->initialize(batch_process_freq, min_ins, max_ins);
     CPUScheduler::getInstance()->initialize(scheduler, num_cpu , quantum_cycles, delays_per_exec);
+    // MemoryManager::getInstance()->initialize();
     
     //Start Detached Scheduler Thread
     std::thread schedulerThread([] {
