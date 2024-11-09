@@ -9,23 +9,27 @@
 #include <memory>  // For std::shared_ptr
 #include "Process.h"
 
+typedef std::string String;
+
 class CPUWorker
 {
 public:
-    CPUWorker(int id, long long delay_per_exec);    // Constructor
+    CPUWorker(int id, long long delay_per_exec, String scheduler, long long quantum_cycles);    // Constructor
     ~CPUWorker() = default;                         // Destructor
     void setProcess(std::shared_ptr<Process> process);  // Use shared_ptr
     void startWorker();
     bool hasProcess();
     std::shared_ptr<Process> getProcess();  // Return shared_ptr
+    std::atomic<bool> running;
 
 private:
     CPUWorker(const CPUWorker&);                    // Copy constructor
     CPUWorker& operator=(const CPUWorker&);         // Assignment operator
     int id;
-    std::atomic<bool> running;
 
+    String scheduler;
     long long delay_per_exec;
+    long long quantum_cycles;
     std::shared_ptr<Process> process;  // Changed to shared_ptr
     std::mutex mtx;
     std::condition_variable cv;

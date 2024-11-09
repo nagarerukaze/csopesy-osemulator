@@ -187,6 +187,7 @@ void ProcessManager::moveToFinished(std::shared_ptr<Process> process) {
         });
 
     if (it != activeProcesses.end()) {
+        (*it)->setState(Process::ProcessState::TERMINATED);
         // Process found, move it to finished processes
         this->finishedProcesses.push_back(*it);  // Push the shared_ptr directly
         this->activeProcesses.erase(it);  // Erase from activeProcesses

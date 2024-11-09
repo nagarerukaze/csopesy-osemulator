@@ -234,6 +234,7 @@ void ConsoleManager::generateProcesses() {
     const size_t maxNameLength = 16;
 
     while (this->getIsRunning() && ProcessManager::getInstance()->getIsGeneratingProcesses()) {
+        // std::cout << "SCHEDULER CYCLE IN schedyler-test: " << CPUScheduler::cpuCycles << std::endl;
         if (CPUScheduler::cpuCycles != lastCycle) {
             lastCycle = CPUScheduler::cpuCycles;
 
