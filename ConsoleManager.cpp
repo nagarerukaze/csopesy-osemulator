@@ -98,8 +98,8 @@ bool ConsoleManager::initialize() {
         max_ins = std::stoll(values[5]);
         delays_per_exec = std::stoll(values[6]);
         max_overall_mem = std::stoi(values[7]);
-        mem_per_frame = std::stoi(values[8]);
-        mem_per_proc = std::stoi(values[9]);
+        mem_per_frame = static_cast<size_t>(std::stoull(values[8]));
+        mem_per_proc = static_cast<size_t>(std::stoull(values[8]));
     }
     catch (const std::exception& e) {
         std::cerr << "Error: Conversion error - " << e.what() << std::endl;
@@ -120,7 +120,8 @@ bool ConsoleManager::initialize() {
     // Initialize ProcessManager and CPUScheduler
     ProcessManager::getInstance()->initialize(batch_process_freq, min_ins, max_ins, mem_per_proc);
     CPUScheduler::getInstance()->initialize(scheduler, num_cpu , quantum_cycles, delays_per_exec);
-    MemoryManager::getInstance()->initialize(max_overall_mem, mem_per_frame);
+    MemoryManager::getInstance()->initialize((max_overall_mem));
+
     
     //Start Detached Scheduler Thread
     std::thread schedulerThread([] {
@@ -338,4 +339,25 @@ void ConsoleManager::stopRunning() {
     }
 
     CPUScheduler::getInstance()->stopScheduler();
+}
+
+void ConsoleManager::test() {
+    // Initialize the memory with 20 units
+    MemoryManager::getInstance()->initialize(20);
+
+    // Visualize initial memory state
+    std::cout << "Initial memory: " << MemoryManager::getInstance()->visualizeMemory() << std::endl;
+
+    // Allocate 5 blocks
+    void* ptr1 = MemoryManager::getInstance()->allocate(5);
+    std::cout << "Memory after allocating 5 blocks: " << MemoryManager::getInstance()->visualizeMemory() << std::endl;
+
+    // Allocate 4 more blocks
+    void* ptr2 = MemoryManager::getInstance()->allocate(4);
+    std::cout << "Memory after allocating 4 more blocks: " << MemoryManager::getInstance()->visualizeMemory() << std::endl;
+
+    // Deallocate the first allocation
+    MemoryManager::getInstance()->deallocate(ptr1, 5);
+    std::cout << "Memory after deallocating first allocation: " << MemoryManager::getInstance()->visualizeMemory() << std::endl;
+
 }

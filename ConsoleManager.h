@@ -36,6 +36,7 @@ public:
 	bool getIsRunning() const;
 
 	void stopRunning();
+	void test();
 private:
 	// Singleton stuff
 	ConsoleManager();

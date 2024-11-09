@@ -8,18 +8,19 @@ typedef std::string String;
 class MemoryManager
 {
 public:
-	void initialize(size_t maximumSize, size_t allocatedSize);
+	void initialize(size_t maximumSize);
 	static MemoryManager* getInstance();
 
 
 	void* allocate(size_t size);
-	void deallocate(void* ptr);
+	void deallocate(void* ptr, size_t size);
+	size_t getMaximumMemory();
 	String visualizeMemory();
 private:
 
 	MemoryManager();
-	MemoryManager(size_t totalMemory, size_t allocatedSize);
-	MemoryManager(const MemoryManager&) = delete;
+	MemoryManager(size_t totalMemory);
+	MemoryManager(const MemoryManager&);
 	MemoryManager& operator = (const MemoryManager&);
 	~MemoryManager();
 	static MemoryManager* sharedInstance;
@@ -32,6 +33,6 @@ private:
 	void initializeMemory();
 	bool canAllocateAt(size_t index, size_t size) const;
 	void allocateAt(size_t index, size_t size);
-	void deallocateAt(size_t index);
+	void deallocateAt(size_t index, size_t size);
 };
 

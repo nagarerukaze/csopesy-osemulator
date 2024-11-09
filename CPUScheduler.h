@@ -7,6 +7,7 @@
 #include <vector>
 #include <queue>
 #include "CPUWorker.h"
+#include "MemoryManager.h"
 
 typedef std::string String;
 
@@ -48,4 +49,5 @@ private:
     
     void FCFSScheduling();
     void RRScheduling();
+    void handleProcessOut(CPUWorker* worker, std::shared_ptr<Process>& process_out);
 };

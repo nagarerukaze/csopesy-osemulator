@@ -134,64 +134,83 @@ void CPUScheduler::FCFSScheduling() {
     }
 }
 
+void CPUScheduler::handleProcessOut(CPUWorker* worker, std::shared_ptr<Process>& process_out) {
+    if (process_out != nullptr) {
+        if (process_out->getCurrentInstructionLine() < process_out->getTotalLinesOfCode()) {
+            // Not done executing, requeue the process
+            processQueue.push(process_out);
+            process_out->setState(Process::ProcessState::READY);
+        }
+        else {
+            // Done executing, deallocate memory
+            ProcessManager::getInstance()->moveToFinished(process_out);
+            MemoryManager::getInstance()->deallocate(process_out->getMemoryPointer(), process_out->getMemoryRequired());
+            process_out->setMemoryPointer(nullptr);
+        }
+    }
+}
+
+
 void CPUScheduler::RRScheduling() {
     while (running) {
         for (int i = 0; i < this->numberOfCores; i++) {
             CPUWorker* worker = cpuWorkers[i];
             std::shared_ptr<Process> process_out = nullptr;
             std::shared_ptr<Process> process_in = nullptr;
+            void* allocatedMemory = nullptr;
 
-            // std::cout << "Worker " << i << " running = " << worker->running.load() << std::endl;
-            // if worker not running, assign process
             if (!worker->running.load()) {
-                // std::cout << "Worker " << i << " entered not running loop " << std::endl;
-                // queue is empty
+                //std::cout << "Entered worker is not runnign" << std::endl;
                 if (!processQueue.empty()) {
-                    // std::cout << "Worker " << i << " entered processqueue is not empty" << std::endl;
-                    // it has a process, assign new process
-                    {
-                        std::lock_guard<std::mutex> lock(mtx);
-                        process_out = worker->getProcess();
-                        if (process_out != nullptr) {
-                            // std::cout << "Worker " << i << " entered process out is not null" << std::endl;
-                            // if not done executing
-                            if (process_out->getCurrentInstructionLine() < process_out->getTotalLinesOfCode()) {
-                                // std::cout << "Worker " << i << " entered is not done executing" << std::endl;
-                                processQueue.push(process_out);
-                                process_out->setState(Process::ProcessState::READY);
-                            }
-                            // if done executing
-                            else {
-                                // process_out->setState(Process::ProcessState::TERMINATED);
-                                ProcessManager::getInstance()->moveToFinished(process_out);
-                            }
-                        }
-                        process_in = processQueue.front();
-                        processQueue.pop();
-                        worker->setProcess(process_in);
+                    std::lock_guard<std::mutex> lock(mtx);
+                    // if it has a process already
+                    process_out = worker->getProcess();
+                    handleProcessOut(worker, process_out);
 
+                    // get the process and allocate memory
+                    process_in = processQueue.front();
+                    processQueue.pop();
+                    if (process_in->getMemoryPointer() == nullptr) {
+                        //std::cout << "Allocating Memory" << std::endl;
+                        allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired());
+                        //std::cout << "Allocating Memory AFTER" << std::endl;
+                        if (allocatedMemory != nullptr) {
+                            //std::cout << "Allocated Memory" << std::endl;
+                            process_in->setMemoryPointer(allocatedMemory);
+                            worker->setProcess(process_in);
+                            std::thread([worker, process_in]() {
+                                worker->startWorker(); // Start worker with the shared_ptr process
+                                }).detach();  // Detach the thread to run concurrently
+                        }
+                        else {
+                            //std::cout << "No Memory Available" << std::endl;
+                            // No available memory; re-enqueue for future processing
+                            processQueue.push(process_in);
+                        }
+                        //std::cout << "Exited IF STATEMTN Allocated Memory" << std::endl;
+                    }
+                    else {
+                        // we can executethe process
+                        worker->setProcess(process_in);
                         std::thread([worker, process_in]() {
                             worker->startWorker(); // Start worker with the shared_ptr process
                             }).detach();  // Detach the thread to run concurrently
                     }
 
-                }
-                // handle the case where the queue is empty but the last 4 processes haven't been terminated properly
+                    //std::cout << "Exited IF ELSE STATEMTN Allocated Memory" << std::endl;
+                } // handle the case where the queue is empty but the last 4 processes haven't been terminated properly
                 else if (worker->hasProcess()) {
                     // std::cout << "Worker " << i << " entered processqueue is empty" << std::endl;
                     process_out = worker->getProcess();
-                    if (process_out->getCurrentInstructionLine() < process_out->getTotalLinesOfCode()) {
-                        processQueue.push(process_out);
-                        process_out->setState(Process::ProcessState::READY);
-                    }
-                    else {
-                        // process_out->setState(Process::ProcessState::TERMINATED);
-                        ProcessManager::getInstance()->moveToFinished(process_out);
-                    }
+                    handleProcessOut(worker, process_out);
                 }
+
+                // std::cout << "Exited IF ELSE ELSE IF STATEMTN Allocated Memory" << std::endl;
             }
         }
         this->cpuCycles++;
+        // std::cout << "Visualizing Memory" << std::endl;
+        // std::cout << MemoryManager::getInstance()->visualizeMemory() << std::endl;
     }
 }
 

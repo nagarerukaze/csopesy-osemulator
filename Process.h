@@ -31,13 +31,15 @@ public:
 	long long getTotalLinesOfCode() const;
 	String getTimestamp();
 	ProcessState getState() const;
+	size_t getMemoryRequired() const;
+	void* getMemoryPointer() const;
 
 	int getCPUCoreID();
 
 	// Setters
 	void setState(ProcessState state);
 	void setCPUCoreID(int id);
-
+	void setMemoryPointer(void* memoryPointer);
 	// Process Operations
 	void nextLine();
 
@@ -49,5 +51,6 @@ private:
 	ProcessState currentState;
 	int cpuCoreID;
 	size_t memoryRequired;
+	void* memoryPointer;
 	
 };

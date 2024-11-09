@@ -9,6 +9,7 @@ Process::Process(const String& name, long long totalLinesOfCode, size_t memoryRe
 	this->timeCreated = time(0);
     this->currentState = Process::READY;
     this->memoryRequired = memoryRequired;
+    this->memoryPointer = nullptr;
 }
 
 void Process::printInfo() {
@@ -101,4 +102,16 @@ int Process::getCPUCoreID() {
 
 void Process::setCPUCoreID(int cpuCoreID) {
    this->cpuCoreID = cpuCoreID;
+}
+
+size_t Process::getMemoryRequired() const {
+    return this->memoryRequired;
+}
+
+void* Process::getMemoryPointer() const {
+    return this->memoryPointer;
+}
+
+void Process::setMemoryPointer(void* memoryPointer) {
+    this->memoryPointer = memoryPointer;
 }
