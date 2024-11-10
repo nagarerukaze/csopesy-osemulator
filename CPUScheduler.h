@@ -54,5 +54,4 @@ private:
     void FCFSScheduling();
     void RRScheduling();
     void handleProcessOut(CPUWorker* worker, std::shared_ptr<Process>& process_out);
-    void generateMemoryStampFile();
 };

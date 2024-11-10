@@ -227,52 +227,12 @@ void CPUScheduler::RRScheduling() {
 
         // Every <quantum_cycle> CPU cycle, produce a text file
         if (this->cpuCycles % this->quantum_cycles == 0) {
-            this->generateMemoryStampFile();
+            MemoryManager::getInstance()->printMemory(quantumCycleCtr);
             this->quantumCycleCtr++;
         }
         
-
         //////////////////////////////////////////////////
     }
-}
-void CPUScheduler::generateMemoryStampFile() {
-
-    String filename = "memory_stamp_" + std::to_string(this->quantumCycleCtr) + ".txt";
-    std::ofstream myfile(filename);
-
-    if (myfile.is_open())
-    {
-        String timestamp = this->getCurrentTime();
-        int processesInMemory = 0;
-        int totalExtFragmentationKB = 0;
-
-        myfile << "Timestamp: " << "TODO" << "\n";
-        myfile << "Number of processes in memory: " << "TODO" << "\n";
-        myfile << "Total external fragmentation in KB: " << "TODO" << "\n";
-        myfile << "\n-----end-----\n";
-        //myfile << MemoryManager::getInstance()->printASCIIMemory();
-        myfile << "\n----start----\n";
-        myfile.close();
-
-        std::cout << "Report generated in " << filename << "." << std::endl;
-    }
-    else {
-        std::cout << "Unable to open file. Report was not successfully generated." << std::endl;
-    }
-}
-
-String CPUScheduler::getCurrentTime() {
-    
-    auto now = std::chrono::system_clock::now();
-    std::time_t now_time = std::chrono::system_clock::to_time_t(now);
-
-    std::tm local_time;
-    localtime_s(&local_time, &now_time);
-
-    // Format the time as a string
-    std::ostringstream oss;
-    oss << std::put_time(&local_time, "%Y-%m-%d %H:%M:%S");
-    return oss.str();
 }
 
 //

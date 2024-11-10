@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <chrono>
 
 #include "Process.h"
 
@@ -22,6 +23,7 @@ public:
 	size_t getMaximumMemory();
 	String visualizeMemory();
 	void printMemory(long long qq);
+	void printASCIIMemory();
 private:
 
 	MemoryManager();

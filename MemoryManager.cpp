@@ -105,16 +105,19 @@ void MemoryManager::printMemory(long long qq) {
 
     if (myfile.is_open())
     {
-        myfile << "Timestamp: \n";
-        myfile << "Number of processes in memory: \n";
-        myfile << "Total external fragmentation in KB:" << (this->maximumSize - this->allocatedSize) << "\n\n";
-        myfile << "----end---- = " << this->maximumSize;
-
-        // show memory
-
-        myfile << "----start---- = 0\n";
+        myfile << "Timestamp: " << this->getCurrentTime() << "\n";
+        myfile << "Number of processes in memory: " << "TODO" << " \n"; // TODO
+        myfile << "Total external fragmentation in KB:" << (this->maximumSize - this->allocatedSize) << "\n";
+        myfile << "\n-----end----- = " << this->maximumSize << "\n";
+        //myfile << this->printASCIIMemory();
+        myfile << "\n----start---- = 0\n";
     }
     else {
         std::cout << "Unable to open file. Report was not successfully generated." << std::endl;
     }
 }
+
+void MemoryManager::printASCIIMemory() {
+    return;
+}
+
