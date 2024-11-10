@@ -37,7 +37,8 @@ private:
 	size_t maximumSize;
 	size_t allocatedSize;
 	std::vector<char> memory;
-	std::vector<String> processesInMemory;
+	std::vector<String> strProcessesInMemory;
+	std::vector<Process*> processesInMemory;
 	std::unordered_map<size_t, bool> allocationMap;
 
 	void initializeMemory();

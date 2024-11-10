@@ -35,7 +35,10 @@ void* MemoryManager::allocate(size_t size) {
     for (size_t i = 0; i < maximumSize - size + 1; ++i) {
         if (!allocationMap[i] && canAllocateAt(i, size)) {
             allocateAt(i, size);
-            // TODO: assign process name to processesInMemory
+            // TODO: assign process name to strProcessesInMemory
+            //////////////////////////////////////////////////
+            //this->processesInMemory.push_back();
+            //////////////////////////////////////////////////
             return &memory[i];
         }
     }
