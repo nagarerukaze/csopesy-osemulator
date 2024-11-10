@@ -23,6 +23,7 @@ public:
     void enqueueProcess(std::shared_ptr<Process> process);
     int getNumberOfCPUsUsed();
     int getNumberOfCores();
+    bool getIsRunning();
     long long getQuantumCycles();
     std::vector<CPUWorker*> getCPUWorkers();
 

@@ -58,13 +58,15 @@ int main() {
             ConsoleManager::getInstance()->clear();
         }
         else if (command == "exit") {
-            ConsoleManager::getInstance()->stopRunning();
+            break;
             std::cout << "Shutting down..." << std::endl;
         }
         else {
             std::cout << "Unknown command." << std::endl;
         }
     }
+
+    ConsoleManager::getInstance()->stopRunning();
 
     return 0;
 }

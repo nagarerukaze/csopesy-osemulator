@@ -10,6 +10,7 @@ Process::Process(const String& name, long long totalLinesOfCode, size_t memoryRe
     this->currentState = Process::READY;
     this->memoryRequired = memoryRequired;
     this->memoryPointer = nullptr;
+    this->cpuCoreID = NULL;
 }
 
 void Process::printInfo() {

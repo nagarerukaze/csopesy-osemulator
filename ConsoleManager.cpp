@@ -37,7 +37,7 @@ void ConsoleManager::printHeader() {
     std::cout << "Jocson, Nicole Pedernal (S11)" << std::endl;
     std::cout << "Rebano, Jaeme Patrice (S11)" << std::endl;
     std::cout << "Jaramillo, Brandon Anthony (S12)" << std::endl << std::endl;
-    std::cout << "Last updated: 11-08-2024" << std::endl; // TODO: Update the Date
+    std::cout << "Last updated: 11-11-2024" << std::endl; // TODO: Update the Date
     std::cout << "---------------------------------------------------------------" << std::endl;
     std::cout << std::endl;
 }
@@ -99,7 +99,7 @@ bool ConsoleManager::initialize() {
         delays_per_exec = std::stoll(values[6]);
         max_overall_mem = std::stoi(values[7]);
         mem_per_frame = static_cast<size_t>(std::stoull(values[8]));
-        mem_per_proc = static_cast<size_t>(std::stoull(values[8]));
+        mem_per_proc = static_cast<size_t>(std::stoull(values[9]));
     }
     catch (const std::exception& e) {
         std::cerr << "Error: Conversion error - " << e.what() << std::endl;
@@ -343,21 +343,37 @@ void ConsoleManager::stopRunning() {
 
 void ConsoleManager::test() {
     // Initialize the memory with 20 units
-    MemoryManager::getInstance()->initialize(20);
+    MemoryManager::getInstance()->initialize(16384);
 
     // Visualize initial memory state
     std::cout << "Initial memory: " << MemoryManager::getInstance()->visualizeMemory() << std::endl;
 
     // Allocate 5 blocks
-    void* ptr1 = MemoryManager::getInstance()->allocate(5);
+    void* ptr1 = MemoryManager::getInstance()->allocate(4096);
     std::cout << "Memory after allocating 5 blocks: " << MemoryManager::getInstance()->visualizeMemory() << std::endl;
 
     // Allocate 4 more blocks
-    void* ptr2 = MemoryManager::getInstance()->allocate(4);
+    void* ptr2 = MemoryManager::getInstance()->allocate(4096);
     std::cout << "Memory after allocating 4 more blocks: " << MemoryManager::getInstance()->visualizeMemory() << std::endl;
 
+    // Allocate 4 more blocks
+    void* ptr3 = MemoryManager::getInstance()->allocate(4096);
+    std::cout << "Memory after allocating 4 more blocks: " << MemoryManager::getInstance()->visualizeMemory() << std::endl;
+
+    // Allocate 4 more blocks
+    void* ptr4 = MemoryManager::getInstance()->allocate(4096);
+    std::cout << "Memory after allocating 4 more blocks: " << MemoryManager::getInstance()->visualizeMemory() << std::endl;
+
+    // Allocate 4 more blocks
+    void* ptr5 = MemoryManager::getInstance()->allocate(4096);
+    std::cout << (ptr5 == nullptr) << std::endl;
+
     // Deallocate the first allocation
-    MemoryManager::getInstance()->deallocate(ptr1, 5);
+    MemoryManager::getInstance()->deallocate(ptr1, 4096);
     std::cout << "Memory after deallocating first allocation: " << MemoryManager::getInstance()->visualizeMemory() << std::endl;
+
+    ptr5 = MemoryManager::getInstance()->allocate(4096);
+    std::cout << (ptr5 == nullptr) << std::endl;
+    std::cout << "Memory after allocating 4 more blocks: " << MemoryManager::getInstance()->visualizeMemory() << std::endl;
 
 }

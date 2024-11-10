@@ -35,6 +35,7 @@ void* MemoryManager::allocate(size_t size) {
     for (size_t i = 0; i < maximumSize - size + 1; ++i) {
         if (!allocationMap[i] && canAllocateAt(i, size)) {
             allocateAt(i, size);
+            // TODO: assign process name to processesInMemory
             return &memory[i];
         }
     }
@@ -95,4 +96,25 @@ void MemoryManager::deallocateAt(size_t index, size_t size) {
 
 size_t MemoryManager::getMaximumMemory() {
     return this->maximumSize;
+}
+
+void MemoryManager::printMemory(long long qq) {
+    std::stringstream filename;
+    filename << "memory_stamp_" << qq << ".txt";
+    std::ofstream myfile(filename.str());
+
+    if (myfile.is_open())
+    {
+        myfile << "Timestamp: \n";
+        myfile << "Number of processes in memory: \n";
+        myfile << "Total external fragmentation in KB:" << (this->maximumSize - this->allocatedSize) << "\n\n";
+        myfile << "----end---- = " << this->maximumSize;
+
+        // show memory
+
+        myfile << "----start---- = 0\n";
+    }
+    else {
+        std::cout << "Unable to open file. Report was not successfully generated." << std::endl;
+    }
 }

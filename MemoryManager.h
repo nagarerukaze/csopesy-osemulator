@@ -1,6 +1,11 @@
 #pragma once
 #include <vector>
 #include <unordered_map>
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <sstream>
+
 #include "Process.h"
 
 typedef std::string String;
@@ -16,6 +21,7 @@ public:
 	void deallocate(void* ptr, size_t size);
 	size_t getMaximumMemory();
 	String visualizeMemory();
+	void printMemory(long long qq);
 private:
 
 	MemoryManager();
@@ -28,6 +34,7 @@ private:
 	size_t maximumSize;
 	size_t allocatedSize;
 	std::vector<char> memory;
+	std::vector<String> processesInMemory;
 	std::unordered_map<size_t, bool> allocationMap;
 
 	void initializeMemory();

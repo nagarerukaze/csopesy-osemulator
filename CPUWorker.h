@@ -20,8 +20,7 @@ public:
     void startWorker();
     bool hasProcess();
     std::shared_ptr<Process> getProcess();  // Return shared_ptr
-    std::atomic<bool> running;
-
+    bool isRunning() const;
 private:
     CPUWorker(const CPUWorker&);                    // Copy constructor
     CPUWorker& operator=(const CPUWorker&);         // Assignment operator
@@ -34,4 +33,5 @@ private:
     std::mutex mtx;
     std::condition_variable cv;
     long long cpuCycles = 1;
+    bool running = false;
 };

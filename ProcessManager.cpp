@@ -36,7 +36,6 @@ void ProcessManager::createProcess(const String& name) {
         this->mem_per_proc);
 
     activeProcesses.push_back(new_process);
-
     //std::cout << "Process " << name << " created and added to activeProcesses." << std::endl;
 
     // Enqueue the process into the CPU scheduler
@@ -79,8 +78,9 @@ void ProcessManager::displayActiveProcessesList() {
             std::shared_ptr<Process> process = worker->getProcess();
             std::cout << process->getName() << "\t"
                 << "(" << process->getTimestamp() << ") \t"
-                << "Core: " << std::to_string(process->getCPUCoreID()) << "\t"
+                << "Core: " << process->getCPUCoreID() << "\t"
                 << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
+            
         }
     }
 }
@@ -92,6 +92,7 @@ void ProcessManager::displayActiveProcessesList() {
 */
 void ProcessManager::displayFinishedProcessesList() {
     std::lock_guard<std::mutex> lock(mtx);
+
     if (!this->finishedProcesses.empty()) {
         for (const auto& process : this->finishedProcesses) {
             // Check if process is valid
