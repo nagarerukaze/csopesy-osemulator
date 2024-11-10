@@ -226,47 +226,48 @@ void CPUScheduler::RRScheduling() {
         //////////////////////////////////////////////////
 
         // Every <quantum_cycle> CPU cycle, produce a text file
-        this->generateMemoryStampFile();
+        if (this->cpuCycles % this->quantum_cycles == 0) {
+            this->generateMemoryStampFile();
+            this->quantumCycleCtr++;
+        }
+        
 
         //////////////////////////////////////////////////
     }
 }
 void CPUScheduler::generateMemoryStampFile() {
 
-    if (this->cpuCycles % this->quantum_cycles == 0) {
+    String filename = "memory_stamp_" + std::to_string(this->quantumCycleCtr) + ".txt";
+    std::ofstream myfile(filename);
 
-        String filename = "memory_stamp_" + std::to_string(this->quantumCycleCtr) + ".txt";
-        std::ofstream myfile;
+    if (myfile.is_open())
+    {
+        String timestamp = this->getCurrentTime();
+        int processesInMemory = 0;
+        int totalExtFragmentationKB = 0;
 
-        if (myfile.is_open())
-        {
-            String timestamp = this->getCurrentTime();
-            int processesInMemory = 0;
-            int totalExtFragmentationKB = 0;
+        myfile << "Timestamp: " << "TODO" << "\n";
+        myfile << "Number of processes in memory: " << "TODO" << "\n";
+        myfile << "Total external fragmentation in KB: " << "TODO" << "\n";
+        myfile << "\n-----end-----\n";
+        //myfile << MemoryManager::getInstance()->printASCIIMemory();
+        myfile << "\n----start----\n";
+        myfile.close();
 
-            myfile << "Timestamp: " << "TODO" << "\n";
-            myfile << "Number of processes in memory: " << "TODO" << "\n";
-            myfile << "Total external fragmentation in KB: " << "TODO" << "\n";
-            myfile << "\n-----end-----\n";
-            //myfile << MemoryManager::getInstance()->printASCIIMemory();
-            myfile << "\n----start----\n";
-            myfile.close();
-
-            std::cout << "Report generated in " << filename << "." << std::endl;
-        }
-        else {
-            std::cout << "Unable to open file. Report was not successfully generated." << std::endl;
-        }
-
-        this->quantumCycleCtr++;
+        std::cout << "Report generated in " << filename << "." << std::endl;
+    }
+    else {
+        std::cout << "Unable to open file. Report was not successfully generated." << std::endl;
     }
 }
 
 String CPUScheduler::getCurrentTime() {
-
+    
     auto now = std::chrono::system_clock::now();
     std::time_t now_time = std::chrono::system_clock::to_time_t(now);
-    std::tm local_time = *std::localtime(&now_time);
+
+    std::tm local_time;
+    localtime_s(&local_time, &now_time);
 
     // Format the time as a string
     std::ostringstream oss;
