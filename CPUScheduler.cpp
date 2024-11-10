@@ -160,6 +160,7 @@ void CPUScheduler::RRScheduling() {
     // ISSUE: If scheduler-test or any process is created (first process)
     // while this loop is iterating through the cpu workers, it may not be
     // assigned to cpu 1
+
     while (running) {
         for (int i = 0; i < this->numberOfCores; i++) {
             CPUWorker* worker = cpuWorkers[i];
@@ -204,7 +205,7 @@ void CPUScheduler::RRScheduling() {
                 }
 
                 if (allocatedMemory != nullptr) {
-                     // std::cout << "Has Memory" << process_in->getName() << std::endl;
+                    // std::cout << "Has Memory" << process_in->getName() << std::endl;
                     worker->setProcess(process_in);
                     std::thread([worker, process_in]() {
                         worker->startWorker(); // Start worker with the shared_ptr process
@@ -221,6 +222,43 @@ void CPUScheduler::RRScheduling() {
             // std::cout << "Memory" << std::endl << MemoryManager::getInstance()->visualizeMemory() << std::endl;
         }
         this->cpuCycles++;
+
+        //////////////////////////////////////////////////
+
+        // Every <quantum_cycle> CPU cycle, produce a text file
+        this->generateMemoryStampFile();
+
+        //////////////////////////////////////////////////
+    }
+}
+void CPUScheduler::generateMemoryStampFile() {
+
+    if (this->cpuCycles % this->quantum_cycles == 0) {
+
+        String filename = "memory_stamp_" + std::to_string(this->quantumCycleCtr) + ".txt";
+        std::ofstream myfile;
+
+        if (myfile.is_open())
+        {
+            String timestamp = this->getCurrentTime();
+            int processesInMemory = 0;
+            int totalExtFragmentationKB = 0;
+
+            myfile << "Timestamp: " << "TODO" << "\n";
+            myfile << "Number of processes in memory: " << "TODO" << "\n";
+            myfile << "Total external fragmentation in KB: " << "TODO" << "\n";
+            myfile << "\n-----end-----\n";
+            //myfile << MemoryManager::getInstance()->printASCIIMemory();
+            myfile << "\n----start----\n";
+            myfile.close();
+
+            std::cout << "Report generated in " << filename << "." << std::endl;
+        }
+        else {
+            std::cout << "Unable to open file. Report was not successfully generated." << std::endl;
+        }
+
+        this->quantumCycleCtr++;
     }
 }
 

@@ -26,6 +26,7 @@ public:
     bool getIsRunning();
     long long getQuantumCycles();
     std::vector<CPUWorker*> getCPUWorkers();
+
     String getCurrentTime();
 
 private:
@@ -45,6 +46,7 @@ private:
     long long quantum_cycles;
     long long delay_per_exec;
     // long long cpuCycles;
+    int quantumCycleCtr = 0;
 
     std::vector<CPUWorker*> cpuWorkers;
     std::vector<std::thread> workerThreads;
@@ -52,4 +54,5 @@ private:
     void FCFSScheduling();
     void RRScheduling();
     void handleProcessOut(CPUWorker* worker, std::shared_ptr<Process>& process_out);
+    void generateMemoryStampFile();
 };
