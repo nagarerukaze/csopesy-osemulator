@@ -23,7 +23,7 @@ public:
 	size_t getMaximumMemory();
 	String visualizeMemory();
 	void printMemory(long long qq);
-	void printASCIIMemory();
+	void printASCIIMemory(std::ofstream& outFile);
 	String getCurrentTime();
 private:
 

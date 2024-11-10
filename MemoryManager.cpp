@@ -112,7 +112,7 @@ void MemoryManager::printMemory(long long qq) {
         myfile << "Number of processes in memory: " << "TODO" << " \n"; // TODO
         myfile << "Total external fragmentation in KB:" << (this->maximumSize - this->allocatedSize) << "\n";
         myfile << "\n-----end----- = " << this->maximumSize << "\n";
-        //myfile << this->printASCIIMemory();
+        this->printASCIIMemory(myfile);
         myfile << "\n----start---- = 0\n";
     }
     else {
@@ -120,8 +120,22 @@ void MemoryManager::printMemory(long long qq) {
     }
 }
 
-void MemoryManager::printASCIIMemory() {
-    return;
+/*
+    Prints the ASCII printout of the memory in an indicated text file.
+
+    For each process in memory, print its:
+        (1) upper limit,
+        (2) name, and
+        (3) lower limit.
+*/
+void MemoryManager::printASCIIMemory(std::ofstream& outFile) {
+    if (!this->processesInMemory.empty()) {
+        for (const auto& process : this->processesInMemory) {
+            outFile << "\n" << "TODO: UPPER LIMIT" << "\n" // Upper limit
+                << process->getName() // Process name
+                << "\n" << "TODO: LOWER LIMIT" << std::endl; // Lower limit
+        }
+    }
 }
 
 String MemoryManager::getCurrentTime() {
