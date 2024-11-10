@@ -109,8 +109,8 @@ void MemoryManager::printMemory(long long qq) {
     if (myfile.is_open())
     {
         myfile << "Timestamp: " << this->getCurrentTime() << "\n";
-        myfile << "Number of processes in memory: " << "TODO" << " \n"; // TODO
-        myfile << "Total external fragmentation in KB:" << (this->maximumSize - this->allocatedSize) << "\n";
+        myfile << "Number of processes in memory: " << this->processesInMemory.size() << " \n"; // TODO
+        myfile << "Total external fragmentation in KB: " << (this->maximumSize - this->allocatedSize) << "\n";
         myfile << "\n-----end----- = " << this->maximumSize << "\n";
         this->printASCIIMemory(myfile);
         myfile << "\n----start---- = 0\n";
