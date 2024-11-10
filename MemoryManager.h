@@ -24,6 +24,7 @@ public:
 	String visualizeMemory();
 	void printMemory(long long qq);
 	void printASCIIMemory();
+	String getCurrentTime();
 private:
 
 	MemoryManager();

@@ -121,3 +121,17 @@ void MemoryManager::printASCIIMemory() {
     return;
 }
 
+String MemoryManager::getCurrentTime() {
+
+    auto now = std::chrono::system_clock::now();
+    std::time_t now_time = std::chrono::system_clock::to_time_t(now);
+
+    std::tm local_time;
+    localtime_s(&local_time, &now_time);
+
+    // Format the time as a string
+    std::ostringstream oss;
+    oss << std::put_time(&local_time, "%d-%m-%Y %H:%M:%S");
+    return oss.str();
+}
+

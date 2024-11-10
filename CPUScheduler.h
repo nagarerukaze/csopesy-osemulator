@@ -27,8 +27,6 @@ public:
     long long getQuantumCycles();
     std::vector<CPUWorker*> getCPUWorkers();
 
-    String getCurrentTime();
-
 private:
     CPUScheduler();
     CPUScheduler(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec);
