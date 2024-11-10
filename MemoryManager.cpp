@@ -37,7 +37,7 @@ void* MemoryManager::allocate(size_t size) {
             allocateAt(i, size);
             // TODO: assign process name to strProcessesInMemory
             //////////////////////////////////////////////////
-            //this->processesInMemory.push_back();
+            //this->processesInMemory.push_back(whateverProcess);
             //////////////////////////////////////////////////
             return &memory[i];
         }
@@ -109,7 +109,7 @@ void MemoryManager::printMemory(long long qq) {
     if (myfile.is_open())
     {
         myfile << "Timestamp: " << this->getCurrentTime() << "\n";
-        myfile << "Number of processes in memory: " << this->processesInMemory.size() << " \n"; // TODO
+        myfile << "Number of processes in memory: " << this->processesInMemory.size() << " \n";
         myfile << "Total external fragmentation in KB: " << (this->maximumSize - this->allocatedSize) << "\n";
         myfile << "\n-----end----- = " << this->maximumSize << "\n";
         this->printASCIIMemory(myfile);
