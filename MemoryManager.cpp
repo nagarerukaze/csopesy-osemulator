@@ -138,6 +138,11 @@ void MemoryManager::printASCIIMemory(std::ofstream& outFile) {
     }
 }
 
+/*
+
+    Returns the date and time now.
+    
+*/
 String MemoryManager::getCurrentTime() {
 
     auto now = std::chrono::system_clock::now();
