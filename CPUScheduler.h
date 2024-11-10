@@ -26,6 +26,7 @@ public:
     bool getIsRunning();
     long long getQuantumCycles();
     std::vector<CPUWorker*> getCPUWorkers();
+    String getCurrentTime();
 
 private:
     CPUScheduler();
