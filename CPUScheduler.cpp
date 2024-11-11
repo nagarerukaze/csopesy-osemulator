@@ -226,9 +226,8 @@ void CPUScheduler::RRScheduling() {
         //////////////////////////////////////////////////
 
         // Every <quantum_cycle> CPU cycle, produce a text file
-        if (this->cpuCycles % this->quantum_cycles == 0) {
-            MemoryManager::getInstance()->printMemory(quantumCycleCtr);
-            this->quantumCycleCtr++;
+        if ((this->cpuCycles % this->quantum_cycles == 0) && this->cpuCycles != 0) {
+            MemoryManager::getInstance()->printMemory(this->cpuCycles);
         }
         
         //////////////////////////////////////////////////

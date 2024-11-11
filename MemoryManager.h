@@ -14,7 +14,7 @@ typedef std::string String;
 class MemoryManager
 {
 public:
-	void initialize(size_t maximumSize);
+	void initialize(size_t maximumSize, size_t memPerProc);
 	static MemoryManager* getInstance();
 
 
@@ -28,7 +28,7 @@ public:
 private:
 
 	MemoryManager();
-	MemoryManager(size_t totalMemory);
+	MemoryManager(size_t totalMemory, size_t memPerProc);
 	MemoryManager(const MemoryManager&);
 	MemoryManager& operator = (const MemoryManager&);
 	~MemoryManager();
@@ -36,9 +36,9 @@ private:
 
 	size_t maximumSize;
 	size_t allocatedSize;
+	size_t memPerProc;
 	std::vector<char> memory;
 	std::vector<String> strProcessesInMemory;
-	std::vector<Process*> processesInMemory;
 	std::unordered_map<size_t, bool> allocationMap;
 
 	void initializeMemory();

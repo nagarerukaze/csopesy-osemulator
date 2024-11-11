@@ -43,8 +43,6 @@ private:
     int numberOfCores;
     long long quantum_cycles;
     long long delay_per_exec;
-    // long long cpuCycles;
-    int quantumCycleCtr = 0;
 
     std::vector<CPUWorker*> cpuWorkers;
     std::vector<std::thread> workerThreads;

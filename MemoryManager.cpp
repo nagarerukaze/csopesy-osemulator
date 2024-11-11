@@ -4,10 +4,14 @@
 
 MemoryManager::MemoryManager() {}
 
-MemoryManager::MemoryManager(size_t maximumSize) {
+MemoryManager::MemoryManager(size_t maximumSize, size_t memPerProc) {
     this->maximumSize = maximumSize;
     this->allocatedSize = 0;
+    this->memPerProc = memPerProc;
     memory.resize(maximumSize);  // Resize memory to the given maximum size
+    for (size_t i = 0; i < maximumSize / memPerProc; i++) {
+        this->strProcessesInMemory.push_back(".");
+    }
     initializeMemory();
 }
 
@@ -17,8 +21,8 @@ MemoryManager::~MemoryManager() {
     memory.clear();
 }
 
-void MemoryManager::initialize(size_t maximumSize) {
-    sharedInstance = new MemoryManager(maximumSize);
+void MemoryManager::initialize(size_t maximumSize, size_t memPerProc) {
+    sharedInstance = new MemoryManager(maximumSize, memPerProc);
 }
 
 
@@ -31,13 +35,17 @@ MemoryManager* MemoryManager::getInstance() {
 
 // Allocate memory for a process
 void* MemoryManager::allocate(size_t size, String process) {
+    size_t index = 0;
     // Find the first available block that can accommodate the process
     for (size_t i = 0; i < maximumSize - size + 1; ++i) {
         if (!allocationMap[i] && canAllocateAt(i, size)) {
             allocateAt(i, size);
             // TODO: assign process name to strProcessesInMemory
             //////////////////////////////////////////////////
-            this->strProcessesInMemory.push_back(process);
+            if (i != 0) {
+                index = i / size;
+            }
+            this->strProcessesInMemory[index] = process;
             //////////////////////////////////////////////////
             return &memory[i];
         }
@@ -49,10 +57,15 @@ void* MemoryManager::allocate(size_t size, String process) {
 
 void MemoryManager::deallocate(void* ptr, size_t size, String process) {
     size_t index = static_cast<char*>(ptr) - &memory[0];
+    size_t i = 0;
 
     // Check if the index exists and if it's allocated
     if (allocationMap[index]) {
         deallocateAt(index, size);  // Deallocate the block starting from this index
+        if (index != 0) {
+            i = index / size;
+        }
+        this->strProcessesInMemory[i] = ".";
     }
 }
 
@@ -130,11 +143,11 @@ void MemoryManager::printMemory(long long qq) {
 */
 void MemoryManager::printASCIIMemory(std::ofstream& outFile) {
     if (!this->strProcessesInMemory.empty()) {
-        for (const auto& process : this->strProcessesInMemory) {
-            if (process != ".") {
-                outFile << "\n" << "TODO: UPPER LIMIT" << "\n" // Upper limit
-                    << process // Process name
-                    << "\n" << "TODO: LOWER LIMIT" << std::endl; // Lower limit
+        for (size_t i = (maximumSize / memPerProc) - 1; i < 0; i--) {
+            if (this->strProcessesInMemory[i] != ".") {
+                outFile << "\n" << (i * (this->memPerProc + 1)) << "\n" // Upper limit
+                    << this->strProcessesInMemory[i] // Process name
+                    << "\n" << (i * this->memPerProc) << std::endl; // Lower limit
             }
         }
     }
