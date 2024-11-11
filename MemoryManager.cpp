@@ -30,14 +30,14 @@ MemoryManager* MemoryManager::getInstance() {
 }
 
 // Allocate memory for a process
-void* MemoryManager::allocate(size_t size) {
+void* MemoryManager::allocate(size_t size, String process) {
     // Find the first available block that can accommodate the process
     for (size_t i = 0; i < maximumSize - size + 1; ++i) {
         if (!allocationMap[i] && canAllocateAt(i, size)) {
             allocateAt(i, size);
             // TODO: assign process name to strProcessesInMemory
             //////////////////////////////////////////////////
-            //this->processesInMemory.push_back(whateverProcess);
+            this->strProcessesInMemory.push_back(process);
             //////////////////////////////////////////////////
             return &memory[i];
         }
@@ -47,7 +47,7 @@ void* MemoryManager::allocate(size_t size) {
     return nullptr;
 }
 
-void MemoryManager::deallocate(void* ptr, size_t size) {
+void MemoryManager::deallocate(void* ptr, size_t size, String process) {
     size_t index = static_cast<char*>(ptr) - &memory[0];
 
     // Check if the index exists and if it's allocated
@@ -109,7 +109,7 @@ void MemoryManager::printMemory(long long qq) {
     if (myfile.is_open())
     {
         myfile << "Timestamp: " << this->getCurrentTime() << "\n";
-        myfile << "Number of processes in memory: " << this->processesInMemory.size() << " \n";
+        myfile << "Number of processes in memory: " << this->strProcessesInMemory.size() << " \n";
         myfile << "Total external fragmentation in KB: " << (this->maximumSize - this->allocatedSize) << "\n";
         myfile << "\n-----end----- = " << this->maximumSize << "\n";
         this->printASCIIMemory(myfile);
@@ -129,11 +129,13 @@ void MemoryManager::printMemory(long long qq) {
         (3) lower limit.
 */
 void MemoryManager::printASCIIMemory(std::ofstream& outFile) {
-    if (!this->processesInMemory.empty()) {
-        for (const auto& process : this->processesInMemory) {
-            outFile << "\n" << "TODO: UPPER LIMIT" << "\n" // Upper limit
-                << process->getName() // Process name
-                << "\n" << "TODO: LOWER LIMIT" << std::endl; // Lower limit
+    if (!this->strProcessesInMemory.empty()) {
+        for (const auto& process : this->strProcessesInMemory) {
+            if (process != ".") {
+                outFile << "\n" << "TODO: UPPER LIMIT" << "\n" // Upper limit
+                    << process // Process name
+                    << "\n" << "TODO: LOWER LIMIT" << std::endl; // Lower limit
+            }
         }
     }
 }
@@ -151,10 +153,10 @@ String MemoryManager::getCurrentTime() {
     std::tm local_time;
 
     // For Windows
-    //localtime_s(&local_time, &now_time);
+    localtime_s(&local_time, &now_time);
 
     // For Mac
-    localtime_r(&now_time, &local_time);
+    //localtime_r(&now_time, &local_time);
 
     // Format the time as a string
     std::ostringstream oss;

@@ -345,7 +345,9 @@ void ConsoleManager::stopRunning() {
     CPUScheduler::getInstance()->stopScheduler();
 }
 
+
 void ConsoleManager::test() {
+    /*
     // Initialize the memory with 20 units
     MemoryManager::getInstance()->initialize(16384);
 
@@ -380,4 +382,5 @@ void ConsoleManager::test() {
     std::cout << (ptr5 == nullptr) << std::endl;
     std::cout << "Memory after allocating 4 more blocks: " << MemoryManager::getInstance()->visualizeMemory() << std::endl;
 
+    */
 }

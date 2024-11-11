@@ -117,6 +117,10 @@ std::shared_ptr<Process> CPUWorker::getProcess() {
     return this->process;
 }
 
+int CPUWorker::getID() {
+    return this->id;
+}
+
 
 bool CPUWorker::isRunning() const {
     return this->running;

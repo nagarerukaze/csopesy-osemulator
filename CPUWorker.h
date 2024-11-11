@@ -21,6 +21,7 @@ public:
     bool hasProcess();
     std::shared_ptr<Process> getProcess();  // Return shared_ptr
     bool isRunning() const;
+    int getID();
 private:
     CPUWorker(const CPUWorker&);                    // Copy constructor
     CPUWorker& operator=(const CPUWorker&);         // Assignment operator

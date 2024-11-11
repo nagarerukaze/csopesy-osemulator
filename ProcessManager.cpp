@@ -78,7 +78,7 @@ void ProcessManager::displayActiveProcessesList() {
             std::shared_ptr<Process> process = worker->getProcess();
             std::cout << process->getName() << "\t"
                 << "(" << process->getTimestamp() << ") \t"
-                << "Core: " << process->getCPUCoreID() << "\t"
+                << "Core: " << worker->getID() << "\t"
                 << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
             
         }

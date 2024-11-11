@@ -18,8 +18,8 @@ public:
 	static MemoryManager* getInstance();
 
 
-	void* allocate(size_t size);
-	void deallocate(void* ptr, size_t size);
+	void* allocate(size_t size, String process);
+	void deallocate(void* ptr, size_t size, String process);
 	size_t getMaximumMemory();
 	String visualizeMemory();
 	void printMemory(long long qq);

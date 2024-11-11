@@ -150,7 +150,7 @@ void CPUScheduler::handleProcessOut(CPUWorker* worker, std::shared_ptr<Process>&
             // Done executing, deallocate memory
             ProcessManager::getInstance()->moveToFinished(process_out);
             // std::cout << "Deallocating for " << process_out->getName() << std::endl;
-            MemoryManager::getInstance()->deallocate(process_out->getMemoryPointer(), process_out->getMemoryRequired());
+            MemoryManager::getInstance()->deallocate(process_out->getMemoryPointer(), process_out->getMemoryRequired(), process_out->getName());
             process_out->setMemoryPointer(nullptr);
         }
     }
@@ -191,7 +191,7 @@ void CPUScheduler::RRScheduling() {
                 // if process is not allocated in memory
                 if (allocatedMemory == nullptr) {
                     // std::cout << "Not allocated in memory for process " << process_in->getName() << std::endl;
-                    allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired());
+                    allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
                     // allocatation failed, requeue
                     if (allocatedMemory == nullptr) {
                         processQueue.push(process_in);
@@ -227,7 +227,7 @@ void CPUScheduler::RRScheduling() {
 
         // Every <quantum_cycle> CPU cycle, produce a text file
         if (this->cpuCycles % this->quantum_cycles == 0) {
-            //MemoryManager::getInstance()->printMemory(quantumCycleCtr);
+            MemoryManager::getInstance()->printMemory(quantumCycleCtr);
             this->quantumCycleCtr++;
         }
         
