@@ -149,7 +149,12 @@ String MemoryManager::getCurrentTime() {
     std::time_t now_time = std::chrono::system_clock::to_time_t(now);
 
     std::tm local_time;
+
+    // For Windows
     localtime_s(&local_time, &now_time);
+
+    // For Mac
+    //localtime_r(&now_time, &local_time);
 
     // Format the time as a string
     std::ostringstream oss;
