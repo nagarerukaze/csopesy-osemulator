@@ -151,10 +151,10 @@ String MemoryManager::getCurrentTime() {
     std::tm local_time;
 
     // For Windows
-    localtime_s(&local_time, &now_time);
+    //localtime_s(&local_time, &now_time);
 
     // For Mac
-    //localtime_r(&now_time, &local_time);
+    localtime_r(&now_time, &local_time);
 
     // Format the time as a string
     std::ostringstream oss;

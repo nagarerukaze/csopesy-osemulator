@@ -70,7 +70,7 @@ bool ProcessManager::displayProcess(const String& name) const {
     Display the activeProcesses (i.e., processes inside a CPU core).
 */
 void ProcessManager::displayActiveProcessesList() {
-    std::lock_guard<std::mutex> lock(mtx);
+    // std::lock_guard<std::mutex> lock(mtx);
     std::vector<CPUWorker*> workers = CPUScheduler::getInstance()->getCPUWorkers();
 
     for (const auto& worker : workers) {

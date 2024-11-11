@@ -276,8 +276,10 @@ void ConsoleManager::schedulerTest() {
     }
 
     ProcessManager::getInstance()->setIsGeneratingProcesses(true);
-    std::cout << "Generating dummy processes..." << std::endl;
+    
     schedulerTestThread = std::thread(&ConsoleManager::generateProcesses, this);
+    schedulerTestThread.detach();
+    std::cout << "Generating dummy processes..." << std::endl;
 }
 
 void ConsoleManager::schedulerStop() {
@@ -288,7 +290,9 @@ void ConsoleManager::schedulerStop() {
     ProcessManager::getInstance()->setIsGeneratingProcesses(false);
 
     if (this->schedulerTestThread.joinable()) {
+        std::cout << "Waiting for thread to finish..." << std::endl;
         this->schedulerTestThread.join(); // Wait for the thread to finish
+        std::cout << "Thread has finished." << std::endl;
     }
     std::cout << "Stopped generating dummy processes." << std::endl;
 }
