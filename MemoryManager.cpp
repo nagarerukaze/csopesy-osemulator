@@ -144,7 +144,7 @@ void MemoryManager::printMemory(long long qq) {
 */
 void MemoryManager::printASCIIMemory(std::ofstream& outFile) {
     if (!this->strProcessesInMemory.empty()) {
-        for (size_t i = (maximumSize / memPerProc) - 1; i >= 0; i--) {
+        for (int i = (maximumSize / memPerProc) - 1; i >= 0; i--) {
             if (this->strProcessesInMemory[i] != ".") {
                 outFile << "\n" << ((i + 1) * this->memPerProc) << "\n" // Upper limit
                     << this->strProcessesInMemory[i] // Process name
