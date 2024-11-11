@@ -13,6 +13,7 @@
                 "CPUScheduler.cpp",
                 "CPUWorker.cpp",
                 "ProcessManager.cpp",
+                "MemoryManager.cpp",
                 "Process.cpp",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"
