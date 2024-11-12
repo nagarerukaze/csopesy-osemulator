@@ -161,6 +161,8 @@ void CPUScheduler::RRScheduling() {
     // while this loop is iterating through the cpu workers, it may not be
     // assigned to cpu 1
 
+    long long currentQuantumCycle = 1;
+
     while (running) {
         for (int i = 0; i < this->numberOfCores; i++) {
             CPUWorker* worker = cpuWorkers[i];
@@ -227,7 +229,8 @@ void CPUScheduler::RRScheduling() {
 
         // Every <quantum_cycle> CPU cycle, produce a text file
         if ((this->cpuCycles % this->quantum_cycles == 0) && this->cpuCycles != 0) {
-            MemoryManager::getInstance()->printMemory(this->cpuCycles);
+            MemoryManager::getInstance()->printMemory(currentQuantumCycle);
+            currentQuantumCycle++;
         }
         
         //////////////////////////////////////////////////
