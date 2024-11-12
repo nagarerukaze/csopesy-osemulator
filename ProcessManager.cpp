@@ -76,11 +76,13 @@ void ProcessManager::displayActiveProcessesList() {
     for (const auto& worker : workers) {
         if (worker->hasProcess()) {
             std::shared_ptr<Process> process = worker->getProcess();
-            std::cout << process->getName() << "\t"
-                << "(" << process->getTimestamp() << ") \t"
-                << "Core: " << worker->getID() << "\t"
-                << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
-            
+
+            if (process->getCPUCoreID() == worker->getID()) {
+                std::cout << process->getName() << "\t"
+                    << "(" << process->getTimestamp() << ") \t"
+                    << "Core: " << std::to_string(process->getCPUCoreID()) << "\t"
+                    << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
+            }
         }
     }
 }
@@ -117,12 +119,15 @@ void ProcessManager::printActiveProcessesList(std::ofstream& outFile) {
     std::vector<CPUWorker*> workers = CPUScheduler::getInstance()->getCPUWorkers();
 
     for (const auto& worker : workers) {
-        if (worker->hasProcess()) {
+        if (worker->hasProcess() && worker->isRunning()) {
             std::shared_ptr<Process> process = worker->getProcess();
-            outFile << process->getName() << "\t"
-                << "(" << process->getTimestamp() << ") \t"
-                << "Core: " << std::to_string(process->getCPUCoreID()) << "\t"
-                << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
+
+            if (process->getCPUCoreID() == worker->getID()) {
+                outFile << process->getName() << "\t"
+                    << "(" << process->getTimestamp() << ") \t"
+                    << "Core: " << std::to_string(process->getCPUCoreID()) << "\t"
+                    << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
+            }
         }
     }
 }
@@ -162,11 +167,14 @@ void ProcessManager::printFinishedProcessesList(std::ofstream& outFile) {
 void ProcessManager::displayAllProcesses() {
     int coresUsed = CPUScheduler::getInstance()->getNumberOfCPUsUsed();
     int totalCores = CPUScheduler::getInstance()->getNumberOfCores();
-    double cpuUtilization = (coresUsed / totalCores) * 100;
+    double cpuUtilization = ((double) coresUsed / (double) totalCores) * 100;
 
-    std::cout << "CPU Utilization: " << (int)cpuUtilization << "%" << std::endl;
+
+
+    std::cout << "CPU Utilization: " << cpuUtilization << "%" << std::endl;
 
     std::cout << "Cores used: " << coresUsed << std::endl;
+    std::cout << "Total Cores: " << totalCores << std::endl;
     std::cout << "Cores available: " << totalCores - coresUsed << std::endl;
     std::cout << std::endl;
     std::cout << "--------------------------------------" << std::endl;

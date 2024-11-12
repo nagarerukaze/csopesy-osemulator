@@ -86,7 +86,7 @@ int CPUScheduler::getNumberOfCPUsUsed() {
 
     for (int i = 0; i < this->numberOfCores; i++)
     {
-        if(cpuWorkers[i]->hasProcess()) {
+        if(cpuWorkers[i]->hasProcess() && cpuWorkers[i]->getProcess()->getCPUCoreID() == i) {
            cpus_used++; 
         }
     }
