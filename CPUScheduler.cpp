@@ -167,64 +167,79 @@ void CPUScheduler::RRScheduling() {
     }
 
     while (running) {
-        for (int i = 0; i < this->numberOfCores; i++) {
-            CPUWorker* worker = cpuWorkers[i];
-            std::shared_ptr<Process> process_out = nullptr;
-            std::shared_ptr<Process> process_in = nullptr;
-            void* allocatedMemory = nullptr;
+        // get process in ready queue
+        // check if allocated
+        // if allocated proceed
+        // if not allocated it will loop again
+        std::shared_ptr<Process> process_in = nullptr;
+        void* allocatedMemory = nullptr;
+        if (!processQueue.empty()) {
+            // get the process and allocated memory
+            process_in = processQueue.front();
+            // std::cout << "Process_in = " << process_in->getName() << std::endl;
+            processQueue.pop();
+            allocatedMemory = process_in->getMemoryPointer();
 
-            // std::cout << "Worker " << i << " now," << std::endl;
-            // has a process queue
-            if (!processQueue.empty() && (!worker->isRunning())) {
-
-                // std::cout << "Worker " << i << " not running," << std::endl;
-                {
-                    std::lock_guard<std::mutex> lock(mtx);
-                    // if worker has process and worker is not running anymore
-                    if (worker->hasProcess()) {
-                        process_out = worker->getProcess();
-                        handleProcessOut(worker, process_out);
-                    }
-                }
-
-                // get the process and allocated memory
-                process_in = processQueue.front();
-                // std::cout << "Process_in = " << process_in->getName() << std::endl;
-                processQueue.pop();
-                allocatedMemory = process_in->getMemoryPointer();
-
-                // if process is not allocated in memory
+            // if process is not allocated in memory
+            if (allocatedMemory == nullptr) {
+                // std::cout << "Not allocated in memory for process " << process_in->getName() << std::endl;
+                allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
+                // allocatation failed, requeue
                 if (allocatedMemory == nullptr) {
-                    // std::cout << "Not allocated in memory for process " << process_in->getName() << std::endl;
-                    allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
-                    // allocatation failed, requeue
-                    if (allocatedMemory == nullptr) {
-                        processQueue.push(process_in);
-                        // std::cout << "Requeued. Not enough memory for process " << process_in->getName() << std::endl;
-                    }
-                    // set pointer if allocated
-                    else {
-                        // std::cout << "Allocated memory for process " << process_in->getName() << std::endl;
-                        process_in->setMemoryPointer(allocatedMemory);
-                    }
+                    processQueue.push(process_in);
+                    process_in = nullptr;
+                    // std::cout << "Requeued. Not enough memory for process " << process_in->getName() << std::endl;
                 }
+                // set pointer if allocated
+                else {
+                    // std::cout << "Allocated memory for process " << process_in->getName() << std::endl;
+                    process_in->setMemoryPointer(allocatedMemory);
+                }
+            }
+        }
 
-                if (allocatedMemory != nullptr) {
-                    // std::cout << "Has Memory" << process_in->getName() << std::endl;
+        // proceed: go through for loop once a worker is free
+        // put it into the worker and then break for loop
+        if (process_in != nullptr) {
+            for (int i = 0; i < this->numberOfCores; i++) {
+                CPUWorker* worker = cpuWorkers[i];
+                std::shared_ptr<Process> process_out = nullptr;
+                // std::shared_ptr<Process> process_in = nullptr;
+                // void* allocatedMemory = nullptr;
+
+                // std::cout << "Worker " << i << " now," << std::endl;
+                // has a process queue
+                if (!worker->isRunning()) {
+                    // std::cout << "Worker " << i << " not running," << std::endl;
+                    {
+                        std::lock_guard<std::mutex> lock(mtx);
+                        // if worker has process and worker is not running anymore
+                        if (worker->hasProcess()) {
+                            process_out = worker->getProcess();
+                            handleProcessOut(worker, process_out);
+                        }
+                    }
                     worker->setProcess(process_in);
                     std::thread([worker, process_in]() {
                         worker->startWorker(); // Start worker with the shared_ptr process
                         }).detach();
+                        break;
+                }
+
+                // std::cout << "Memory" << std::endl << MemoryManager::getInstance()->visualizeMemory() << std::endl;
+            }
+        }
+        // no more process queue
+        else {
+            for (int i = 0; i < this->numberOfCores; i++) {
+                CPUWorker* worker = cpuWorkers[i];
+                std::shared_ptr<Process> process_out = nullptr;
+                if (worker->hasProcess() && (!worker->isRunning())) {
+                    std::lock_guard<std::mutex> lock(mtx);
+                    process_out = worker->getProcess();
+                    handleProcessOut(worker, process_out);
                 }
             }
-            // no more queue, but worker has process
-            else if (worker->hasProcess() && (!worker->isRunning())) {
-                std::lock_guard<std::mutex> lock(mtx);
-                process_out = worker->getProcess();
-                handleProcessOut(worker, process_out);
-            }
-
-            // std::cout << "Memory" << std::endl << MemoryManager::getInstance()->visualizeMemory() << std::endl;
         }
         this->cpuCycles++;
 

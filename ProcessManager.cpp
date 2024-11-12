@@ -76,11 +76,12 @@ void ProcessManager::displayActiveProcessesList() {
     for (const auto& worker : workers) {
         if (worker->hasProcess()) {
             std::shared_ptr<Process> process = worker->getProcess();
-            std::cout << process->getName() << "\t"
-                << "(" << process->getTimestamp() << ") \t"
-                << "Core: " << worker->getID() << "\t"
-                << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
-            
+            if (process->getCPUCoreID() == worker->getID()) {
+                std::cout << process->getName() << "\t"
+                    << "(" << process->getTimestamp() << ") \t"
+                    << "Core: " << worker->getID() << "\t"
+                    << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
+            }
         }
     }
 }
