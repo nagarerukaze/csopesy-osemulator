@@ -1,8 +1,9 @@
 #include "MemoryManager.h"
 #include <iostream>
 #include <unordered_map>
+#include <filesystem>
 
-MemoryManager::MemoryManager() {}
+MemoryManager::MemoryManager() : maximumSize(0), allocatedSize(0), memPerProc(0) {}
 
 MemoryManager::MemoryManager(size_t maximumSize, size_t memPerProc) {
     this->maximumSize = maximumSize;
@@ -116,14 +117,35 @@ size_t MemoryManager::getMaximumMemory() {
 }
 
 void MemoryManager::printMemory(long long qq) {
+
+    std::string folderPath = "reports";  // Specify your subfolder name here
+
+    // Ensure the subfolder exists
+    if (!std::filesystem::exists(folderPath)) {
+        std::filesystem::create_directory(folderPath);  // Create the subfolder if it doesn't exist
+    }
+
+    long long numberOfProcesses = 0;
+
+    if (!this->strProcessesInMemory.empty()) {
+        for (int i = (maximumSize / memPerProc) - 1; i >= 0; i--) {
+            if (this->strProcessesInMemory[i] != ".") {
+                numberOfProcesses++;
+            }
+        }
+    }
+
     std::stringstream filename;
-    filename << "memory_stamp_" << qq << ".txt";
+    filename << folderPath << "/memory_stamp_" << qq << ".txt";
     std::ofstream myfile(filename.str());
 
     if (myfile.is_open())
     {
-        myfile << "Timestamp: " << this->getCurrentTime() << "\n";
-        myfile << "Number of processes in memory: " << this->strProcessesInMemory.size() << " \n";
+        myfile << "Timestamp: " << "(" << this->getCurrentTime() << ")" << "\n";
+
+        // should not be .size()
+        myfile << "Number of processes in memory: " << numberOfProcesses << " \n";
+        
         myfile << "Total external fragmentation in KB: " << (this->maximumSize - this->allocatedSize) << "\n";
         myfile << "\n-----end----- = " << this->maximumSize << "\n";
         this->printASCIIMemory(myfile);
@@ -169,12 +191,13 @@ String MemoryManager::getCurrentTime() {
     // For Windows
     localtime_s(&local_time, &now_time);
 
-    // For Mac
-    //localtime_r(&now_time, &local_time);
+    // For Mac/Linux
+    // localtime_r(&now_time, &local_time);
 
-    // Format the time as a string
+    // Format the time as a string with AM/PM
     std::ostringstream oss;
-    oss << std::put_time(&local_time, "%d-%m-%Y %H:%M:%S");
+    oss << std::put_time(&local_time, "%d-%m-%Y %I:%M:%S %p");  // %I for 12-hour clock, %p for AM/PM
+
     return oss.str();
 }
 
