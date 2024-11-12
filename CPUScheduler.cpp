@@ -157,11 +157,14 @@ void CPUScheduler::handleProcessOut(CPUWorker* worker, std::shared_ptr<Process>&
 }
 
 void CPUScheduler::RRScheduling() {
-    // ISSUE: If scheduler-test or any process is created (first process)
-    // while this loop is iterating through the cpu workers, it may not be
-    // assigned to cpu 1
-
     long long currentQuantumCycle = 1;
+
+    while (true) {
+        this->cpuCycles++;
+        if (!processQueue.empty()) {
+            break;
+        }
+    }
 
     while (running) {
         for (int i = 0; i < this->numberOfCores; i++) {
