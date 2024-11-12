@@ -41,9 +41,9 @@ int main() {
                 std::cout << "Unknown command." << std::endl;
             }
         }
-        else if (command == "test") {
+        /*else if (command == "test") {
             ConsoleManager::getInstance()->test();
-        }
+        }*/
         else if (command == "initialize") {
             initialized = ConsoleManager::getInstance()->initialize();
 
