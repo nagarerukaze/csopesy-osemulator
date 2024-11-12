@@ -65,7 +65,8 @@ void ConsoleManager::clear() {
 bool ConsoleManager::initialize() {
     std::vector<String> values;
     String line, key, value, scheduler;
-    int num_cpu, max_overall_mem, mem_per_frame, mem_per_proc;
+    int num_cpu;
+    size_t max_overall_mem, mem_per_frame, mem_per_proc;
     long long quantum_cycles, batch_process_freq, min_ins, max_ins, delays_per_exec;
 
     // Get values from config.txt
@@ -98,8 +99,8 @@ bool ConsoleManager::initialize() {
         max_ins = std::stoll(values[5]);
         delays_per_exec = std::stoll(values[6]);
         max_overall_mem = std::stoi(values[7]);
-        mem_per_frame = static_cast<size_t>(std::stoull(values[8]));
-        mem_per_proc = static_cast<size_t>(std::stoull(values[9]));
+        mem_per_frame = std::stoull(values[8]);
+        mem_per_proc = std::stoull(values[9]);
     }
     catch (const std::exception& e) {
         std::cerr << "Error: Conversion error - " << e.what() << std::endl;
