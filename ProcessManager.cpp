@@ -195,6 +195,9 @@ void ProcessManager::moveToFinished(std::shared_ptr<Process> process) {
         this->activeProcesses.erase(it);  // Erase from activeProcesses
         //std::cout << "Process removed successfully!" << std::endl;
     }
+    else {
+        //std::cout << "Process not found in activeProcesses!" << std::endl;
+    }
 }
 
 long long ProcessManager::getBatchProcessFreq() const {
