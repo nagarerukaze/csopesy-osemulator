@@ -19,6 +19,7 @@ public:
     void setProcess(std::shared_ptr<Process> process);  // Use shared_ptr
     void startWorker();
     bool hasProcess();
+    void removeProcess();
     std::shared_ptr<Process> getProcess();  // Return shared_ptr
     bool isRunning() const;
     int getID();

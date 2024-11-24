@@ -12,46 +12,81 @@ CPUWorker::CPUWorker(int id, long long delay_per_exec, String scheduler, long lo
     this->process = nullptr;
 }
 
-// Set a CPU's process (now accepts shared_ptr<Process>)
+// Set a CPU's process
 void CPUWorker::setProcess(std::shared_ptr<Process> process) {
-    std::unique_lock<std::mutex> lock(mtx);
+    std::lock_guard<std::mutex> lock(mtx);
 
-    // Signal to stop the current thread if it's running
-    if (this->running) {
-        this->running = false;
-    }
-
-    // Assign new process
     this->process = process;
-    if (this->process) {
-        this->process->setCPUCoreID(this->id);
-    }
+    this->process->setCPUCoreID(this->id);
+    this->running = true;
 }
 
-// RR lang muna
+// Set process to nullptr
+void CPUWorker::removeProcess() {
+    std::lock_guard<std::mutex> lock(mtx);
+    this->process = nullptr;
+}
+
 void CPUWorker::startWorker() {
     {
         std::lock_guard<std::mutex> lock(mtx);
-        this->cpuCycles = 0;
-        this->running = true;
-        if (this->process) {
+        if (this->process != nullptr) {
+            //std::cout << "Inside worker: Process is not null" << std::endl;
             this->process->setState(Process::ProcessState::RUNNING);
             this->process->setCPUCoreID(this->id);
         }
     }
-    for (long long i = 0; i < this->quantum_cycles && CPUScheduler::getInstance()->getIsRunning(); i++) {
-        if (this->cpuCycles == delay_per_exec) {
-            if (this->process->getCurrentInstructionLine() < this->process->getTotalLinesOfCode()) {
-                this->process->nextLine();  // Process next instruction
+    this->cpuCycles = 0;
+    // FCFS
+    if (scheduler == "fcfs") {
+        while (this->running) {
+            if (this->cpuCycles == delay_per_exec) {
+                if (this->process != nullptr) {
+                    //std::cout << "Entered." << std::endl;
+                    if (this->process->getCurrentInstructionLine() != this->process->getTotalLinesOfCode()) {
+
+                        //std::cout << "Entered2." << std::endl;
+                        this->process->nextLine();  // Process next instruction
+                    }
+                    else {
+                        MemoryManager::getInstance()->deallocate(this->process->getMemoryPointer(), this->process->getMemoryRequired(), this->process->getName());
+                        this->process->setMemoryPointer(nullptr);
+                        this->running = false;
+                        break;
+                    }
+                }
             }
-            else if (this->process->getCurrentInstructionLine() == this->process->getTotalLinesOfCode()) {
-                break;
+            this->cpuCycles++;
+        }
+    }
+    // Round Robin
+    else if (scheduler == "rr") {
+        for (long long i = 0; i < this->quantum_cycles && CPUScheduler::getInstance()->getIsRunning(); i++) {
+            if (this->cpuCycles == delay_per_exec) {
+                if (this->process->getCurrentInstructionLine() != this->process->getTotalLinesOfCode()) {
+                    this->process->nextLine();  // Process next instruction
+                }
+                else if (this->process->getCurrentInstructionLine() == this->process->getTotalLinesOfCode()) {
+                    this->process->setState(Process::ProcessState::TERMINATED);
+                    this->process->setCPUCoreID(NULL);
+                    break;
+                }
+                else {
+                    this->process->setState(Process::ProcessState::READY);
+                    this->process->setCPUCoreID(NULL);
+                    break;
+                }
+                this->cpuCycles = -1;
             }
-            this->cpuCycles = -1;
+            this->cpuCycles++;
         }
 
-        this->cpuCycles++;
+        if (this->process->getState() != Process::ProcessState::TERMINATED && this->process->getCurrentInstructionLine() == this->process->getTotalLinesOfCode()) {
+            this->process->setState(Process::ProcessState::TERMINATED);
+            this->process->setCPUCoreID(NULL);
+        }
     }
+    
     this->running = false;
 }
 

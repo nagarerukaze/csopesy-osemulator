@@ -23,6 +23,7 @@ public:
     void printActiveProcessesList(std::ofstream& outFile);
     void printFinishedProcessesList(std::ofstream& outFile);
     void displayAllProcesses();
+    void stop();
 
     long long getBatchProcessFreq() const;
     long long getMinInstructions() const;

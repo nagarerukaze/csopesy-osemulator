@@ -63,7 +63,7 @@ void CPUScheduler::stopScheduler() {
     // Clean up CPU workers by checking their process states
     for (auto& worker : cpuWorkers) {
         // If the worker has a process assigned
-        if (worker->hasProcess()) {
+        if (worker->getProcess() != nullptr) {
             auto process = worker->getProcess();  // Get shared_ptr to the current process
 
             if (process && process->getCurrentInstructionLine() < process->getTotalLinesOfCode()) {
@@ -72,7 +72,7 @@ void CPUScheduler::stopScheduler() {
                 ProcessManager::getInstance()->moveToFinished(process);  // Move process to finished state
             }
 
-            worker->setProcess(nullptr);  // Remove process from worker
+            worker->removeProcess();  // Remove process from worker
         }
     }
 }
@@ -86,7 +86,7 @@ int CPUScheduler::getNumberOfCPUsUsed() {
 
     for (int i = 0; i < this->numberOfCores; i++)
     {
-        if(cpuWorkers[i]->hasProcess() && cpuWorkers[i]->getProcess()->getCPUCoreID() == i) {
+        if(cpuWorkers[i]->getProcess() != nullptr && cpuWorkers[i]->getProcess()->getState() == Process::ProcessState::RUNNING) {
            cpus_used++; 
         }
     }
@@ -136,52 +136,125 @@ void CPUScheduler::FCFSScheduling() {
     //    }
     //    this->cpuCycles++;
     //}
+
+    while (this->running) {
+        while (!processQueue.empty()) {
+            std::shared_ptr<Process> process = processQueue.front();
+            processQueue.pop();
+            void* memory = MemoryManager::getInstance()->allocate(process->getMemoryRequired(), process->getName());
+
+            if (memory != nullptr) {
+                std::cout << "Allocated memory for process " << process->getName() << std::endl;
+            }
+        }
+        this->cpuCycles++;
+    }
 }
 
 void CPUScheduler::handleProcessOut(CPUWorker* worker, std::shared_ptr<Process>& process_out) {
+    //std::cout << "Enter handle process out" << std::endl;
     if (process_out != nullptr) {
         if (process_out->getCurrentInstructionLine() < process_out->getTotalLinesOfCode()) {
             // Not done executing, requeue the process
+            worker->removeProcess();
             processQueue.push(process_out);
-            process_out->setState(Process::ProcessState::READY);
-            process_out->setCPUCoreID(NULL);
         }
         else {
             // Done executing, deallocate memory
-            ProcessManager::getInstance()->moveToFinished(process_out);
-            // std::cout << "Deallocating for " << process_out->getName() << std::endl;
+            worker->removeProcess();
             MemoryManager::getInstance()->deallocate(process_out->getMemoryPointer(), process_out->getMemoryRequired(), process_out->getName());
             process_out->setMemoryPointer(nullptr);
+            ProcessManager::getInstance()->moveToFinished(process_out);
         }
     }
 }
 
 void CPUScheduler::RRScheduling() {
-    long long currentQuantumCycle = 1;
+    //while (running) {
+    //    // there is ready queue
+    //    if (!processQueue.empty()) {
+    //        // loop through cores
+    //        for (int i = 0; i < this->numberOfCores; i++) {
+    //            CPUWorker* worker = cpuWorkers[i];
+    //            
+    //            // Check worker if running and there is ready queue
+    //            if (!worker->isRunning() && !processQueue.empty()) {
+    //                std::shared_ptr<Process> process_out = nullptr;
+    //                std::shared_ptr<Process> process_in = nullptr;
+    //                void* allocatedMemory = nullptr;
+    //                
+    //                // Check if worker had a process: Remove
+    //                {
+    //                    std::lock_guard<std::mutex> lock(mtx);
+    //                    // if worker has process and worker is not running anymore
+    //                    if (worker->getProcess() != nullptr) {
+    //                        process_out = worker->getProcess();
+    //                        handleProcessOut(worker, process_out);
+    //                    }
+    //                }
 
-    while (true) {
-        this->cpuCycles++;
-        if (!processQueue.empty()) {
-            break;
-        }
-    }
+    //                // Get the process and Allocated Memory
+    //                process_in = processQueue.front();
+    //                processQueue.pop();
+    //                allocatedMemory = process_in->getMemoryPointer();
 
-    while (running) {
+    //                // If Process is not allocated in memory
+    //                if (allocatedMemory == nullptr) {
+    //                    // Allocate Memory
+    //                    allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
+    //                    // Allocate failed, TODO: put in backing store
+    //                    if (allocatedMemory == nullptr) {
+    //                        processQueue.push(process_in);
+    //                    }
+    //                    // Set pointer if allocated
+    //                    else {
+    //                        process_in->setMemoryPointer(allocatedMemory);
+    //                    }
+    //                }
+
+    //                // Start Thread if allocated
+    //                if (allocatedMemory != nullptr) {
+    //                    worker->setProcess(process_in);
+    //                    std::thread([worker, process_in = process_in]() {
+    //                        worker->setProcess(process_in);
+    //                        worker->startWorker();
+    //                        }).detach();
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    // no ready queue
+    //    else {
+    //        // Go through CPU workers and handle process out
+    //        for (int i = 0; i < this->numberOfCores; i++) {
+    //            CPUWorker* worker = cpuWorkers[i];
+    //            if (worker->getProcess() != nullptr && !worker->isRunning()) {
+    //                std::lock_guard<std::mutex> lock(mtx);
+    //                std::shared_ptr<Process> process_out = worker->getProcess();
+    //                handleProcessOut(worker, process_out);
+    //            }
+    //        }
+    //    }
+
+    //    this->cpuCycles++;
+    //}
+
+    while (this->running) {
         for (int i = 0; i < this->numberOfCores; i++) {
             CPUWorker* worker = cpuWorkers[i];
             std::shared_ptr<Process> process_out = nullptr;
             std::shared_ptr<Process> process_in = nullptr;
             void* allocatedMemory = nullptr;
 
-            // std::cout << "Worker " << i << " now," << std::endl;
             // has a process queue
             if (!processQueue.empty() && (!worker->isRunning())) {
+                // std::cout << "There is a ready queue and the worker is not running" << std::endl;
 
-                // std::cout << "Worker " << i << " not running," << std::endl;
                 {
                     std::lock_guard<std::mutex> lock(mtx);
                     // if worker has process and worker is not running anymore
-                    if (worker->hasProcess()) {
+                    if (worker->getProcess() != nullptr) {
                         process_out = worker->getProcess();
                         handleProcessOut(worker, process_out);
                     }
@@ -189,30 +262,26 @@ void CPUScheduler::RRScheduling() {
 
                 // get the process and allocated memory
                 process_in = processQueue.front();
-                // std::cout << "Process_in = " << process_in->getName() << std::endl;
                 processQueue.pop();
                 allocatedMemory = process_in->getMemoryPointer();
 
                 // if process is not allocated in memory
                 if (allocatedMemory == nullptr) {
-                    // std::cout << "Not allocated in memory for process " << process_in->getName() << std::endl;
                     allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
-                    // allocatation failed, requeue
+                    // allocatation failed, TODO: put in backing store
                     if (allocatedMemory == nullptr) {
                         processQueue.push(process_in);
-                        // std::cout << "Requeued. Not enough memory for process " << process_in->getName() << std::endl;
                     }
                     // set pointer if allocated
                     else {
-                        // std::cout << "Allocated memory for process " << process_in->getName() << std::endl;
                         process_in->setMemoryPointer(allocatedMemory);
                     }
                 }
 
                 if (allocatedMemory != nullptr) {
-                    // std::cout << "Has Memory" << process_in->getName() << std::endl;
-                    worker->setProcess(process_in);
-                    std::thread([worker, process_in]() {
+                    worker->setProcess(process_in);  // Ensure that process_in is valid
+                    std::thread([worker, process_in = process_in]() {
+                        worker->setProcess(process_in);  // Ensure that process_in is valid
                         worker->startWorker(); // Start worker with the shared_ptr process
                         }).detach();
                 }
@@ -227,15 +296,5 @@ void CPUScheduler::RRScheduling() {
             // std::cout << "Memory" << std::endl << MemoryManager::getInstance()->visualizeMemory() << std::endl;
         }
         this->cpuCycles++;
-
-        //////////////////////////////////////////////////
-
-        // Every <quantum_cycle> CPU cycle, produce a text file
-        if ((this->cpuCycles % this->quantum_cycles == 0) && this->cpuCycles != 0) {
-            MemoryManager::getInstance()->printMemory(currentQuantumCycle);
-            currentQuantumCycle++;
-        }
-        
-        //////////////////////////////////////////////////
-    }
+   }
 }

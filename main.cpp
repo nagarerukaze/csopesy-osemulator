@@ -37,6 +37,9 @@ int main() {
             else if (command == "initialize") {
                 std::cout << "Already initialized." << std::endl;
             }
+            else if (command == "test") {
+                ConsoleManager::getInstance()->test();
+            }
             else {
                 std::cout << "Unknown command." << std::endl;
             }

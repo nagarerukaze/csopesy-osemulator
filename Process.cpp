@@ -58,6 +58,7 @@ void Process::draw() {
 }
 
 void Process::nextLine() {
+    std::lock_guard<std::mutex> lock(mtx);
     this->currentInstructionLine += 1;
 }
 

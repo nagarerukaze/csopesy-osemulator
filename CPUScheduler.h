@@ -6,6 +6,7 @@
 #include <atomic>
 #include <vector>
 #include <queue>
+#include <mutex>
 #include "CPUWorker.h"
 #include "MemoryManager.h"
 

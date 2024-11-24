@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include <ctime>
+#include <mutex>
 #include <sstream>
 #include <iomanip>
 
@@ -52,5 +53,5 @@ private:
 	int cpuCoreID;
 	size_t memoryRequired;
 	void* memoryPointer;
-	
+	mutable std::mutex mtx;
 };

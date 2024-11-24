@@ -30,7 +30,7 @@ ProcessManager* ProcessManager::getInstance() {
     return sharedInstance;
 }
 void ProcessManager::createProcess(const String& name) {
-    std::lock_guard<std::mutex> lock(mtx);
+    // std::lock_guard<std::mutex> lock(mtx);
     auto new_process = std::make_shared<Process>(name,
         rand() % (this->getMaxInstructions() - this->getMinInstructions() + 1) + this->getMinInstructions(),
         this->mem_per_proc);
@@ -70,14 +70,14 @@ bool ProcessManager::displayProcess(const String& name) const {
     Display the activeProcesses (i.e., processes inside a CPU core).
 */
 void ProcessManager::displayActiveProcessesList() {
-    // std::lock_guard<std::mutex> lock(mtx);
+    std::lock_guard<std::mutex> lock(mtx);
     std::vector<CPUWorker*> workers = CPUScheduler::getInstance()->getCPUWorkers();
 
     for (const auto& worker : workers) {
-        if (worker->hasProcess()) {
+        if (worker->getProcess() != nullptr) {
             std::shared_ptr<Process> process = worker->getProcess();
 
-            if (process->getCPUCoreID() == worker->getID()) {
+            if (process->getState() == Process::ProcessState::RUNNING) {
                 std::cout << process->getName() << "\t"
                     << "(" << process->getTimestamp() << ") \t"
                     << "Core: " << std::to_string(process->getCPUCoreID()) << "\t"
@@ -202,6 +202,11 @@ void ProcessManager::moveToFinished(std::shared_ptr<Process> process) {
         this->activeProcesses.erase(it);  // Erase from activeProcesses
         //std::cout << "Process removed successfully!" << std::endl;
     }
+}
+
+void ProcessManager::stop() {
+    this->activeProcesses.clear();
+    this->finishedProcesses.clear();
 }
 
 long long ProcessManager::getBatchProcessFreq() const {

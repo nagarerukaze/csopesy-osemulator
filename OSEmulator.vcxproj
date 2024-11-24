@@ -24,6 +24,7 @@
     <ClCompile Include="CPUWorker.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MemoryManager.cpp" />
+    <ClCompile Include="PagingAllocator.cpp" />
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="ProcessManager.cpp" />
   </ItemGroup>
@@ -32,6 +33,7 @@
     <ClInclude Include="CPUScheduler.h" />
     <ClInclude Include="CPUWorker.h" />
     <ClInclude Include="MemoryManager.h" />
+    <ClInclude Include="PagingAllocator.h" />
     <ClInclude Include="Process.h" />
     <ClInclude Include="ProcessManager.h" />
   </ItemGroup>

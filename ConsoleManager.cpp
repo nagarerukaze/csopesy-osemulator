@@ -344,10 +344,12 @@ void ConsoleManager::stopRunning() {
     }
 
     CPUScheduler::getInstance()->stopScheduler();
+    ProcessManager::getInstance()->stop();
 }
 
 
 void ConsoleManager::test() {
+    std::cout << MemoryManager::getInstance()->visualizeMemory() << std::endl;
     /*
     // Initialize the memory with 20 units
     MemoryManager::getInstance()->initialize(16384);
