@@ -52,6 +52,17 @@ void ConsoleManager::clear() {
     this->printHeader();
 }
 
+bool ConsoleManager::isOutsideRange(long long val, long long min) {
+    return (val < min || val > 4294967296);
+}
+
+bool ConsoleManager::isOutsideMemoryRange(size_t val) {
+    if (val < 2 || val > 4294967296) {
+        return true;
+    }
+    return (val & (val - 1)) != 0;
+}
+
 /*
     Get the following parameters from the `config.txt` file:
         (1) num-cpu -> scheduler
@@ -66,7 +77,7 @@ bool ConsoleManager::initialize() {
     std::vector<String> values;
     String line, key, value, scheduler;
     int num_cpu;
-    size_t max_overall_mem, mem_per_frame, mem_per_proc;
+    size_t max_overall_mem, mem_per_frame, min_mem_per_proc, max_mem_per_proc;
     long long quantum_cycles, batch_process_freq, min_ins, max_ins, delays_per_exec;
 
     // Get values from config.txt
@@ -100,7 +111,8 @@ bool ConsoleManager::initialize() {
         delays_per_exec = std::stoll(values[6]);
         max_overall_mem = std::stoi(values[7]);
         mem_per_frame = std::stoull(values[8]);
-        mem_per_proc = std::stoull(values[9]);
+        min_mem_per_proc = std::stoull(values[9]);
+        max_mem_per_proc = std::stoull(values[10]);
     }
     catch (const std::exception& e) {
         std::cerr << "Error: Conversion error - " << e.what() << std::endl;
@@ -110,18 +122,26 @@ bool ConsoleManager::initialize() {
     // Value validation
     if (num_cpu < 1 || num_cpu > 128 ||
         (scheduler != "fcfs" && scheduler != "rr") ||
-        quantum_cycles < 1 || quantum_cycles > 4294967296 ||
-        batch_process_freq < 1 || batch_process_freq > 4294967296 ||
-        min_ins < 1 || min_ins > max_ins || min_ins > 4294967296 ||
-        max_ins < 1 || max_ins > 4294967296 ||
-        delays_per_exec < 0 || delays_per_exec > 4294967296) {
+        isOutsideRange(quantum_cycles, 1) ||
+        isOutsideRange(batch_process_freq, 1) ||
+        isOutsideRange(min_ins, 1) || min_ins > max_ins ||
+        isOutsideRange(max_ins, 1) ||
+        isOutsideRange(delays_per_exec, 0)) {
+        return false;
+    }
+
+    // Memory validation
+    if (isOutsideMemoryRange(max_overall_mem) ||
+        isOutsideMemoryRange(mem_per_frame) ||
+        isOutsideMemoryRange(min_mem_per_proc) ||
+        isOutsideMemoryRange(max_mem_per_proc)) {
         return false;
     }
 
     // Initialize ProcessManager and CPUScheduler
-    ProcessManager::getInstance()->initialize(batch_process_freq, min_ins, max_ins, mem_per_proc);
+    ProcessManager::getInstance()->initialize(batch_process_freq, min_ins, max_ins, min_mem_per_proc, max_mem_per_proc);
     CPUScheduler::getInstance()->initialize(scheduler, num_cpu , quantum_cycles, delays_per_exec);
-    MemoryManager::getInstance()->initialize(max_overall_mem, mem_per_proc);
+    MemoryManager::getInstance()->initialize(max_overall_mem);
 
     
     //Start Detached Scheduler Thread

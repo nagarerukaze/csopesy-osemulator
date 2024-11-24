@@ -3,16 +3,12 @@
 #include <unordered_map>
 #include <filesystem>
 
-MemoryManager::MemoryManager() : maximumSize(0), allocatedSize(0), memPerProc(0) {}
+MemoryManager::MemoryManager() : maximumSize(0), allocatedSize(0) {}
 
-MemoryManager::MemoryManager(size_t maximumSize, size_t memPerProc) {
+MemoryManager::MemoryManager(size_t maximumSize) {
     this->maximumSize = maximumSize;
     this->allocatedSize = 0;
-    this->memPerProc = memPerProc;
     memory.resize(maximumSize);  // Resize memory to the given maximum size
-    for (size_t i = 0; i < maximumSize / memPerProc; i++) {
-        this->strProcessesInMemory.push_back(".");
-    }
     initializeMemory();
 }
 
@@ -22,8 +18,8 @@ MemoryManager::~MemoryManager() {
     memory.clear();
 }
 
-void MemoryManager::initialize(size_t maximumSize, size_t memPerProc) {
-    sharedInstance = new MemoryManager(maximumSize, memPerProc);
+void MemoryManager::initialize(size_t maximumSize) {
+    sharedInstance = new MemoryManager(maximumSize);
 }
 
 
@@ -46,7 +42,7 @@ void* MemoryManager::allocate(size_t size, String process) {
             if (i != 0) {
                 index = i / size;
             }
-            this->strProcessesInMemory[index] = process;
+            // this->strProcessesInMemory[index] = process;
             //////////////////////////////////////////////////
             return &memory[i];
         }
@@ -66,7 +62,7 @@ void MemoryManager::deallocate(void* ptr, size_t size, String process) {
         if (index != 0) {
             i = index / size;
         }
-        this->strProcessesInMemory[i] = ".";
+        // this->strProcessesInMemory[i] = ".";
     }
 }
 
@@ -115,66 +111,66 @@ void MemoryManager::deallocateAt(size_t index, size_t size) {
 size_t MemoryManager::getMaximumMemory() {
     return this->maximumSize;
 }
+//
+//void MemoryManager::printMemory(long long qq) {
+//
+//    std::string folderPath = "reports";  // Specify your subfolder name here
+//
+//    // Ensure the subfolder exists
+//    if (!std::filesystem::exists(folderPath)) {
+//        std::filesystem::create_directory(folderPath);  // Create the subfolder if it doesn't exist
+//    }
+//
+//    long long numberOfProcesses = 0;
+//
+//    if (!this->strProcessesInMemory.empty()) {
+//        for (int i = (maximumSize / memPerProc) - 1; i >= 0; i--) {
+//            if (this->strProcessesInMemory[i] != ".") {
+//                numberOfProcesses++;
+//            }
+//        }
+//    }
+//
+//    std::stringstream filename;
+//    filename << folderPath << "/memory_stamp_" << qq << ".txt";
+//    std::ofstream myfile(filename.str());
+//
+//    if (myfile.is_open())
+//    {
+//        myfile << "Timestamp: " << "(" << this->getCurrentTime() << ")" << "\n";
+//
+//        // should not be .size()
+//        myfile << "Number of processes in memory: " << numberOfProcesses << " \n";
+//        
+//        myfile << "Total external fragmentation in KB: " << (this->maximumSize - this->allocatedSize) << "\n";
+//        myfile << "\n-----end----- = " << this->maximumSize << "\n";
+//        this->printASCIIMemory(myfile);
+//        myfile << "\n----start---- = 0\n";
+//    }
+//    else {
+//        std::cout << "Unable to open file. Report was not successfully generated." << std::endl;
+//    }
+//}
 
-void MemoryManager::printMemory(long long qq) {
-
-    std::string folderPath = "reports";  // Specify your subfolder name here
-
-    // Ensure the subfolder exists
-    if (!std::filesystem::exists(folderPath)) {
-        std::filesystem::create_directory(folderPath);  // Create the subfolder if it doesn't exist
-    }
-
-    long long numberOfProcesses = 0;
-
-    if (!this->strProcessesInMemory.empty()) {
-        for (int i = (maximumSize / memPerProc) - 1; i >= 0; i--) {
-            if (this->strProcessesInMemory[i] != ".") {
-                numberOfProcesses++;
-            }
-        }
-    }
-
-    std::stringstream filename;
-    filename << folderPath << "/memory_stamp_" << qq << ".txt";
-    std::ofstream myfile(filename.str());
-
-    if (myfile.is_open())
-    {
-        myfile << "Timestamp: " << "(" << this->getCurrentTime() << ")" << "\n";
-
-        // should not be .size()
-        myfile << "Number of processes in memory: " << numberOfProcesses << " \n";
-        
-        myfile << "Total external fragmentation in KB: " << (this->maximumSize - this->allocatedSize) << "\n";
-        myfile << "\n-----end----- = " << this->maximumSize << "\n";
-        this->printASCIIMemory(myfile);
-        myfile << "\n----start---- = 0\n";
-    }
-    else {
-        std::cout << "Unable to open file. Report was not successfully generated." << std::endl;
-    }
-}
-
-/*
-    Prints the ASCII printout of the memory in an indicated text file.
-
-    For each process in memory, print its:
-        (1) upper limit,
-        (2) name, and
-        (3) lower limit.
-*/
-void MemoryManager::printASCIIMemory(std::ofstream& outFile) {
-    if (!this->strProcessesInMemory.empty()) {
-        for (int i = (maximumSize / memPerProc) - 1; i >= 0; i--) {
-            if (this->strProcessesInMemory[i] != ".") {
-                outFile << "\n" << ((i + 1) * this->memPerProc) << "\n" // Upper limit
-                    << this->strProcessesInMemory[i] // Process name
-                    << "\n" << (i * this->memPerProc) << std::endl; // Lower limit
-            }
-        }
-    }
-}
+///*
+//    Prints the ASCII printout of the memory in an indicated text file.
+//
+//    For each process in memory, print its:
+//        (1) upper limit,
+//        (2) name, and
+//        (3) lower limit.
+//*/
+//void MemoryManager::printASCIIMemory(std::ofstream& outFile) {
+//    if (!this->strProcessesInMemory.empty()) {
+//        for (int i = (maximumSize / memPerProc) - 1; i >= 0; i--) {
+//            if (this->strProcessesInMemory[i] != ".") {
+//                outFile << "\n" << ((i + 1) * this->memPerProc) << "\n" // Upper limit
+//                    << this->strProcessesInMemory[i] // Process name
+//                    << "\n" << (i * this->memPerProc) << std::endl; // Lower limit
+//            }
+//        }
+//    }
+//}
 
 /*
 

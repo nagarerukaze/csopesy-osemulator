@@ -33,6 +33,9 @@ public:
 	void schedulerStop();
 	void reportUtil();
 
+	bool isOutsideRange(long long val, long long min);
+	bool isOutsideMemoryRange(size_t val);
+
 	bool getIsRunning() const;
 
 	void stopRunning();

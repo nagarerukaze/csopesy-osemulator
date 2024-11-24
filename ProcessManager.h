@@ -12,7 +12,7 @@ class ProcessManager
 {
 public:
     // Singleton stuff
-    static void initialize(long long batch_process_freq, long long min_ins, long long max_ins, size_t mem_per_proc);
+    static void initialize(long long batch_process_freq, long long min_ins, long long max_ins, size_t min_mem_per_proc, size_t max_mem_per_proc);
     static ProcessManager* getInstance();
 
     void createProcess(const String& name);
@@ -35,7 +35,7 @@ public:
 
 private:
     ProcessManager();
-    ProcessManager(long long batch_process_freq, long long min_ins, long long max_ins, size_t mem_per_proc);
+    ProcessManager(long long batch_process_freq, long long min_ins, long long max_ins, size_t min_mem_per_proc, size_t max_mem_per_proc);
     ProcessManager(const ProcessManager&);
     ProcessManager& operator = (const ProcessManager&);
     ~ProcessManager() = default;
@@ -45,7 +45,8 @@ private:
     long long min_ins;
     long long max_ins;
     bool isGeneratingProcesses;
-    size_t mem_per_proc;
+    size_t min_mem_per_proc;
+    size_t max_mem_per_proc;
 
     std::vector<std::shared_ptr<Process>> activeProcesses;
     std::vector<std::shared_ptr<Process>> finishedProcesses;
