@@ -117,17 +117,18 @@ void ProcessManager::displayFinishedProcessesList() {
     Print the activeProcesses (i.e., processes inside a CPU core).
 */
 void ProcessManager::printActiveProcessesList(std::ofstream& outFile) {
+    std::lock_guard<std::mutex> lock(mtx);
     std::vector<CPUWorker*> workers = CPUScheduler::getInstance()->getCPUWorkers();
 
     for (const auto& worker : workers) {
-        if (worker->hasProcess() && worker->isRunning()) {
+        if (worker->getProcess() != nullptr) {
             std::shared_ptr<Process> process = worker->getProcess();
 
-            if (process->getCPUCoreID() == worker->getID()) {
-                outFile << process->getName() << "\t"
+            if (process->getState() == Process::ProcessState::RUNNING) {
+                outFile<< process->getName() << "\t"
                     << "(" << process->getTimestamp() << ") \t"
                     << "Core: " << std::to_string(process->getCPUCoreID()) << "\t"
-                    << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
+                    << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << "\n";
             }
         }
     }
@@ -139,12 +140,18 @@ void ProcessManager::printActiveProcessesList(std::ofstream& outFile) {
     Print the processes inside the finishedProcesses list.
 */
 void ProcessManager::printFinishedProcessesList(std::ofstream& outFile) {
+    std::lock_guard<std::mutex> lock(mtx);
+
     if (!this->finishedProcesses.empty()) {
         for (const auto& process : this->finishedProcesses) {
-            outFile << process->getName() << "\t"
-                << "(" <<process->getTimestamp() << ") \t"
-                << "Finished!\t"
-                << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
+            // Check if process is valid
+            if (process) {
+                outFile << process->getName() << "\t"
+                    << "(" << process->getTimestamp() << ") \t"
+                    << "Finished!\t"
+                    << process->getCurrentInstructionLine() << "/"
+                    << process->getTotalLinesOfCode() << "\n";
+            }
         }
     }
 }

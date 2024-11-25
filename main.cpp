@@ -37,6 +37,12 @@ int main() {
             else if (command == "initialize") {
                 std::cout << "Already initialized." << std::endl;
             }
+            else if (command == "process-smi") {
+                ConsoleManager::getInstance()->processSMI();
+            }
+            else if (command == "vmstat") {
+                ConsoleManager::getInstance()->vmstat();
+            }
             else if (command == "test") {
                 ConsoleManager::getInstance()->test();
             }

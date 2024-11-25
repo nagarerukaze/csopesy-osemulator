@@ -32,6 +32,8 @@ public:
 	void schedulerTest();
 	void schedulerStop();
 	void reportUtil();
+	void processSMI();
+	void vmstat();
 
 	bool isOutsideRange(long long val, long long min);
 	bool isOutsideMemoryRange(size_t val);

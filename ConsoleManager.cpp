@@ -142,7 +142,7 @@ bool ConsoleManager::initialize() {
     ProcessManager::getInstance()->initialize(batch_process_freq, min_ins, max_ins, min_mem_per_proc, max_mem_per_proc);
     CPUScheduler::getInstance()->initialize(scheduler, num_cpu , quantum_cycles, delays_per_exec);
     MemoryManager::getInstance()->initialize(max_overall_mem);
-
+    // PagingAllocator::getInstance()->initialize(max_overall_mem, mem_per_frame);
     
     //Start Detached Scheduler Thread
     std::thread schedulerThread([] {
@@ -350,6 +350,36 @@ void ConsoleManager::reportUtil() {
     else {
         std::cout << "Unable to open file. Report was not successfully generated." << std::endl;
     }
+}
+
+/*
+    Provides a summarized view of the available/used memory, as well as 
+    the list of processes and memory occupied. This is similar to the “nvidia-smi” 
+    command. 
+*/
+void ConsoleManager::processSMI() {
+    std::cout << "----------------------------------------------" << std::endl;
+    std::cout << "| PROCESS-SMI V01.00 Driver Version: 01.00 |" << std::endl;
+    std::cout << "CPU-Util: " << "%" << std::endl; // TODO
+    std::cout << "Memory Usage: " << "MiB / " << "MiB" << std::endl; // TODO
+    std::cout << "Memory Util: " << "%" << std::endl << std::endl << std::endl; // TODO
+
+    std::cout << "===============================================" << std::endl;
+    std::cout << "Running processes and memory usage:" << std::endl;
+    std::cout << "----------------------------------------------" << std::endl;
+    // TODO: Print Running Processes
+    std::cout << "----------------------------------------------" << std::endl;
+}
+
+void ConsoleManager::vmstat() {
+    // Total Memory in KB
+    // Used Memory: Total Active memory used by processes
+    // Free memory: total free memory that can still be used by other processes
+    // Idle cpu ticks: number of ticks wherein the CPU cores remained idle
+    // Active cpu ticks: number of ticks wherein CPU cores are actually executing instructions
+    // Total CPU ticks: number of ticks that passed for all CPU cores
+    // Num paged in: Accumulated number of pages paged in
+    // Num paged out: Accumulated number of pages paged out
 }
 
 bool ConsoleManager::getIsRunning() const {
