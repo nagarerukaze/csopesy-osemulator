@@ -28,33 +28,26 @@ void CPUWorker::removeProcess() {
 }
 
 void CPUWorker::startWorker() {
-    {
+    if (this->process != nullptr) {
+        //std::cout << "Inside worker: Process is not null" << std::endl;
         std::lock_guard<std::mutex> lock(mtx);
-        if (this->process != nullptr) {
-            //std::cout << "Inside worker: Process is not null" << std::endl;
-            this->process->setState(Process::ProcessState::RUNNING);
-            this->process->setCPUCoreID(this->id);
-        }
+        this->process->setState(Process::ProcessState::RUNNING);
+        this->process->setCPUCoreID(this->id);
     }
+    std::lock_guard<std::mutex> lock(mtx);
     this->cpuCycles = 0;
     // FCFS
     if (scheduler == "fcfs") {
-        while (this->running) {
-            if (this->cpuCycles == delay_per_exec) {
-                if (this->process != nullptr) {
-                    //std::cout << "Entered." << std::endl;
-                    if (this->process->getCurrentInstructionLine() != this->process->getTotalLinesOfCode()) {
-
-                        //std::cout << "Entered2." << std::endl;
-                        this->process->nextLine();  // Process next instruction
-                    }
-                    else {
-                        MemoryManager::getInstance()->deallocate(this->process->getMemoryPointer(), this->process->getMemoryRequired(), this->process->getName());
-                        this->process->setMemoryPointer(nullptr);
-                        this->running = false;
-                        break;
-                    }
+        while (this->process->getCurrentInstructionLine() != this->process->getTotalLinesOfCode() && CPUScheduler::getInstance()->getIsRunning()) {
+            if (this->cpuCycles == delay_per_exec && this->process != nullptr) {
+                if(this->process->getCurrentInstructionLine() != this->process->getTotalLinesOfCode()) {
+                    this->process->nextLine();  // Process next instruction
                 }
+
+                if (this->process->getCurrentInstructionLine() == this->process->getTotalLinesOfCode()) {
+                    break;
+                }
+                this->cpuCycles = -1;
             }
             this->cpuCycles++;
         }
@@ -62,29 +55,23 @@ void CPUWorker::startWorker() {
     // Round Robin
     else if (scheduler == "rr") {
         for (long long i = 0; i < this->quantum_cycles && CPUScheduler::getInstance()->getIsRunning(); i++) {
-            if (this->cpuCycles == delay_per_exec) {
+            if (this->cpuCycles == delay_per_exec && this->process != nullptr) {
                 if (this->process->getCurrentInstructionLine() != this->process->getTotalLinesOfCode()) {
                     this->process->nextLine();  // Process next instruction
                 }
-                else if (this->process->getCurrentInstructionLine() == this->process->getTotalLinesOfCode()) {
-                    this->process->setState(Process::ProcessState::TERMINATED);
-                    this->process->setCPUCoreID(NULL);
-                    break;
-                }
-                else {
-                    this->process->setState(Process::ProcessState::READY);
-                    this->process->setCPUCoreID(NULL);
+                
+                if (this->process->getCurrentInstructionLine() == this->process->getTotalLinesOfCode()) {
                     break;
                 }
                 this->cpuCycles = -1;
             }
             this->cpuCycles++;
         }
+    }
 
-        if (this->process->getState() != Process::ProcessState::TERMINATED && this->process->getCurrentInstructionLine() == this->process->getTotalLinesOfCode()) {
-            this->process->setState(Process::ProcessState::TERMINATED);
-            this->process->setCPUCoreID(NULL);
-        }
+    if (this->process->getCurrentInstructionLine() == this->process->getTotalLinesOfCode()) {
+        this->process->setCPUCoreID(NULL);
+        this->process->setState(Process::ProcessState::TERMINATED);
     }
     
     this->running = false;

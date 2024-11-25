@@ -11,8 +11,8 @@ ProcessManager::ProcessManager(long long batch_process_freq, long long min_ins, 
     this->isGeneratingProcesses = false;
     this->min_mem_per_proc = min_mem_per_proc;
     this->max_mem_per_proc = max_mem_per_proc;
-    this->activeProcesses.clear();
-    this->finishedProcesses.clear();
+    this->processesList.clear();
+    // this->finishedProcesses.clear();
 }
 ProcessManager::ProcessManager(const ProcessManager&) {}
 
@@ -36,7 +36,7 @@ void ProcessManager::createProcess(const String& name) {
         rand() % (this->max_ins - this->min_ins + 1) + this->min_ins,
         rand() % (this->max_mem_per_proc - this->min_mem_per_proc + 1) + this->min_mem_per_proc);
 
-    activeProcesses.push_back(new_process);
+    processesList.push_back(new_process);
     //std::cout << "Process " << name << " created and added to activeProcesses." << std::endl;
 
     // Enqueue the process into the CPU scheduler
@@ -46,10 +46,11 @@ void ProcessManager::createProcess(const String& name) {
 
 
 std::shared_ptr<Process> ProcessManager::findProcess(const String& name) const {
-    auto it = std::find_if(activeProcesses.begin(), activeProcesses.end(),
-        [&name](const std::shared_ptr<Process>& process) { return process->getName() == name; });
-
-    return (it != activeProcesses.end()) ? *it : nullptr;
+    auto it = std::find_if(processesList.begin(), processesList.end(),
+        [&name](const std::shared_ptr<Process>& process) {
+            return process->getName() == name && process->getState() != Process::ProcessState::TERMINATED;
+        });
+    return (it != processesList.end()) ? *it : nullptr;
 }
 
 bool ProcessManager::displayProcess(const String& name) const {
@@ -94,12 +95,12 @@ void ProcessManager::displayActiveProcessesList() {
     Display the processes inside the finishedProcesses list.
 */
 void ProcessManager::displayFinishedProcessesList() {
-    std::lock_guard<std::mutex> lock(mtx);
+    if (!this->processesList.empty()) {
+        std::lock_guard<std::mutex> lock(mtx);
+        auto processesCopy = processesList;
 
-    if (!this->finishedProcesses.empty()) {
-        for (const auto& process : this->finishedProcesses) {
-            // Check if process is valid
-            if (process) {
+        for (const auto& process : processesCopy) {
+            if (process != nullptr && process->getState() == Process::ProcessState::TERMINATED) {
                 std::cout << process->getName() << "\t"
                     << "(" << process->getTimestamp() << ") \t"
                     << "Finished!\t"
@@ -142,10 +143,11 @@ void ProcessManager::printActiveProcessesList(std::ofstream& outFile) {
 void ProcessManager::printFinishedProcessesList(std::ofstream& outFile) {
     std::lock_guard<std::mutex> lock(mtx);
 
-    if (!this->finishedProcesses.empty()) {
-        for (const auto& process : this->finishedProcesses) {
-            // Check if process is valid
-            if (process) {
+    if (!this->processesList.empty()) {
+        auto processesCopy = processesList;
+
+        for (const auto& process : processesCopy) {
+            if (process != nullptr && process->getState() == Process::ProcessState::TERMINATED) {
                 outFile << process->getName() << "\t"
                     << "(" << process->getTimestamp() << ") \t"
                     << "Finished!\t"
@@ -196,25 +198,35 @@ void ProcessManager::displayAllProcesses() {
     std::cout << "--------------------------------------" << std::endl;
 }
 
-void ProcessManager::moveToFinished(std::shared_ptr<Process> process) {
-    std::lock_guard<std::mutex> lock(mtx);
-    auto it = std::find_if(activeProcesses.begin(), activeProcesses.end(),
-        [&process](const std::shared_ptr<Process>& p) {
-            return p->getName() == process->getName();  // Compare by name
-        });
-
-    if (it != activeProcesses.end()) {
-        (*it)->setState(Process::ProcessState::TERMINATED);
-        // Process found, move it to finished processes
-        this->finishedProcesses.push_back(*it);  // Push the shared_ptr directly
-        this->activeProcesses.erase(it);  // Erase from activeProcesses
-        //std::cout << "Process removed successfully!" << std::endl;
-    }
-}
+//void ProcessManager::moveToFinished(std::shared_ptr<Process> process) {
+//    std::lock_guard<std::mutex> lock(mtx);
+//    if (process != nullptr) {
+//        std::cout << "Process in movetofinished is not null" << std::endl;
+//        std::cout << "Process: " << process->getName();
+//    }
+//
+//    if (!activeProcesses.empty()) {
+//        auto it = std::find_if(activeProcesses.begin(), activeProcesses.end(),
+//            [&process](const std::shared_ptr<Process>& p) {
+//                return p.get() == process.get();  // Compare raw pointers
+//            });
+//
+//        if (it != activeProcesses.end()) {
+//            std::cout << "Process Found in Active Processes" << std::endl;
+//            std::cout << "Process: " << process->getName() << "& Process Found: " << (*it)->getName() << std::endl;
+//            // (*it)->setState(Process::ProcessState::TERMINATED);
+//            this->finishedProcesses.push_back(process);
+//            // Process found, move it to finished processes
+//            this->activeProcesses.erase(it);  // Erase from activeProcesses
+//            //std::cout << "Process removed successfully!" << std::endl;
+//        }
+//    }
+//}
 
 void ProcessManager::stop() {
-    this->activeProcesses.clear();
-    this->finishedProcesses.clear();
+    /*this->activeProcesses.clear();
+    this->finishedProcesses.clear();*/
+    this->processesList.clear();
 }
 
 long long ProcessManager::getBatchProcessFreq() const {
