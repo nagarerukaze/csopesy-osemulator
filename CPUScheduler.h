@@ -9,6 +9,7 @@
 #include <mutex>
 #include "CPUWorker.h"
 #include "MemoryManager.h"
+#include "PagingAllocator.h"
 
 typedef std::string String;
 
@@ -16,7 +17,7 @@ class CPUScheduler
 {
 public:
     static std::atomic<long long> cpuCycles;
-    void initialize(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec);
+    void initialize(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec, String allocator);
     void initializeCPUWorkers(int numberOfCPUs);
     static CPUScheduler* getInstance();
 	void startScheduler();
@@ -30,7 +31,7 @@ public:
 
 private:
     CPUScheduler();
-    CPUScheduler(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec);
+    CPUScheduler(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec, String allocator);
     CPUScheduler(const CPUScheduler&);
     CPUScheduler& operator = (const CPUScheduler&);
     ~CPUScheduler() = default;
@@ -41,6 +42,7 @@ private:
     std::mutex mtx;
 
     String scheduler;
+    String allocator;
     int numberOfCores;
     long long quantum_cycles;
     long long delay_per_exec;

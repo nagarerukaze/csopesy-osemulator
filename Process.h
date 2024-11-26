@@ -6,6 +6,8 @@
 #include <sstream>
 #include <iomanip>
 
+#include "MemoryManager.h"
+
 typedef std::string String;
 
 class Process
@@ -36,11 +38,13 @@ public:
 	void* getMemoryPointer() const;
 
 	int getCPUCoreID();
+	bool getFramesInMemory() const;
 
 	// Setters
 	void setState(ProcessState state);
 	void setCPUCoreID(int id);
 	void setMemoryPointer(void* memoryPointer);
+	void setFramesInMemory(bool val);
 	// Process Operations
 	void nextLine();
 
@@ -52,6 +56,9 @@ private:
 	ProcessState currentState;
 	int cpuCoreID;
 	size_t memoryRequired;
+	size_t numFrames;
+	std::vector<int> memoryFrames;
+	bool framesInMemory;
 	void* memoryPointer;
 	mutable std::mutex mtx;
 };

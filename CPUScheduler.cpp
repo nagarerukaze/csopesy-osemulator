@@ -3,11 +3,12 @@
 
 CPUScheduler::CPUScheduler() {}
 
-CPUScheduler::CPUScheduler(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec) {
+CPUScheduler::CPUScheduler(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec, String allocator) {
     this->scheduler = scheduler;
     this->numberOfCores = num_cpu;
     this->quantum_cycles = quantum_cycles;
     this->delay_per_exec = delay_per_exec;
+    this->allocator = allocator;
 }
 
 CPUScheduler::CPUScheduler(const CPUScheduler&) {}
@@ -16,15 +17,15 @@ CPUScheduler* CPUScheduler::sharedInstance = nullptr;
 
 std::atomic<long long> CPUScheduler::cpuCycles{ 0 };
 
-void CPUScheduler::initialize(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec) {
-	sharedInstance = new CPUScheduler(scheduler, num_cpu, quantum_cycles, delay_per_exec);
+void CPUScheduler::initialize(String scheduler, int num_cpu, long long quantum_cycles, long long delay_per_exec, String allocator) {
+	sharedInstance = new CPUScheduler(scheduler, num_cpu, quantum_cycles, delay_per_exec, allocator);
     sharedInstance->initializeCPUWorkers(sharedInstance->numberOfCores);
 }
 
 void CPUScheduler::initializeCPUWorkers(int num) {
     this->numberOfCores = num;
     for (int i = 0; i < num; i++) {
-        CPUWorker* worker = new CPUWorker(i, this->delay_per_exec, this->scheduler, this->quantum_cycles);
+        CPUWorker* worker = new CPUWorker(i, this->delay_per_exec, this->scheduler, this->quantum_cycles, this->allocator);
         this->cpuWorkers.push_back(worker);
     }
 }
@@ -69,7 +70,16 @@ void CPUScheduler::stopScheduler() {
             if (process && process->getCurrentInstructionLine() < process->getTotalLinesOfCode()) {
                 // Mark process as terminated
                 process->setState(Process::ProcessState::TERMINATED);
-                // ProcessManager::getInstance()->moveToFinished(process);  // Move process to finished state
+                process->setCPUCoreID(NULL);
+
+                // Flat Memory Allocator
+                if (allocator == "flat") {
+                    MemoryManager::getInstance()->deallocate(process->getMemoryPointer(), process->getMemoryRequired(), process->getName());
+                    process->setMemoryPointer(nullptr);
+                }
+
+                // TODO: Paging Allocator
+                
             }
 
             worker->removeProcess();  // Remove process from worker
@@ -127,7 +137,9 @@ void CPUScheduler::FCFSScheduling() {
                     if (!processQueue.empty()) {
                         process = processQueue.front();
                         processQueue.pop();
+
                         void* allocatedMemory = MemoryManager::getInstance()->allocate(process->getMemoryRequired(), process->getName());
+                        
 
                         if (allocatedMemory != nullptr) {
                             process->setMemoryPointer(allocatedMemory);
@@ -157,7 +169,6 @@ void CPUScheduler::FCFSScheduling() {
 }
 
 void CPUScheduler::handleProcessOut(CPUWorker* worker, std::shared_ptr<Process>& process_out) {
-    //std::cout << "Enter handle process out" << std::endl;
     if (process_out != nullptr) {
         if (process_out->getCurrentInstructionLine() < process_out->getTotalLinesOfCode()) {
             // Not done executing, requeue the process
@@ -165,11 +176,8 @@ void CPUScheduler::handleProcessOut(CPUWorker* worker, std::shared_ptr<Process>&
             processQueue.push(process_out);
         }
         else {
-            // Done executing, deallocate memory
+            // Done executing, remove process from worker
             worker->removeProcess();
-            MemoryManager::getInstance()->deallocate(process_out->getMemoryPointer(), process_out->getMemoryRequired(), process_out->getName());
-            process_out->setMemoryPointer(nullptr);
-            // ProcessManager::getInstance()->moveToFinished(process_out);
         }
     }
 }

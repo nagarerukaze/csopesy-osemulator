@@ -37,7 +37,7 @@ void ConsoleManager::printHeader() {
     std::cout << "Jocson, Nicole Pedernal (S11)" << std::endl;
     std::cout << "Rebano, Jaeme Patrice (S11)" << std::endl;
     std::cout << "Jaramillo, Brandon Anthony (S12)" << std::endl << std::endl;
-    std::cout << "Last updated: 11-12-2024" << std::endl; // TODO: Update the Date
+    std::cout << "Last updated: 11-26-2024" << std::endl; // TODO: Update the Date
     std::cout << "---------------------------------------------------------------" << std::endl;
     std::cout << std::endl;
 }
@@ -75,7 +75,7 @@ bool ConsoleManager::isOutsideMemoryRange(size_t val) {
 */
 bool ConsoleManager::initialize() {
     std::vector<String> values;
-    String line, key, value, scheduler;
+    String line, key, value, scheduler, allocator;
     int num_cpu;
     size_t max_overall_mem, mem_per_frame, min_mem_per_proc, max_mem_per_proc;
     long long quantum_cycles, batch_process_freq, min_ins, max_ins, delays_per_exec;
@@ -138,9 +138,17 @@ bool ConsoleManager::initialize() {
         return false;
     }
 
+    // Flat Mem Allocator or Paging Allocator?
+    if (max_overall_mem == mem_per_frame) {
+        allocator = "flat";
+    }
+    else {
+        allocator = "paging";
+    }
+
     // Initialize ProcessManager and CPUScheduler
     ProcessManager::getInstance()->initialize(batch_process_freq, min_ins, max_ins, min_mem_per_proc, max_mem_per_proc);
-    CPUScheduler::getInstance()->initialize(scheduler, num_cpu , quantum_cycles, delays_per_exec);
+    CPUScheduler::getInstance()->initialize(scheduler, num_cpu , quantum_cycles, delays_per_exec, allocator);
     MemoryManager::getInstance()->initialize(max_overall_mem);
     // PagingAllocator::getInstance()->initialize(max_overall_mem, mem_per_frame);
     

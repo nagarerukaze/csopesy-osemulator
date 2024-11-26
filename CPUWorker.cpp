@@ -1,15 +1,17 @@
 #include "CPUWorker.h"
 #include "ProcessManager.h"
 #include "CPUScheduler.h"
+#include "MemoryManager.h"
 
 
-CPUWorker::CPUWorker(int id, long long delay_per_exec, String scheduler, long long quantum_cycles) {
+CPUWorker::CPUWorker(int id, long long delay_per_exec, String scheduler, long long quantum_cycles, String allocator) {
     this->id = id;
     this->delay_per_exec = delay_per_exec;
     this->running = false;
     this->scheduler = scheduler;
     this->quantum_cycles = quantum_cycles;
     this->process = nullptr;
+    this->allocator = allocator;
 }
 
 // Set a CPU's process
@@ -72,60 +74,18 @@ void CPUWorker::startWorker() {
     if (this->process->getCurrentInstructionLine() == this->process->getTotalLinesOfCode()) {
         this->process->setCPUCoreID(NULL);
         this->process->setState(Process::ProcessState::TERMINATED);
+        
+        // Flat Memory Allocator
+        if (allocator == "flat") {
+            MemoryManager::getInstance()->deallocate(this->process->getMemoryPointer(), this->process->getMemoryRequired(), this->process->getName());
+            this->process->setMemoryPointer(nullptr);
+        }
+
+        // Paging Allocator
     }
     
     this->running = false;
 }
-
-//
-//void CPUWorker::startWorker() {
-//    {
-//        std::lock_guard<std::mutex> lock(mtx);
-//        this->running = true;  // Start the worker
-//    }
-//    if (this->process) {
-//        this->process->setState(Process::ProcessState::RUNNING);
-//    }
-//    else {
-//        this->running = false;
-//    }
-//
-//    this->cpuCycles = 0;
-//    long long rrCycles = 0;
-//
-//    while (this->running) {
-//        // Make sure the process is valid before accessing it
-//        if (!this->process) {
-//            break;
-//        }
-//
-//        // Check for stopping condition (e.g., quantum time or process completion)
-//        if (scheduler == "rr" && rrCycles >= this->quantum_cycles) {
-//            this->running = false;  // Stop after quantum time
-//            break;
-//        }
-//
-//        // Execute the current instruction
-//        if (cpuCycles == delay_per_exec) {
-//            if (this->process) {
-//                if (this->process->getCurrentInstructionLine() < this->process->getTotalLinesOfCode()) {
-//                    this->process->nextLine();  // Process next instruction
-//                }
-//                else {
-//                    std::lock_guard<std::mutex> lock(mtx);
-//                    this->running = false;  // Stop if process has finished executing
-//                }
-//            }
-//            this->cpuCycles = -1;
-//        }
-//
-//        // Increment/Reset cpuCycle counter
-//        this->cpuCycles++;
-//        rrCycles++;  // Increment round-robin cycle count
-//    }
-//    this->running = false;
-//}
-
 
 // Check if the worker has a process assigned
 bool CPUWorker::hasProcess() {

@@ -9,6 +9,13 @@ Process::Process(const String& name, long long totalLinesOfCode, size_t memoryRe
 	this->timeCreated = time(0);
     this->currentState = Process::READY;
     this->memoryRequired = memoryRequired;
+    this->framesInMemory = false;
+    // this->numFrames = memoryRequired / MemoryManager::getInstance()->getMemPerFrame();
+
+    // int numFrames = totalMemory / memPerFrame;
+    
+    // this->memoryFrames(numFrames, memPerFrame);
+
     this->memoryPointer = nullptr;
     this->cpuCoreID = NULL;
 }
@@ -116,4 +123,12 @@ void* Process::getMemoryPointer() const {
 
 void Process::setMemoryPointer(void* memoryPointer) {
     this->memoryPointer = memoryPointer;
+}
+
+void Process::setFramesInMemory(bool val) {
+    this->framesInMemory = val;
+}
+
+bool Process::getFramesInMemory() const {
+    return this->framesInMemory;
 }

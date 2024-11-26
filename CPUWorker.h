@@ -14,7 +14,7 @@ typedef std::string String;
 class CPUWorker
 {
 public:
-    CPUWorker(int id, long long delay_per_exec, String scheduler, long long quantum_cycles);    // Constructor
+    CPUWorker(int id, long long delay_per_exec, String scheduler, long long quantum_cycles, String allocator);    // Constructor
     ~CPUWorker() = default;                         // Destructor
     void setProcess(std::shared_ptr<Process> process);  // Use shared_ptr
     void startWorker();
@@ -29,6 +29,7 @@ private:
     int id;
 
     String scheduler;
+    String allocator;
     long long delay_per_exec;
     long long quantum_cycles;
     std::shared_ptr<Process> process;  // Changed to shared_ptr
