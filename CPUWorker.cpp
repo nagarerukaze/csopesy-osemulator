@@ -83,7 +83,7 @@ void CPUWorker::startWorker() {
 
         // Paging Allocator
     }
-    
+    this->cpuCycles++;
     this->running = false;
 }
 
