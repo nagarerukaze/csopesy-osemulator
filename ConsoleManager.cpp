@@ -147,7 +147,7 @@ bool ConsoleManager::initialize() {
     }
 
     // Initialize ProcessManager and CPUScheduler
-    ProcessManager::getInstance()->initialize(batch_process_freq, min_ins, max_ins, min_mem_per_proc, max_mem_per_proc);
+    ProcessManager::getInstance()->initialize(batch_process_freq, min_ins, max_ins, min_mem_per_proc, max_mem_per_proc, mem_per_frame);
     CPUScheduler::getInstance()->initialize(scheduler, num_cpu , quantum_cycles, delays_per_exec, allocator);
     MemoryManager::getInstance()->initialize(max_overall_mem);
     // PagingAllocator::getInstance()->initialize(max_overall_mem, mem_per_frame);

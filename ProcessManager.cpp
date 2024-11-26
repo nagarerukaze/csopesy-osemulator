@@ -4,13 +4,14 @@
 ProcessManager::ProcessManager() {}
 
 // Singleton stuff
-ProcessManager::ProcessManager(long long batch_process_freq, long long min_ins, long long max_ins, size_t min_mem_per_proc, size_t max_mem_per_proc) {
+ProcessManager::ProcessManager(long long batch_process_freq, long long min_ins, long long max_ins, size_t min_mem_per_proc, size_t max_mem_per_proc, size_t mem_per_frame) {
     this->batch_process_freq = batch_process_freq;
     this->min_ins = min_ins;
     this->max_ins = max_ins;
     this->isGeneratingProcesses = false;
     this->min_mem_per_proc = min_mem_per_proc;
     this->max_mem_per_proc = max_mem_per_proc;
+    this->mem_per_frame = mem_per_frame;
     this->processesList.clear();
     // this->finishedProcesses.clear();
 }
@@ -18,8 +19,8 @@ ProcessManager::ProcessManager(const ProcessManager&) {}
 
 ProcessManager* ProcessManager::sharedInstance = nullptr;
 
-void ProcessManager::initialize(long long batch_process_freq, long long min_ins, long long max_ins, size_t min_mem_per_proc, size_t max_mem_per_proc) {
-    sharedInstance = new ProcessManager(batch_process_freq, min_ins, max_ins, min_mem_per_proc, max_mem_per_proc);
+void ProcessManager::initialize(long long batch_process_freq, long long min_ins, long long max_ins, size_t min_mem_per_proc, size_t max_mem_per_proc, size_t mem_per_frame) {
+    sharedInstance = new ProcessManager(batch_process_freq, min_ins, max_ins, min_mem_per_proc, max_mem_per_proc, mem_per_frame);
 }
 
 ProcessManager* ProcessManager::getInstance() {
@@ -34,7 +35,7 @@ void ProcessManager::createProcess(const String& name) {
     // std::lock_guard<std::mutex> lock(mtx);
     auto new_process = std::make_shared<Process>(name,
         rand() % (this->max_ins - this->min_ins + 1) + this->min_ins,
-        rand() % (this->max_mem_per_proc - this->min_mem_per_proc + 1) + this->min_mem_per_proc);
+        rand() % (this->max_mem_per_proc - this->min_mem_per_proc + 1) + this->min_mem_per_proc, this->mem_per_frame);
 
     processesList.push_back(new_process);
     //std::cout << "Process " << name << " created and added to activeProcesses." << std::endl;

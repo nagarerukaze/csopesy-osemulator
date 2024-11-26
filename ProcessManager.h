@@ -12,7 +12,7 @@ class ProcessManager
 {
 public:
     // Singleton stuff
-    static void initialize(long long batch_process_freq, long long min_ins, long long max_ins, size_t min_mem_per_proc, size_t max_mem_per_proc);
+    static void initialize(long long batch_process_freq, long long min_ins, long long max_ins, size_t min_mem_per_proc, size_t max_mem_per_proc, size_t mem_per_frame);
     static ProcessManager* getInstance();
 
     void createProcess(const String& name);
@@ -29,13 +29,12 @@ public:
     long long getMinInstructions() const;
     long long getMaxInstructions() const;
     bool getIsGeneratingProcesses() const;
-    void moveToFinished(std::shared_ptr<Process> process);
 
     void setIsGeneratingProcesses(bool val);
 
 private:
     ProcessManager();
-    ProcessManager(long long batch_process_freq, long long min_ins, long long max_ins, size_t min_mem_per_proc, size_t max_mem_per_proc);
+    ProcessManager(long long batch_process_freq, long long min_ins, long long max_ins, size_t min_mem_per_proc, size_t max_mem_per_proc, size_t mem_per_frame);
     ProcessManager(const ProcessManager&);
     ProcessManager& operator = (const ProcessManager&);
     ~ProcessManager() = default;
@@ -47,7 +46,7 @@ private:
     bool isGeneratingProcesses;
     size_t min_mem_per_proc;
     size_t max_mem_per_proc;
-
+    size_t mem_per_frame;
     //std::vector<std::shared_ptr<Process>> activeProcesses;
     //std::vector<std::shared_ptr<Process>> finishedProcesses;
     std::vector<std::shared_ptr<Process>> processesList;

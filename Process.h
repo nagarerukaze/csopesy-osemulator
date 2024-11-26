@@ -23,7 +23,7 @@ public:
 
 	Process();
 	~Process() = default;
-	Process(const String& name, long long totalLinesOfCode, size_t memoryRequired);
+	Process(const String& name, long long totalLinesOfCode, size_t memoryRequired, size_t memPerFrame);
 
 	void printInfo();
 	void draw();
@@ -39,6 +39,7 @@ public:
 
 	int getCPUCoreID();
 	bool getFramesInMemory() const;
+	size_t getNumPages() const;
 
 	// Setters
 	void setState(ProcessState state);
@@ -57,7 +58,7 @@ private:
 	int cpuCoreID;
 	size_t memoryRequired;
 	size_t numFrames;
-	std::vector<int> memoryFrames;
+	std::vector<size_t> memoryFrames;
 	bool framesInMemory;
 	void* memoryPointer;
 	mutable std::mutex mtx;

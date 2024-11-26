@@ -2,7 +2,7 @@
 
 Process::Process() {}
 
-Process::Process(const String& name, long long totalLinesOfCode, size_t memoryRequired) {
+Process::Process(const String& name, long long totalLinesOfCode, size_t memoryRequired, size_t memPerFrame) {
 	this->name = name;
 	this->currentInstructionLine = 0;
 	this->totalLinesOfCode = totalLinesOfCode;
@@ -10,11 +10,8 @@ Process::Process(const String& name, long long totalLinesOfCode, size_t memoryRe
     this->currentState = Process::READY;
     this->memoryRequired = memoryRequired;
     this->framesInMemory = false;
-    // this->numFrames = memoryRequired / MemoryManager::getInstance()->getMemPerFrame();
-
-    // int numFrames = totalMemory / memPerFrame;
-    
-    // this->memoryFrames(numFrames, memPerFrame);
+    this->numFrames = memoryRequired / memPerFrame;
+    this->memoryFrames = std::vector<size_t>(numFrames, memPerFrame);
 
     this->memoryPointer = nullptr;
     this->cpuCoreID = NULL;
@@ -131,4 +128,8 @@ void Process::setFramesInMemory(bool val) {
 
 bool Process::getFramesInMemory() const {
     return this->framesInMemory;
+}
+
+size_t Process::getNumPages() const {
+    return this->numFrames;
 }
