@@ -11,13 +11,20 @@
 class PagingAllocator
 {
 public:
-	  PagingAllocator(size_t maxMemorySize, size_t mem_per_frame);
+	PagingAllocator();
+	PagingAllocator(size_t maxMemorySize, size_t mem_per_frame);
+	~PagingAllocator();
+	void initialize(size_t maxMemorySize, size_t mem_per_frame);
+	static PagingAllocator* getInstance();
 
-	  void* allocate(std::shared_ptr<Process> process);
-	  void deallocate(std::shared_ptr<Process> process);
-	  void visualizeMemory() const;
+	void* allocate(std::shared_ptr<Process> process);
+	void deallocate(std::shared_ptr<Process> process);
+	void visualizeMemory() const;
 
 private:
+	PagingAllocator& operator = (const PagingAllocator&);
+	static PagingAllocator* sharedInstance;
+
 	size_t maxMemorySize;
 	size_t numFrames;
 	std::unordered_map<size_t, String> frameMap;

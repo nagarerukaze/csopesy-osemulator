@@ -1,11 +1,26 @@
 #include "PagingAllocator.h"
 
+PagingAllocator::PagingAllocator() {}
+
 PagingAllocator::PagingAllocator(size_t maxMemorySize, size_t mem_per_frame)
 	: maxMemorySize(maxMemorySize), numFrames(maxMemorySize / mem_per_frame) {
 	// Initialize Free Frame List
 	for (size_t i = 0; i < numFrames; ++i) {
 		freeFrameList.push_back(i);
 	}
+}
+
+PagingAllocator* PagingAllocator::sharedInstance = nullptr;
+
+void PagingAllocator::initialize(size_t maxMemorySize, size_t mem_per_frame) {
+	sharedInstance = new PagingAllocator(maxMemorySize, mem_per_frame);
+}
+
+PagingAllocator* PagingAllocator::getInstance() {
+	if (sharedInstance == nullptr) {
+		sharedInstance = new PagingAllocator;  // Ensure the instance is created
+	}
+	return sharedInstance;
 }
 
 void* PagingAllocator::allocate(std::shared_ptr<Process> process) {
