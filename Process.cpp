@@ -9,12 +9,13 @@ Process::Process(const String& name, long long totalLinesOfCode, size_t memoryRe
 	this->timeCreated = time(0);
     this->currentState = Process::READY;
     this->memoryRequired = memoryRequired;
+    this->cpuCoreID = NULL;
+    // Paging Allocator
     this->framesInMemory = false;
     this->numFrames = memoryRequired / memPerFrame;
     this->memoryFrames = std::vector<size_t>(numFrames, memPerFrame);
-
+    // Flat Memory
     this->memoryPointer = nullptr;
-    this->cpuCoreID = NULL;
 }
 
 void Process::printInfo() {

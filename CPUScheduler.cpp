@@ -139,7 +139,6 @@ void CPUScheduler::FCFSScheduling() {
                         processQueue.pop();
 
                         void* allocatedMemory = MemoryManager::getInstance()->allocate(process->getMemoryRequired(), process->getName());
-                        
 
                         if (allocatedMemory != nullptr) {
                             process->setMemoryPointer(allocatedMemory);
@@ -215,7 +214,7 @@ void CPUScheduler::RRScheduling() {
                             allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
                             // allocatation failed, TODO: put in backing store
                             if (allocatedMemory == nullptr) {
-                                processQueue.push(process_in);
+                                processQueue.push(process_in); 
                             }
                             // set pointer if allocated
                             else {
