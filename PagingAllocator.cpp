@@ -27,16 +27,16 @@ void* PagingAllocator::allocate(std::shared_ptr<Process> process) {
 	String processName = process->getName();
 	size_t numFramesNeeded = process->getNumPages();
 	if (numFramesNeeded > freeFrameList.size()) {
-		std::cout << "Allocate failed." << std::endl;
+		//std::cout << "Allocate failed." << std::endl;
 		// Memory Failed
 		return nullptr;
 	}
 
-	std::cout << "Allocate success." << std::endl;
+	//std::cout << "Allocate success." << std::endl;
 
 	// Allocate frames for the process
 	size_t frameIndex = allocateFrames(numFramesNeeded, processName);
-	return reinterpret_cast<void*>(frameIndex);
+	return reinterpret_cast<void*>(frameIndex + 1); // simply bc 0 makes it == nullptr
 }
 
 void PagingAllocator::deallocate(std::shared_ptr<Process> process) {
@@ -70,7 +70,7 @@ void PagingAllocator::visualizeMemory() const {
 
 size_t PagingAllocator::allocateFrames(size_t numFrames, String processName) {
 	size_t frameIndex = freeFrameList.front(); // TODO: Is this .front() not .back()?
-	std::cout << "FrameIndex: " << frameIndex << std::endl;
+	//std::cout << "FrameIndex: " << frameIndex << std::endl;
 
 	// Map allocated frames to the process ID
 	for (size_t i = 0; i < numFrames; ++i) {

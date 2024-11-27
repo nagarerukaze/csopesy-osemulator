@@ -134,19 +134,34 @@ void CPUScheduler::FCFSScheduling() {
                         }
                     }
 
-                    if (!processQueue.empty()) {
-                        process = processQueue.front();
-                        processQueue.pop();
+                    {
+                        std::lock_guard<std::mutex> lock(mtx);
+                        if (!processQueue.empty()) {
+                            process = processQueue.front();
+                            processQueue.pop();
+                            void* allocatedMemory = nullptr;
 
-                        void* allocatedMemory = MemoryManager::getInstance()->allocate(process->getMemoryRequired(), process->getName());
+                            if (allocator == "flat") {
+                                allocatedMemory = MemoryManager::getInstance()->allocate(process->getMemoryRequired(), process->getName());
+                            }
+                            // Paging
+                            else {
+                                //std::cout << "Before try to allocate:" << std::endl;
+                                //PagingAllocator::getInstance()->visualizeMemory();
+                                allocatedMemory = PagingAllocator::getInstance()->allocate(process);
 
-                        if (allocatedMemory != nullptr) {
-                            process->setMemoryPointer(allocatedMemory);
-                            worker->setProcess(process);
-                            std::thread([worker, process = process]() {
+                                //std::cout << "After try to allocate:" << std::endl;
+                                //PagingAllocator::getInstance()->visualizeMemory();
+                            }
+
+                            if (allocatedMemory != nullptr) {
+                                process->setMemoryPointer(allocatedMemory);
                                 worker->setProcess(process);
-                                worker->startWorker();
-                                }).detach();
+                                std::thread([worker, process = process]() {
+                                    worker->setProcess(process);
+                                    worker->startWorker();
+                                    }).detach();
+                            }
                         }
                     }
                 }
@@ -203,30 +218,43 @@ void CPUScheduler::RRScheduling() {
                         }
                     }
 
-                    if (!processQueue.empty()) {
-                        // get the process and allocated memory
-                        process_in = processQueue.front();
-                        processQueue.pop();
-                        allocatedMemory = process_in->getMemoryPointer();
+                    {
+                        std::lock_guard<std::mutex> lock(mtx);
+                        if (!processQueue.empty()) {
+                            // get the process and allocated memory
+                            process_in = processQueue.front();
+                            processQueue.pop();
+                            allocatedMemory = process_in->getMemoryPointer();
 
-                        // if process is not allocated in memory
-                        if (allocatedMemory == nullptr) {
-                            allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
-                            // allocatation failed, TODO: put in backing store
+                            // if process is not allocated in memory
                             if (allocatedMemory == nullptr) {
-                                processQueue.push(process_in); 
+                                if (allocator == "flat") {
+                                    allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
+                                }
+                                else {
+                                    std::cout << "Before try to allocate:" << std::endl;
+                                    PagingAllocator::getInstance()->visualizeMemory();
+                                    allocatedMemory = PagingAllocator::getInstance()->allocate(process_in);
+                                    std::cout << "After try to allocate:" << std::endl;
+                                    PagingAllocator::getInstance()->visualizeMemory();
+                                }
+
+                                // allocatation failed, TODO: put in backing store
+                                if (allocatedMemory == nullptr) {
+                                    processQueue.push(process_in);
+                                }
+                                // set pointer if allocated
+                                else {
+                                    process_in->setMemoryPointer(allocatedMemory);
+                                }
                             }
-                            // set pointer if allocated
-                            else {
-                                process_in->setMemoryPointer(allocatedMemory);
-                            }
-                        }
-                        if (allocatedMemory != nullptr) {
-                            worker->setProcess(process_in);  // Ensure that process_in is valid
-                            std::thread([worker, process_in = process_in]() {
+                            if (allocatedMemory != nullptr) {
                                 worker->setProcess(process_in);  // Ensure that process_in is valid
-                                worker->startWorker(); // Start worker with the shared_ptr process
-                                }).detach();
+                                std::thread([worker, process_in = process_in]() {
+                                    worker->setProcess(process_in);  // Ensure that process_in is valid
+                                    worker->startWorker(); // Start worker with the shared_ptr process
+                                    }).detach();
+                            }
                         }
                     }
                 }

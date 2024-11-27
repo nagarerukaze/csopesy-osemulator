@@ -78,10 +78,13 @@ void CPUWorker::startWorker() {
         // Flat Memory Allocator
         if (allocator == "flat") {
             MemoryManager::getInstance()->deallocate(this->process->getMemoryPointer(), this->process->getMemoryRequired(), this->process->getName());
-            this->process->setMemoryPointer(nullptr);
         }
 
         // Paging Allocator
+        else {
+            PagingAllocator::getInstance()->deallocate(this->process);
+        }
+        this->process->setMemoryPointer(nullptr);
     }
     this->cpuCycles++;
     this->running = false;

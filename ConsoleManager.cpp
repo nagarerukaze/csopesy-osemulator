@@ -38,7 +38,7 @@ void ConsoleManager::printHeader() {
     std::cout << "Jocson, Nicole Pedernal (S11)" << std::endl;
     std::cout << "Rebano, Jaeme Patrice (S11)" << std::endl;
     std::cout << "Jaramillo, Brandon Anthony (S12)" << std::endl << std::endl;
-    std::cout << "Last updated: 11-26-2024" << std::endl; // TODO: Update the Date
+    std::cout << "Last updated: 11-28-2024" << std::endl; // TODO: Update the Date
     std::cout << "---------------------------------------------------------------" << std::endl;
     std::cout << std::endl;
 }
@@ -151,7 +151,7 @@ bool ConsoleManager::initialize() {
     ProcessManager::getInstance()->initialize(batch_process_freq, min_ins, max_ins, min_mem_per_proc, max_mem_per_proc, mem_per_frame);
     CPUScheduler::getInstance()->initialize(scheduler, num_cpu , quantum_cycles, delays_per_exec, allocator);
     MemoryManager::getInstance()->initialize(max_overall_mem);
-    // PagingAllocator::getInstance()->initialize(max_overall_mem, mem_per_frame);
+    PagingAllocator::getInstance()->initialize(max_overall_mem, mem_per_frame);
     
     //Start Detached Scheduler Thread
     std::thread schedulerThread([] {
@@ -423,6 +423,12 @@ void ConsoleManager::test() {
 
     void* ptr1 = PagingAllocator::getInstance()->allocate(p);
     std::cout << "Pointer address: " << reinterpret_cast<uintptr_t>(ptr1) << std::endl;
+    if (ptr1 == nullptr) {
+        std::cout << "it is null" << std::endl;
+    }
+    else {
+        std::cout << "it is not null" << std::endl;
+    }
 
     std::cout << "Memory after allocating p:" << std::endl;
     PagingAllocator::getInstance()->visualizeMemory();
