@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>  // For std::shared_ptr
 #include <unordered_map>
-
+#include <queue>
 #include "Process.h"
  
  typedef std::string String;
@@ -28,7 +28,7 @@ private:
 	size_t maxMemorySize;
 	size_t numFrames;
 	std::unordered_map<size_t, String> frameMap;
-	std::vector<size_t> freeFrameList;
+	std::queue<size_t> freeFrameList;
 
 	size_t allocateFrames(size_t numFrames, String processName);
 	void deallocateFrames(size_t numFrames, size_t frameIndex);

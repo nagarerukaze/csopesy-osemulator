@@ -1,4 +1,5 @@
 #include "ConsoleManager.h"
+#include "Process.h" //TODO: Delete
 
 // Singleton stuff
 ConsoleManager::ConsoleManager() {
@@ -407,7 +408,60 @@ void ConsoleManager::stopRunning() {
 
 
 void ConsoleManager::test() {
-    std::cout << MemoryManager::getInstance()->visualizeMemory() << std::endl;
+    // std::queue<String> orderOfProcesses
+
+    PagingAllocator::getInstance()->initialize(1024, 256);
+
+    std::cout << "Initial memory: " << std::endl;
+    PagingAllocator::getInstance()->visualizeMemory();
+
+    std::shared_ptr<Process> p = std::make_shared<Process>("P1", 4000, 512, 256);
+    std::shared_ptr<Process> p2 = std::make_shared<Process>("P2", 4000, 512, 256);
+    std::shared_ptr<Process> p3 = std::make_shared<Process>("P3", 4000, 512, 256);
+    std::shared_ptr<Process> p4 = std::make_shared<Process>("P4", 4000, 512, 256);
+
+
+    void* ptr1 = PagingAllocator::getInstance()->allocate(p);
+    std::cout << "Pointer address: " << reinterpret_cast<uintptr_t>(ptr1) << std::endl;
+
+    std::cout << "Memory after allocating p:" << std::endl;
+    PagingAllocator::getInstance()->visualizeMemory();
+
+    PagingAllocator::getInstance()->deallocate(p);
+
+    std::cout << "Memory after deallocating p:" << std::endl;
+    PagingAllocator::getInstance()->visualizeMemory();
+
+    void* ptr2 = PagingAllocator::getInstance()->allocate(p2);
+    std::cout << "Pointer address: " << reinterpret_cast<uintptr_t>(ptr2) << std::endl;
+
+    std::cout << "Memory after allocating p2:" << std::endl;
+    PagingAllocator::getInstance()->visualizeMemory();
+
+    void* ptr3 = PagingAllocator::getInstance()->allocate(p);
+    std::cout << "Pointer address: " << reinterpret_cast<uintptr_t>(ptr3) << std::endl;
+
+    std::cout << "Memory after allocating p:" << std::endl;
+    PagingAllocator::getInstance()->visualizeMemory();
+
+    void* ptr4 = PagingAllocator::getInstance()->allocate(p3);
+    std::cout << "Pointer address: " << reinterpret_cast<uintptr_t>(ptr4) << std::endl;
+
+    std::cout << "Memory after allocating p3:" << std::endl;
+    PagingAllocator::getInstance()->visualizeMemory();
+
+    PagingAllocator::getInstance()->deallocate(p);
+
+    std::cout << "Memory after deallocating p:" << std::endl;
+    PagingAllocator::getInstance()->visualizeMemory();
+
+    void* ptr5 = PagingAllocator::getInstance()->allocate(p4);
+    std::cout << "Pointer address: " << reinterpret_cast<uintptr_t>(ptr5) << std::endl;
+
+    std::cout << "Memory after allocating p4:" << std::endl;
+    PagingAllocator::getInstance()->visualizeMemory();
+
+
     /*
     // Initialize the memory with 20 units
     MemoryManager::getInstance()->initialize(16384);

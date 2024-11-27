@@ -6,7 +6,7 @@ PagingAllocator::PagingAllocator(size_t maxMemorySize, size_t mem_per_frame)
 	: maxMemorySize(maxMemorySize), numFrames(maxMemorySize / mem_per_frame) {
 	// Initialize Free Frame List
 	for (size_t i = 0; i < numFrames; ++i) {
-		freeFrameList.push_back(i);
+		freeFrameList.push(i);
 	}
 }
 
@@ -27,9 +27,12 @@ void* PagingAllocator::allocate(std::shared_ptr<Process> process) {
 	String processName = process->getName();
 	size_t numFramesNeeded = process->getNumPages();
 	if (numFramesNeeded > freeFrameList.size()) {
+		std::cout << "Allocate failed." << std::endl;
 		// Memory Failed
 		return nullptr;
 	}
+
+	std::cout << "Allocate success." << std::endl;
 
 	// Allocate frames for the process
 	size_t frameIndex = allocateFrames(numFramesNeeded, processName);
@@ -66,12 +69,13 @@ void PagingAllocator::visualizeMemory() const {
 }
 
 size_t PagingAllocator::allocateFrames(size_t numFrames, String processName) {
-	size_t frameIndex = freeFrameList.back();
-	freeFrameList.pop_back();
+	size_t frameIndex = freeFrameList.front(); // TODO: Is this .front() not .back()?
+	std::cout << "FrameIndex: " << frameIndex << std::endl;
 
 	// Map allocated frames to the process ID
 	for (size_t i = 0; i < numFrames; ++i) {
-		frameMap[frameIndex + 1] = processName;
+		frameMap[frameIndex + i] = processName;
+		freeFrameList.pop();
 	}
 
 	return frameIndex;
@@ -84,6 +88,6 @@ void PagingAllocator::deallocateFrames(size_t numFrames, size_t frameIndex) {
 	}
 
 	for (size_t i = 0; i < numFrames; ++i) {
-		freeFrameList.push_back(frameIndex + i);
+		freeFrameList.push(frameIndex + i);
 	}
 }

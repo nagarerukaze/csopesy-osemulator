@@ -43,9 +43,6 @@ int main() {
             else if (command == "vmstat") {
                 ConsoleManager::getInstance()->vmstat();
             }
-            else if (command == "test") {
-                ConsoleManager::getInstance()->test();
-            }
             else {
                 std::cout << "Unknown command." << std::endl;
             }
@@ -69,6 +66,9 @@ int main() {
         else if (command == "exit") {
             break;
             std::cout << "Shutting down..." << std::endl;
+        }
+        else if (command == "test") {
+            ConsoleManager::getInstance()->test();
         }
         else {
             std::cout << "Unknown command." << std::endl;
