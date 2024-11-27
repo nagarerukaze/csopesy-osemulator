@@ -99,8 +99,6 @@ void MemoryManager::allocateAt(size_t index, size_t size) {
     allocatedSize += size;
 }
 
-
-
 void MemoryManager::deallocateAt(size_t index, size_t size) {
     for (size_t i = index; i < index + size; ++i) {
         allocationMap[i] = false;  // Mark each block as allocated
