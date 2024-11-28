@@ -370,12 +370,12 @@ void ConsoleManager::processSMI() {
 
     // CPU utilization
     int coresUsed = 0;
-    int totalCores = 0;
+    int totalCores = 1;
     double cpuUtil = 0;
 
     // Memory usage and utilization
     int usedMemory = 0;
-    int totalMemory = 0;
+    int totalMemory = 1;
     double memoryUtil = 0;
 
     coresUsed = CPUScheduler::getInstance()->getNumberOfCPUsUsed();
@@ -395,7 +395,7 @@ void ConsoleManager::processSMI() {
     std::cout << "===============================================" << std::endl;
     std::cout << "Running processes and memory usage:" << std::endl;
     std::cout << "----------------------------------------------" << std::endl;
-    // TODO: Print Running Processes
+    MemoryManager::getInstance()->displayRunningProcsAndMemUsage();
     std::cout << "----------------------------------------------" << std::endl;
 }
 

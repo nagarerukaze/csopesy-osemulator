@@ -3,6 +3,9 @@
 #include <unordered_map>
 #include <filesystem>
 
+#include "CPUScheduler.h"
+#include "CPUWorker.h"
+
 MemoryManager::MemoryManager() : maximumSize(0), allocatedSize(0) {}
 
 MemoryManager::MemoryManager(size_t maximumSize) {
@@ -104,6 +107,22 @@ void MemoryManager::deallocateAt(size_t index, size_t size) {
         allocationMap[i] = false;  // Mark each block as allocated
     }
     allocatedSize -= size;
+}
+
+void MemoryManager::displayRunningProcsAndMemUsage() {
+
+    std::vector<CPUWorker*> workers = CPUScheduler::getInstance()->getCPUWorkers();
+
+    for (const auto& worker : workers) {
+        if (worker->getProcess() != nullptr) {
+            std::shared_ptr<Process> process = worker->getProcess();
+
+            if (process->getState() == Process::ProcessState::RUNNING) {
+                std::cout << process->getName() << "\t"
+                    << "<memory usage>" << "MiB" << std::endl;
+            }
+        }
+    }
 }
 
 size_t MemoryManager::getAllocatedSize() {

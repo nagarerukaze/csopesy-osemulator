@@ -26,6 +26,8 @@ public:
 	// void printMemory(long long qq);
 	// void printASCIIMemory(std::ofstream& outFile);
 	String getCurrentTime();
+
+	void displayRunningProcsAndMemUsage();
 private:
 
 	MemoryManager();
