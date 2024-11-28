@@ -373,15 +373,24 @@ void ConsoleManager::processSMI() {
     int totalCores = 0;
     double cpuUtil = 0;
 
+    // Memory usage and utilization
+    int usedMemory = 0;
+    int totalMemory = 0;
+    double memoryUtil = 0;
+
     coresUsed = CPUScheduler::getInstance()->getNumberOfCPUsUsed();
     totalCores = CPUScheduler::getInstance()->getNumberOfCores();
     cpuUtil = ((double)coresUsed / (double)totalCores) * 100;
 
+    usedMemory = MemoryManager::getInstance()->getAllocatedSize();
+    totalMemory = MemoryManager::getInstance()->getMaximumMemory();
+    memoryUtil = ((double)usedMemory / (double)totalMemory) * 100;
+
     std::cout << "----------------------------------------------" << std::endl;
     std::cout << "| PROCESS-SMI V01.00 Driver Version: 01.00 |" << std::endl;
-    std::cout << "Memory Usage: " << "MiB / " << "MiB" << std::endl; // TODO
-    std::cout << "Memory Util: " << "%" << std::endl << std::endl << std::endl; // TODO
     std::cout << "CPU-Util: " << cpuUtil << "%" << std::endl; // TODO
+    std::cout << "Memory Usage: " << usedMemory << "MiB / " << totalMemory << "MiB" << std::endl; // TODO
+    std::cout << "Memory Util: " << memoryUtil << "%" << std::endl << std::endl << std::endl; // TODO
 
     std::cout << "===============================================" << std::endl;
     std::cout << "Running processes and memory usage:" << std::endl;

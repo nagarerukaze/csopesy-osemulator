@@ -20,6 +20,7 @@ public:
 
 	void* allocate(size_t size, String process);
 	void deallocate(void* ptr, size_t size, String process);
+	size_t getAllocatedSize();
 	size_t getMaximumMemory();
 	String visualizeMemory();
 	// void printMemory(long long qq);

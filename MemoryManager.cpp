@@ -106,6 +106,10 @@ void MemoryManager::deallocateAt(size_t index, size_t size) {
     allocatedSize -= size;
 }
 
+size_t MemoryManager::getAllocatedSize() {
+    return this->allocatedSize;
+}
+
 size_t MemoryManager::getMaximumMemory() {
     return this->maximumSize;
 }
