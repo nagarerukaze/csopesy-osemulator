@@ -367,11 +367,21 @@ void ConsoleManager::reportUtil() {
     command. 
 */
 void ConsoleManager::processSMI() {
+
+    // CPU utilization
+    int coresUsed = 0;
+    int totalCores = 0;
+    double cpuUtil = 0;
+
+    coresUsed = CPUScheduler::getInstance()->getNumberOfCPUsUsed();
+    totalCores = CPUScheduler::getInstance()->getNumberOfCores();
+    cpuUtil = ((double)coresUsed / (double)totalCores) * 100;
+
     std::cout << "----------------------------------------------" << std::endl;
     std::cout << "| PROCESS-SMI V01.00 Driver Version: 01.00 |" << std::endl;
-    std::cout << "CPU-Util: " << "%" << std::endl; // TODO
     std::cout << "Memory Usage: " << "MiB / " << "MiB" << std::endl; // TODO
     std::cout << "Memory Util: " << "%" << std::endl << std::endl << std::endl; // TODO
+    std::cout << "CPU-Util: " << cpuUtil << "%" << std::endl; // TODO
 
     std::cout << "===============================================" << std::endl;
     std::cout << "Running processes and memory usage:" << std::endl;
