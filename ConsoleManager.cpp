@@ -152,6 +152,15 @@ bool ConsoleManager::initialize() {
     CPUScheduler::getInstance()->initialize(scheduler, num_cpu , quantum_cycles, delays_per_exec, allocator);
     MemoryManager::getInstance()->initialize(max_overall_mem);
     PagingAllocator::getInstance()->initialize(max_overall_mem, mem_per_frame);
+
+    std::ofstream outFile("backing_store.txt", std::ios::trunc); // Open in truncate mode
+    if (!outFile) {
+        std::cerr << "Error: Could not create or clear the file.\n";
+    }
+    else {
+        std::cout << "File cleared: " << "backing_store" << "\n";
+    }
+    outFile.close();
     
     //Start Detached Scheduler Thread
     std::thread schedulerThread([] {
@@ -456,7 +465,7 @@ void ConsoleManager::stopRunning() {
 
 
 void ConsoleManager::test() {
-    //// std::queue<String> orderOfProcesses
+    // std::queue<String> orderOfProcesses
 
     //PagingAllocator::getInstance()->initialize(1024, 256);
 

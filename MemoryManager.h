@@ -13,11 +13,6 @@
 
 typedef std::string String;
 
-struct MemoryEntry {
-	String processName;
-	std::time_t timestamp;
-};
-
 class MemoryManager
 {
 public:
@@ -30,9 +25,6 @@ public:
 	size_t getAllocatedSize();
 	size_t getMaximumMemory();
 	String visualizeMemory();
-	// void printMemory(long long qq);
-	// void printASCIIMemory(std::ofstream& outFile);
-
 
 	void removeProcessFromBS(String processName);
 	void saveProcessToBS(void* memoryPointer, size_t memRequired, String name);
@@ -54,10 +46,9 @@ private:
 	size_t maximumSize;
 	size_t allocatedSize;
 	std::vector<char> memory;
-	// std::vector<MemoryEntry> memoryDetails;
-	// std::vector<String> strProcessesInMemory;
 	std::unordered_map<size_t, bool> allocationMap;
 	std::unordered_map<String, time_t> processOrder;
+
 	void initializeMemory();
 	bool canAllocateAt(size_t index, size_t size) const;
 	void allocateAt(size_t index, size_t size, String process);

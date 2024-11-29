@@ -235,22 +235,24 @@ void CPUScheduler::RRScheduling() {
                             // if process is not allocated in memory
                             if (allocatedMemory == nullptr) {
                                 if (allocator == "flat") {
-                                    MemoryManager::getInstance()->removeProcessFromBS(process_in->getName());
+                                    MemoryManager::getInstance()->removeProcessFromBS(process_in->getName()); // Remove if in backing store
                                     allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
                                 }
                                 else {
-                                    PagingAllocator::getInstance()->removeProcessFromBS(process_in->getName());
+                                    PagingAllocator::getInstance()->removeProcessFromBS(process_in->getName()); // Remove if in backing store
                                     allocatedMemory = PagingAllocator::getInstance()->allocate(process_in);
                                 }
 
-                                // allocatation failed, TODO: put in backing store
+                                // allocatation failed
                                 if (allocatedMemory == nullptr) {
                                     String name = "";
                                     std::shared_ptr<Process> oldest_process = nullptr;
                                     if (allocator == "flat") {
-                                        name = MemoryManager::getInstance()->removeOldestEntry();
-                                        oldest_process = ProcessManager::getInstance()->findProcess(name);
-                                        MemoryManager::getInstance()->saveProcessToBS(oldest_process->getMemoryPointer(), oldest_process->getMemoryRequired(), oldest_process->getName());
+                                        name = MemoryManager::getInstance()->removeOldestEntry(); // Remove oldest process in memory
+                                        oldest_process = ProcessManager::getInstance()->findProcess(name); // Get process
+                                        MemoryManager::getInstance()->saveProcessToBS(oldest_process->getMemoryPointer(), 
+                                                                                    oldest_process->getMemoryRequired(), 
+                                                                                    oldest_process->getName()); // Save process to backing store
                                         allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
                                     }
                                     else {
@@ -261,8 +263,11 @@ void CPUScheduler::RRScheduling() {
 
                                     }
                                     // Find oldest process and push back in queue
+                                    oldest_process->setCPUCoreID(NULL);
+                                    oldest_process->setState(Process::ProcessState::READY);
+                                    oldest_process->setMemoryPointer(nullptr);
+                                    handleProcessOut(worker, oldest_process);
                                     process_in->setMemoryPointer(allocatedMemory);
-                                    processQueue.push(oldest_process);
                                 }
                                 // set pointer if allocated
                                 else {

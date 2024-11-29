@@ -88,6 +88,10 @@ void CPUWorker::startWorker() {
         }
         this->process->setMemoryPointer(nullptr);
     }
+    else {
+        this->process->setCPUCoreID(NULL);
+        this->process->setState(Process::ProcessState::READY);
+    }
     this->cpuCycles++;
     this->running = false;
 }
