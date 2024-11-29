@@ -432,9 +432,9 @@ void ConsoleManager::vmstat() {
     totalMem = MemoryManager::getInstance()->getMaximumMemory();
     usedMem = MemoryManager::getInstance()->getAllocatedSize();
     freeMem = totalMem - usedMem;
-    //totalTicks = 0;
     idleTicks = CPUScheduler::getInstance()->getIdleCPUTicks();
     activeTicks = CPUScheduler::getInstance()->getActiveCPUTicks();
+    totalTicks = idleTicks + activeTicks;
     pagedIn = PagingAllocator::getInstance()->getNumPagedIn();
     pagedOut = PagingAllocator::getInstance()->getNumPagedOut();
 
