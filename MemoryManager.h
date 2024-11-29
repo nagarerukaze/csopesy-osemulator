@@ -7,6 +7,7 @@
 #include <sstream>
 #include <chrono>
 #include <memory>
+#include <ctime>
 
 #include "Process.h"
 
@@ -31,6 +32,13 @@ public:
 	String visualizeMemory();
 	// void printMemory(long long qq);
 	// void printASCIIMemory(std::ofstream& outFile);
+
+
+	void removeProcessFromBS(String processName);
+	void saveProcessToBS(void* memoryPointer, size_t memRequired, String name);
+	String removeOldestEntry();
+
+
 	String getCurrentTime();
 
 	void displayRunningProcsAndMemUsage();
@@ -49,7 +57,7 @@ private:
 	// std::vector<MemoryEntry> memoryDetails;
 	// std::vector<String> strProcessesInMemory;
 	std::unordered_map<size_t, bool> allocationMap;
-
+	std::unordered_map<String, time_t> processOrder;
 	void initializeMemory();
 	bool canAllocateAt(size_t index, size_t size) const;
 	void allocateAt(size_t index, size_t size, String process);

@@ -48,6 +48,7 @@ void* MemoryManager::allocate(size_t size, String process) {
             }*/
             // this->strProcessesInMemory[index] = process;
             //////////////////////////////////////////////////
+            processOrder[process] = std::time(nullptr);
             return &memory[i];
         }
     }
@@ -66,6 +67,7 @@ void MemoryManager::deallocate(void* ptr, size_t size, String process) {
         if (index != 0) {
             i = index / size;
         }
+        processOrder.erase(process);
         // this->strProcessesInMemory[i] = ".";
     }
 }
@@ -223,3 +225,78 @@ String MemoryManager::getCurrentTime() {
     return oss.str();
 }
 
+
+void MemoryManager::removeProcessFromBS(String processName) {
+    std::ifstream inFile("backing_store.txt");
+    std::ofstream tempFile("temp_backing_store.txt");
+
+    if (!inFile.is_open()) {
+        std::cerr << "Failed to open backing store for reading.\n";
+        return;
+    }
+
+    if (!tempFile.is_open()) {
+        std::cerr << "Failed to open temporary file for writing.\n";
+        return;
+    }
+
+    std::string line;
+    bool processFound = false;
+
+    // Iterate through each line in the original file
+    while (std::getline(inFile, line)) {
+        // Skip the line that contains the process to remove
+        if (line.find(processName) == std::string::npos) {
+            // If the line doesn't contain the process name, copy it to the temp file
+            tempFile << line << "\n";
+        }
+        else {
+            processFound = true;
+
+        }
+    }
+
+    // Close the input and temporary files
+    inFile.close();
+    tempFile.close();
+
+    // If the process was found, replace the original file with the temporary file
+    if (processFound) {
+        std::remove("backing_store.txt"); // Delete the original file
+        std::rename("temp_backing_store.txt", "backing_store.txt"); // Rename the temp file to the original name
+    }
+    else {
+        std::remove("temp_backing_store.txt"); // Clean up the temporary file if not used
+    }
+}
+
+
+void MemoryManager::saveProcessToBS(void* memoryPointer, size_t memRequired, String name) {
+    std::ofstream outFile("backing_store.txt", std::ios::app); // Append mode
+    deallocate(memoryPointer, memRequired, name);
+
+    if (outFile.is_open()) {
+        outFile << name << "\n";
+        outFile.close();
+    }
+}
+String MemoryManager::removeOldestEntry() {
+    if (processOrder.empty()) {
+        return ""; // Return empty string if the map is empty
+    }
+
+    // Find the oldest process
+    auto oldest = std::min_element(
+        processOrder.begin(), processOrder.end(),
+        [](const auto& a, const auto& b) { return a.second < b.second; }
+    );
+
+    // Save the name of the oldest process
+    String oldestProcessName = oldest->first;
+
+    // Remove the oldest entry from the map
+    processOrder.erase(oldest);
+
+    // Return the name of the removed process
+    return oldestProcessName;
+}

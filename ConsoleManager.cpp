@@ -456,74 +456,74 @@ void ConsoleManager::stopRunning() {
 
 
 void ConsoleManager::test() {
-    // std::queue<String> orderOfProcesses
+    //// std::queue<String> orderOfProcesses
 
-    PagingAllocator::getInstance()->initialize(1024, 256);
+    //PagingAllocator::getInstance()->initialize(1024, 256);
 
-    std::cout << "Initial memory: " << std::endl;
-    PagingAllocator::getInstance()->visualizeMemory();
+    //std::cout << "Initial memory: " << std::endl;
+    //PagingAllocator::getInstance()->visualizeMemory();
 
-    std::shared_ptr<Process> p = std::make_shared<Process>("P1", 4000, 512, 256);
-    std::shared_ptr<Process> p2 = std::make_shared<Process>("P2", 4000, 512, 256);
-    std::shared_ptr<Process> p3 = std::make_shared<Process>("P3", 4000, 512, 256);
-    std::shared_ptr<Process> p4 = std::make_shared<Process>("P4", 4000, 512, 256);
+    //std::shared_ptr<Process> p = std::make_shared<Process>("P1", 4000, 512, 256);
+    //std::shared_ptr<Process> p2 = std::make_shared<Process>("P2", 4000, 512, 256);
+    //std::shared_ptr<Process> p3 = std::make_shared<Process>("P3", 4000, 512, 256);
+    //std::shared_ptr<Process> p4 = std::make_shared<Process>("P4", 4000, 512, 256);
 
 
-    void* ptr1 = PagingAllocator::getInstance()->allocate(p);
-    std::cout << "Pointer address: " << reinterpret_cast<uintptr_t>(ptr1) << std::endl;
-    if (ptr1 == nullptr) {
-        std::cout << "it is null" << std::endl;
-    }
-    else {
-        std::cout << "it is not null" << std::endl;
-    }
+    //void* ptr1 = PagingAllocator::getInstance()->allocate(p);
+    //std::cout << "Pointer address: " << reinterpret_cast<uintptr_t>(ptr1) << std::endl;
+    //if (ptr1 == nullptr) {
+    //    std::cout << "it is null" << std::endl;
+    //}
+    //else {
+    //    std::cout << "it is not null" << std::endl;
+    //}
 
-    std::cout << "Memory after allocating p:" << std::endl;
-    PagingAllocator::getInstance()->visualizeMemory();
+    //std::cout << "Memory after allocating p:" << std::endl;
+    //PagingAllocator::getInstance()->visualizeMemory();
 
-    PagingAllocator::getInstance()->deallocate(p);
+    //PagingAllocator::getInstance()->deallocate(p);
 
-    std::cout << "Memory after deallocating p:" << std::endl;
-    PagingAllocator::getInstance()->visualizeMemory();
+    //std::cout << "Memory after deallocating p:" << std::endl;
+    //PagingAllocator::getInstance()->visualizeMemory();
 
-    void* ptr2 = PagingAllocator::getInstance()->allocate(p2);
-    std::cout << "Pointer address: " << reinterpret_cast<uintptr_t>(ptr2) << std::endl;
+    //void* ptr2 = PagingAllocator::getInstance()->allocate(p2);
+    //std::cout << "Pointer address: " << reinterpret_cast<uintptr_t>(ptr2) << std::endl;
 
-    std::cout << "Memory after allocating p2:" << std::endl;
-    PagingAllocator::getInstance()->visualizeMemory();
+    //std::cout << "Memory after allocating p2:" << std::endl;
+    //PagingAllocator::getInstance()->visualizeMemory();
 
-    void* ptr3 = PagingAllocator::getInstance()->allocate(p);
-    std::cout << "Pointer address: " << reinterpret_cast<uintptr_t>(ptr3) << std::endl;
+    //void* ptr3 = PagingAllocator::getInstance()->allocate(p);
+    //std::cout << "Pointer address: " << reinterpret_cast<uintptr_t>(ptr3) << std::endl;
 
-    std::cout << "Memory after allocating p:" << std::endl;
-    PagingAllocator::getInstance()->visualizeMemory();
+    //std::cout << "Memory after allocating p:" << std::endl;
+    //PagingAllocator::getInstance()->visualizeMemory();
 
-    void* ptr4 = PagingAllocator::getInstance()->allocate(p3);
-    std::cout << "Pointer address: " << reinterpret_cast<uintptr_t>(ptr4) << std::endl;
+    //void* ptr4 = PagingAllocator::getInstance()->allocate(p3);
+    //std::cout << "Pointer address: " << reinterpret_cast<uintptr_t>(ptr4) << std::endl;
 
-    std::cout << "Memory after allocating p3:" << std::endl;
-    PagingAllocator::getInstance()->visualizeMemory();
+    //std::cout << "Memory after allocating p3:" << std::endl;
+    //PagingAllocator::getInstance()->visualizeMemory();
 
-    PagingAllocator::getInstance()->saveProcessToBS(p3);
-    std::cout << "Memory after putting p3 in backing store:" << std::endl;
-    PagingAllocator::getInstance()->visualizeMemory();
-    PagingAllocator::getInstance()->deallocate(p);
+    //PagingAllocator::getInstance()->saveProcessToBS(p3);
+    //std::cout << "Memory after putting p3 in backing store:" << std::endl;
+    //PagingAllocator::getInstance()->visualizeMemory();
+    //PagingAllocator::getInstance()->deallocate(p);
 
-    PagingAllocator::getInstance()->saveProcessToBS(p4);
-    std::cout << "Memory after putting p3 in backing store:" << std::endl;
-    PagingAllocator::getInstance()->visualizeMemory();
-    PagingAllocator::getInstance()->deallocate(p);
+    //PagingAllocator::getInstance()->saveProcessToBS(p4);
+    //std::cout << "Memory after putting p3 in backing store:" << std::endl;
+    //PagingAllocator::getInstance()->visualizeMemory();
+    //PagingAllocator::getInstance()->deallocate(p);
 
-    PagingAllocator::getInstance()->removeProcessFromBS(p4);
+    //PagingAllocator::getInstance()->removeProcessFromBS(p4);
 
-    std::cout << "Memory after deallocating p:" << std::endl;
-    PagingAllocator::getInstance()->visualizeMemory();
+    //std::cout << "Memory after deallocating p:" << std::endl;
+    //PagingAllocator::getInstance()->visualizeMemory();
 
-    void* ptr5 = PagingAllocator::getInstance()->allocate(p4);
-    std::cout << "Pointer address: " << reinterpret_cast<uintptr_t>(ptr5) << std::endl;
+    //void* ptr5 = PagingAllocator::getInstance()->allocate(p4);
+    //std::cout << "Pointer address: " << reinterpret_cast<uintptr_t>(ptr5) << std::endl;
 
-    std::cout << "Memory after allocating p4:" << std::endl;
-    PagingAllocator::getInstance()->visualizeMemory();
+    //std::cout << "Memory after allocating p4:" << std::endl;
+    //PagingAllocator::getInstance()->visualizeMemory();
 
 
     /*

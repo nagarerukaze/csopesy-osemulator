@@ -224,24 +224,36 @@ void CPUScheduler::RRScheduling() {
                             // get the process and allocated memory
                             process_in = processQueue.front();
                             processQueue.pop();
-                            allocatedMemory = process_in->getMemoryPointer();
 
                             // if process is not allocated in memory
                             if (allocatedMemory == nullptr) {
                                 if (allocator == "flat") {
+                                    MemoryManager::getInstance()->removeProcessFromBS(process_in->getName());
                                     allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
                                 }
                                 else {
-                                    // std::cout << "Before try to allocate:" << std::endl;
-                                    // PagingAllocator::getInstance()->visualizeMemory();
+                                    PagingAllocator::getInstance()->removeProcessFromBS(process_in->getName());
                                     allocatedMemory = PagingAllocator::getInstance()->allocate(process_in);
-                                    // std::cout << "After try to allocate:" << std::endl;
-                                    // PagingAllocator::getInstance()->visualizeMemory();
                                 }
 
                                 // allocatation failed, TODO: put in backing store
                                 if (allocatedMemory == nullptr) {
-                                    processQueue.push(process_in);
+                                    String name = "";
+                                    std::shared_ptr<Process> oldest_process = nullptr;
+                                    if (allocator == "flat") {
+                                        name = MemoryManager::getInstance()->removeOldestEntry();
+                                        oldest_process = ProcessManager::getInstance()->findProcess(name);
+                                        MemoryManager::getInstance()->saveProcessToBS(oldest_process->getMemoryPointer(), oldest_process->getMemoryRequired(), oldest_process->getName());
+                                    }
+                                    else {
+                                        name = PagingAllocator::getInstance()->removeOldestEntry();
+                                        PagingAllocator::getInstance()->saveProcessToBS(name);
+                                        allocatedMemory = PagingAllocator::getInstance()->allocate(process_in);
+                                        oldest_process = ProcessManager::getInstance()->findProcess(name);
+
+                                    }
+                                    // Find oldest process and push back in queue
+                                    processQueue.push(oldest_process);
                                 }
                                 // set pointer if allocated
                                 else {

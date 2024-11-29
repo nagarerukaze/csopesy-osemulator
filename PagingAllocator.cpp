@@ -41,9 +41,7 @@ void* PagingAllocator::allocate(std::shared_ptr<Process> process) {
 	return reinterpret_cast<void*>(frameIndex + 1); // simply bc 0 makes it == nullptr
 }
 
-void PagingAllocator::deallocate(std::shared_ptr<Process> process) {
-	String processName = process->getName();
-
+void PagingAllocator::deallocate(String processName) {
 	// Find frames allocated to the process and deallocate
 	auto it = std::find_if(frameMap.begin(), frameMap.end(),
 		[processName](const auto& entry) { return entry.second.first == processName; });
@@ -106,8 +104,7 @@ size_t PagingAllocator::getNumPagedOut() {
 	return this->numPagedOut;
 }
 
-void PagingAllocator::removeProcessFromBS(std::shared_ptr<Process> process) {
-	std::string processName = process->getName();
+void PagingAllocator::removeProcessFromBS(String processName) {
 	std::ifstream inFile("backing_store.txt");
 	std::ofstream tempFile("temp_backing_store.txt");
 
@@ -152,12 +149,37 @@ void PagingAllocator::removeProcessFromBS(std::shared_ptr<Process> process) {
 }
 
 
-void PagingAllocator::saveProcessToBS(std::shared_ptr<Process> process) {
+void PagingAllocator::saveProcessToBS(String process) {
 	std::ofstream outFile("backing_store.txt", std::ios::app); // Append mode
 	deallocate(process);
 
 	if (outFile.is_open()) {
-		outFile << process->getName() << "\n";
+		outFile << process << "\n";
 		outFile.close();
 	}
+}
+
+// Function to find and remove the entry with the oldest time_t, and return the process name
+String PagingAllocator::removeOldestEntry() {
+	std::pair<size_t, std::pair<String, time_t>> oldestEntry;
+	bool isFirst = true;
+	size_t oldestKey = 0;
+
+	// Find the oldest entry
+	for (const auto& entry : frameMap) {
+		if (isFirst || entry.second.second < oldestEntry.second.second) {
+			oldestEntry = entry;
+			oldestKey = entry.first;  // store the key of the oldest entry
+			isFirst = false;
+		}
+	}
+
+	// If we found the oldest entry, remove it and return the name
+	if (!isFirst) {
+		String oldestName = oldestEntry.second.first;  // Extract the name to be removed
+		frameMap.erase(oldestKey);  // Remove the oldest entry from the map
+		return oldestName;
+	}
+
+	return "";  // Return empty string if no entry was found
 }

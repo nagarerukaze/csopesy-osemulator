@@ -4,6 +4,7 @@
 #include <memory>  // For std::shared_ptr
 #include <unordered_map>
 #include <queue>
+#include <ctime>
 #include "Process.h"
  
  typedef std::string String;
@@ -18,11 +19,12 @@ public:
 	static PagingAllocator* getInstance();
 
 	void* allocate(std::shared_ptr<Process> process);
-	void deallocate(std::shared_ptr<Process> process);
+	void deallocate(String process);
 	void visualizeMemory() const;
 	
-	void removeProcessFromBS(std::shared_ptr<Process> process);
-	void saveProcessToBS(std::shared_ptr<Process> process);
+	void removeProcessFromBS(String processName);
+	void saveProcessToBS(String process);
+	String removeOldestEntry();
 
 	size_t getNumPagedIn();
 	size_t getNumPagedOut();
