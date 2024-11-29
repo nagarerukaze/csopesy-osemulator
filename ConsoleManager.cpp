@@ -411,9 +411,22 @@ void ConsoleManager::processSMI() {
 */
 void ConsoleManager::vmstat() {
 
-    std::cout << "Total Memory in KB: " << std::endl;
-    std::cout << "Used Memory: " << std::endl;
-    std::cout << "Free memory: " << std::endl;
+    int totalMem = 0;
+    int usedMem = 0;
+    int freeMem = 0;
+    int idleTicks = 0;
+    int activeTicks = 0;
+    int totalTicks = 0;
+    int pagedIn = 0;
+    int pagedOut = 0;
+
+    totalMem = MemoryManager::getInstance()->getMaximumMemory();
+    usedMem = MemoryManager::getInstance()->getAllocatedSize();
+    freeMem = totalMem - usedMem;
+
+    std::cout << "Total Memory in KB: " << totalMem << std::endl;
+    std::cout << "Used Memory: " << usedMem << std::endl;
+    std::cout << "Free memory: " << freeMem << std::endl;
     std::cout << "Idle CPU ticks: " << std::endl;
     std::cout << "Active CPU ticks: " << std::endl;
     std::cout << "Total CPU ticks: " << std::endl;
