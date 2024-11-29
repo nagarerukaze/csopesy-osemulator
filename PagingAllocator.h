@@ -27,7 +27,7 @@ private:
 
 	size_t maxMemorySize;
 	size_t numFrames;
-	std::unordered_map<size_t, String> frameMap;
+	std::unordered_map<size_t, std::pair<String, time_t>> frameMap;
 	std::queue<size_t> freeFrameList;
 
 	size_t allocateFrames(size_t numFrames, String processName);

@@ -44,13 +44,13 @@ void PagingAllocator::deallocate(std::shared_ptr<Process> process) {
 
 	// Find frames allocated to the process and deallocate
 	auto it = std::find_if(frameMap.begin(), frameMap.end(),
-		[processName](const auto& entry) { return entry.second == processName; });
+		[processName](const auto& entry) { return entry.second.first == processName; });
 
 	while (it != frameMap.end()) {
 		size_t frameIndex = it->first;
 		deallocateFrames(1, frameIndex);
 		it = std::find_if(frameMap.begin(), frameMap.end(),
-			[processName](const auto& entry) { return entry.second == processName; });
+			[processName](const auto& entry) { return entry.second.first == processName; });
 	}
 }
 
@@ -59,7 +59,7 @@ void PagingAllocator::visualizeMemory() const {
 	for (size_t frameIndex = 0; frameIndex < numFrames; ++frameIndex) {
 		auto it = frameMap.find(frameIndex);
 		if (it != frameMap.end()) {
-			std::cout << "Frame " << frameIndex << " -> Process " << it->second << "\n";
+			std::cout << "Frame " << frameIndex << " -> Process " << it->second.first << "\n";
 		}
 		else {
 			std::cout << "Frame " << frameIndex << " -> Free\n";
@@ -71,10 +71,10 @@ void PagingAllocator::visualizeMemory() const {
 size_t PagingAllocator::allocateFrames(size_t numFrames, String processName) {
 	size_t frameIndex = freeFrameList.front(); // TODO: Is this .front() not .back()?
 	//std::cout << "FrameIndex: " << frameIndex << std::endl;
-
+	time_t timeAdded = std::time(nullptr);
 	// Map allocated frames to the process ID
 	for (size_t i = 0; i < numFrames; ++i) {
-		frameMap[frameIndex + i] = processName;
+		frameMap[frameIndex + i] = { processName, timeAdded };
 		freeFrameList.pop();
 	}
 
