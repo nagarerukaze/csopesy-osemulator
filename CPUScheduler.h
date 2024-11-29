@@ -28,6 +28,8 @@ public:
     bool getIsRunning();
     long long getQuantumCycles();
     std::vector<CPUWorker*> getCPUWorkers();
+    size_t getIdleCPUTicks();
+    size_t getActiveCPUTicks();
 
 private:
     CPUScheduler();
@@ -46,6 +48,8 @@ private:
     int numberOfCores;
     long long quantum_cycles;
     long long delay_per_exec;
+    size_t idleCPUTicks;
+    size_t activeCPUTicks;
 
     std::vector<CPUWorker*> cpuWorkers;
     std::vector<std::thread> workerThreads;
@@ -54,3 +58,4 @@ private:
     void RRScheduling();
     void handleProcessOut(CPUWorker* worker, std::shared_ptr<Process>& process_out);
 };
+

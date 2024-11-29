@@ -9,6 +9,8 @@ CPUScheduler::CPUScheduler(String scheduler, int num_cpu, long long quantum_cycl
     this->quantum_cycles = quantum_cycles;
     this->delay_per_exec = delay_per_exec;
     this->allocator = allocator;
+    this->idleCPUTicks = 0;
+    this->activeCPUTicks = 0;
 }
 
 CPUScheduler::CPUScheduler(const CPUScheduler&) {}
@@ -305,3 +307,12 @@ void CPUScheduler::RRScheduling() {
         this->cpuCycles++;
     }
 }
+
+size_t CPUScheduler::getIdleCPUTicks() {
+    return this->idleCPUTicks;
+}
+
+size_t CPUScheduler::getActiveCPUTicks() {
+    return this->activeCPUTicks;
+}
+
