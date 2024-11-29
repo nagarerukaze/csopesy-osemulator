@@ -262,10 +262,13 @@ void CPUScheduler::RRScheduling() {
                                         oldest_process = ProcessManager::getInstance()->findProcess(name);
 
                                     }
-                                    // Find oldest process and push back in queue
-                                    oldest_process->setCPUCoreID(NULL);
-                                    oldest_process->setState(Process::ProcessState::READY);
-                                    oldest_process->setMemoryPointer(nullptr);
+
+                                    if (oldest_process != nullptr) {
+                                        // Find oldest process and push back in queue
+                                        //oldest_process->setCPUCoreID(NULL);
+                                        oldest_process->setState(Process::ProcessState::READY);
+                                        oldest_process->setMemoryPointer(nullptr);
+                                    }
                                     handleProcessOut(worker, oldest_process);
                                     process_in->setMemoryPointer(allocatedMemory);
                                 }
