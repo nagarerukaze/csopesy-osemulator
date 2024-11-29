@@ -426,17 +426,17 @@ void ConsoleManager::vmstat() {
     //idleTicks = 0;
     //activeTicks = 0;
     //totalTicks = 0;
-    //pagedIn = 0;
-    //pagedOut = 0;
+    //pagedIn = PagingAllocator::getInstance()->getNumPagedIn();
+    //pagedOut = PagingAllocator::getInstance()->getNumPagedOut();
 
     std::cout << "Total Memory in KB: " << totalMem << std::endl;
     std::cout << "Used Memory: " << usedMem << std::endl;
     std::cout << "Free memory: " << freeMem << std::endl;
-    std::cout << "Idle CPU ticks: " << std::endl;
-    std::cout << "Active CPU ticks: " << std::endl;
-    std::cout << "Total CPU ticks: " << std::endl;
-    std::cout << "Num paged in: " << std::endl;
-    std::cout << "Num paged out: " << std::endl;
+    std::cout << "Idle CPU ticks: " << totalTicks <<std::endl;
+    std::cout << "Active CPU ticks: " << activeTicks << std::endl;
+    std::cout << "Total CPU ticks: " << totalTicks << std::endl;
+    std::cout << "Num paged in: " << pagedIn << std::endl;
+    std::cout << "Num paged out: " << pagedOut << std::endl;
 }
 
 bool ConsoleManager::getIsRunning() const {
