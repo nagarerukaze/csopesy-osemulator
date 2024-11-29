@@ -224,6 +224,12 @@ void CPUScheduler::RRScheduling() {
                             // get the process and allocated memory
                             process_in = processQueue.front();
                             processQueue.pop();
+
+                            if (!process_in) {
+                                // std::cerr << "Error: process_in is nullptr\n";
+                                continue; // Skip to the next iteration
+                            }
+
                             allocatedMemory = process_in->getMemoryPointer();
 
                             // if process is not allocated in memory
@@ -245,6 +251,7 @@ void CPUScheduler::RRScheduling() {
                                         name = MemoryManager::getInstance()->removeOldestEntry();
                                         oldest_process = ProcessManager::getInstance()->findProcess(name);
                                         MemoryManager::getInstance()->saveProcessToBS(oldest_process->getMemoryPointer(), oldest_process->getMemoryRequired(), oldest_process->getName());
+                                        allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
                                     }
                                     else {
                                         name = PagingAllocator::getInstance()->removeOldestEntry();
@@ -254,6 +261,7 @@ void CPUScheduler::RRScheduling() {
 
                                     }
                                     // Find oldest process and push back in queue
+                                    process_in->setMemoryPointer(allocatedMemory);
                                     processQueue.push(oldest_process);
                                 }
                                 // set pointer if allocated
