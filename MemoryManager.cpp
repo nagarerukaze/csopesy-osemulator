@@ -157,6 +157,8 @@ void MemoryManager::removeProcessFromBS(String processName) {
     std::ifstream inFile("backing_store.txt");  // Read
     std::ofstream tempFile("temp.txt"); // Write
 
+    tempFile.open("temp.txt", std::ofstream::out);
+
     if (!inFile.is_open()) {
         std::cerr << "Failed to open backing store for reading.\n";
         return;
