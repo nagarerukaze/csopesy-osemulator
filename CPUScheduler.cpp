@@ -288,6 +288,8 @@ void CPUScheduler::RRScheduling() {
                             }
                         }
                     }
+
+                    this->idleCPUTicks++;
                 }
                 // std::cout << "Memory" << std::endl << MemoryManager::getInstance()->visualizeMemory() << std::endl;
             }
