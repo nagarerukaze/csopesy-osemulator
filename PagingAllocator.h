@@ -20,6 +20,9 @@ public:
 	void* allocate(std::shared_ptr<Process> process);
 	void deallocate(std::shared_ptr<Process> process);
 	void visualizeMemory() const;
+	
+	void removeProcessFromBS(std::shared_ptr<Process> process);
+	void saveProcessToBS(std::shared_ptr<Process> process);
 
 	size_t getNumPagedIn();
 	size_t getNumPagedOut();

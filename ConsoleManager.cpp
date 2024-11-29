@@ -504,7 +504,17 @@ void ConsoleManager::test() {
     std::cout << "Memory after allocating p3:" << std::endl;
     PagingAllocator::getInstance()->visualizeMemory();
 
+    PagingAllocator::getInstance()->saveProcessToBS(p3);
+    std::cout << "Memory after putting p3 in backing store:" << std::endl;
+    PagingAllocator::getInstance()->visualizeMemory();
     PagingAllocator::getInstance()->deallocate(p);
+
+    PagingAllocator::getInstance()->saveProcessToBS(p4);
+    std::cout << "Memory after putting p3 in backing store:" << std::endl;
+    PagingAllocator::getInstance()->visualizeMemory();
+    PagingAllocator::getInstance()->deallocate(p);
+
+    PagingAllocator::getInstance()->removeProcessFromBS(p4);
 
     std::cout << "Memory after deallocating p:" << std::endl;
     PagingAllocator::getInstance()->visualizeMemory();

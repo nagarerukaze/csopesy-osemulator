@@ -106,3 +106,58 @@ size_t PagingAllocator::getNumPagedOut() {
 	return this->numPagedOut;
 }
 
+void PagingAllocator::removeProcessFromBS(std::shared_ptr<Process> process) {
+	std::string processName = process->getName();
+	std::ifstream inFile("backing_store.txt");
+	std::ofstream tempFile("temp_backing_store.txt");
+
+	if (!inFile.is_open()) {
+		std::cerr << "Failed to open backing store for reading.\n";
+		return;
+	}
+
+	if (!tempFile.is_open()) {
+		std::cerr << "Failed to open temporary file for writing.\n";
+		return;
+	}
+
+	std::string line;
+	bool processFound = false;
+
+	// Iterate through each line in the original file
+	while (std::getline(inFile, line)) {
+		// Skip the line that contains the process to remove
+		if (line.find(processName) == std::string::npos) {
+			// If the line doesn't contain the process name, copy it to the temp file
+			tempFile << line << "\n";
+		}
+		else {
+			processFound = true;
+	
+		}
+	}
+
+	// Close the input and temporary files
+	inFile.close();
+	tempFile.close();
+
+	// If the process was found, replace the original file with the temporary file
+	if (processFound) {
+		std::remove("backing_store.txt"); // Delete the original file
+		std::rename("temp_backing_store.txt", "backing_store.txt"); // Rename the temp file to the original name
+	}
+	else {
+		std::remove("temp_backing_store.txt"); // Clean up the temporary file if not used
+	}
+}
+
+
+void PagingAllocator::saveProcessToBS(std::shared_ptr<Process> process) {
+	std::ofstream outFile("backing_store.txt", std::ios::app); // Append mode
+	deallocate(process);
+
+	if (outFile.is_open()) {
+		outFile << process->getName() << "\n";
+		outFile.close();
+	}
+}

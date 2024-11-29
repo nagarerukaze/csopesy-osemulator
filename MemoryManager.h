@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <chrono>
+#include <memory>
 
 #include "Process.h"
 

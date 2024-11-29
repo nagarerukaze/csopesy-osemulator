@@ -2,6 +2,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <filesystem>
+#include <memory>
 
 #include "CPUScheduler.h"
 #include "CPUWorker.h"
@@ -135,6 +136,7 @@ size_t MemoryManager::getAllocatedSize() {
 size_t MemoryManager::getMaximumMemory() {
     return this->maximumSize;
 }
+
 //
 //void MemoryManager::printMemory(long long qq) {
 //
