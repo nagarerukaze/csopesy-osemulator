@@ -399,15 +399,26 @@ void ConsoleManager::processSMI() {
     std::cout << "----------------------------------------------" << std::endl;
 }
 
+/*
+    Total Memory in KB
+    Used Memory: Total active memory used by processes
+    Free memory: Total free memory that can still be used by other processes
+    Idle CPU ticks: number of ticks wherein the CPU cores remained idle
+    Active CPU ticks: number of ticks wherein CPU cores are actually executing instructions
+    Total CPU ticks: number of ticks that passed for all CPU cores
+    Num paged in: Accumulated number of pages paged in
+    Num paged out: Accumulated number of pages paged out
+*/
 void ConsoleManager::vmstat() {
-    // Total Memory in KB
-    // Used Memory: Total Active memory used by processes
-    // Free memory: total free memory that can still be used by other processes
-    // Idle cpu ticks: number of ticks wherein the CPU cores remained idle
-    // Active cpu ticks: number of ticks wherein CPU cores are actually executing instructions
-    // Total CPU ticks: number of ticks that passed for all CPU cores
-    // Num paged in: Accumulated number of pages paged in
-    // Num paged out: Accumulated number of pages paged out
+
+    std::cout << "Total Memory in KB: " << std::endl;
+    std::cout << "Used Memory: " << std::endl;
+    std::cout << "Free memory: " << std::endl;
+    std::cout << "Idle CPU ticks: " << std::endl;
+    std::cout << "Active CPU ticks: " << std::endl;
+    std::cout << "Total CPU ticks: " << std::endl;
+    std::cout << "Num paged in: " << std::endl;
+    std::cout << "Num paged out: " << std::endl;
 }
 
 bool ConsoleManager::getIsRunning() const {
