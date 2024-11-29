@@ -21,17 +21,20 @@ public:
 	void deallocate(std::shared_ptr<Process> process);
 	void visualizeMemory() const;
 
+	size_t getNumPagedIn();
+	size_t getNumPagedOut();
+
 private:
 	PagingAllocator& operator = (const PagingAllocator&);
 	static PagingAllocator* sharedInstance;
 
 	size_t maxMemorySize;
 	size_t numFrames;
+	size_t numPagedIn;
+	size_t numPagedOut;
 	std::unordered_map<size_t, std::pair<String, time_t>> frameMap;
 	std::queue<size_t> freeFrameList;
 
 	size_t allocateFrames(size_t numFrames, String processName);
 	void deallocateFrames(size_t numFrames, size_t frameIndex);
-
-
 };

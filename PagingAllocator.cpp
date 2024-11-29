@@ -91,3 +91,12 @@ void PagingAllocator::deallocateFrames(size_t numFrames, size_t frameIndex) {
 		freeFrameList.push(frameIndex + i);
 	}
 }
+
+size_t PagingAllocator::getNumPagedIn() {
+	return this->numPagedIn;
+}
+
+size_t PagingAllocator::getNumPagedOut() {
+	return this->numPagedOut;
+}
+
