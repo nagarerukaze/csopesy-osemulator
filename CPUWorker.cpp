@@ -72,19 +72,18 @@ void CPUWorker::startWorker() {
     }
 
     if (this->process->getCurrentInstructionLine() == this->process->getTotalLinesOfCode()) {
-        this->process->setCPUCoreID(NULL);
+        // this->process->setCPUCoreID(NULL);
         this->process->setState(Process::ProcessState::TERMINATED);
-        
         // Flat Memory Allocator
         if (allocator == "flat") {
             MemoryManager::getInstance()->deallocate(this->process->getMemoryPointer(), this->process->getMemoryRequired(), this->process->getName());
-            MemoryManager::getInstance()->removeProcessFromBS(this->process->getName());
+            // MemoryManager::getInstance()->removeProcessFromBS(this->process->getName());
         }
 
         // Paging Allocator
         else {
             PagingAllocator::getInstance()->deallocate(this->process->getName());
-            PagingAllocator::getInstance()->removeProcessFromBS(this->process->getName());
+            // PagingAllocator::getInstance()->removeProcessFromBS(this->process->getName());
         }
         this->process->setMemoryPointer(nullptr);
     }

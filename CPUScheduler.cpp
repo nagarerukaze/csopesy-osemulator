@@ -189,11 +189,13 @@ void CPUScheduler::handleProcessOut(CPUWorker* worker, std::shared_ptr<Process>&
         if (process_out->getCurrentInstructionLine() < process_out->getTotalLinesOfCode()) {
             // Not done executing, requeue the process
             worker->removeProcess();
+            process_out->setState(Process::ProcessState::READY);
             processQueue.push(process_out);
         }
         else {
             // Done executing, remove process from worker
             worker->removeProcess();
+            process_out->setState(Process::ProcessState::TERMINATED);
         }
     }
 }
@@ -226,6 +228,7 @@ void CPUScheduler::RRScheduling() {
                             // get the process and allocated memory
                             process_in = processQueue.front();
                             processQueue.pop();
+                            //std::cout << "RQ: " << process_in->getName() << std::endl;
 
                             if (!process_in) {
                                 // std::cerr << "Error: process_in is nullptr\n";
@@ -236,6 +239,7 @@ void CPUScheduler::RRScheduling() {
 
                             // if process is not allocated in memory
                             if (allocatedMemory == nullptr) {
+                                //std::cout << "allocatedMemory = null" << std::endl;
                                 if (allocator == "flat") {
                                     MemoryManager::getInstance()->removeProcessFromBS(process_in->getName()); // Remove if in backing store
                                     allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
@@ -264,15 +268,15 @@ void CPUScheduler::RRScheduling() {
                                         oldest_process = ProcessManager::getInstance()->findProcess(name);
 
                                     }
-
+                                    // Find oldest process and push back in queue
+                                    //oldest_process->setCPUCoreID(NULL);
                                     if (oldest_process != nullptr) {
-                                        // Find oldest process and push back in queue
-                                        //oldest_process->setCPUCoreID(NULL);
                                         oldest_process->setState(Process::ProcessState::READY);
                                         oldest_process->setMemoryPointer(nullptr);
+
+                                        handleProcessOut(cpuWorkers[oldest_process->getCPUCoreID()], oldest_process);
+                                        process_in->setMemoryPointer(allocatedMemory);
                                     }
-                                    handleProcessOut(worker, oldest_process);
-                                    process_in->setMemoryPointer(allocatedMemory);
                                 }
                                 // set pointer if allocated
                                 else {

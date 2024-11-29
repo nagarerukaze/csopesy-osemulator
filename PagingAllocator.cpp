@@ -105,8 +105,10 @@ size_t PagingAllocator::getNumPagedOut() {
 }
 
 void PagingAllocator::removeProcessFromBS(String processName) {
-	std::ifstream inFile("backing_store.txt");
-	std::ofstream tempFile("temp_backing_store.txt");
+	std::ifstream inFile("backing_store.txt");  // Read
+	std::ofstream tempFile("temp.txt"); // Write
+
+	tempFile.open("temp.txt", std::ofstream::out);
 
 	if (!inFile.is_open()) {
 		std::cerr << "Failed to open backing store for reading.\n";
@@ -115,36 +117,41 @@ void PagingAllocator::removeProcessFromBS(String processName) {
 
 	if (!tempFile.is_open()) {
 		std::cerr << "Failed to open temporary file for writing.\n";
+		std::perror("Error");
 		return;
 	}
 
-	std::string line;
+	String line;
 	bool processFound = false;
 
-	// Iterate through each line in the original file
 	while (std::getline(inFile, line)) {
-		// Skip the line that contains the process to remove
+		if (line.empty()) {
+			break;
+		}
+
 		if (line.find(processName) == std::string::npos) {
-			// If the line doesn't contain the process name, copy it to the temp file
 			tempFile << line << "\n";
 		}
 		else {
 			processFound = true;
-	
 		}
 	}
 
-	// Close the input and temporary files
 	inFile.close();
 	tempFile.close();
 
 	// If the process was found, replace the original file with the temporary file
 	if (processFound) {
 		std::remove("backing_store.txt"); // Delete the original file
-		std::rename("temp_backing_store.txt", "backing_store.txt"); // Rename the temp file to the original name
+		if (std::rename("temp.txt", "backing_store.txt") != 0) {
+			std::perror("Error renaming file");
+		}
+
+		// std::cout << "Process " << processName << " removed from the backing store.\n";
 	}
 	else {
-		std::remove("temp_backing_store.txt"); // Clean up the temporary file if not used
+		std::remove("temp.txt"); // Clean up the temporary file if not used
+		// std::cout << "Process " << processName << " not found in the backing store.\n";
 	}
 }
 
@@ -177,11 +184,10 @@ String PagingAllocator::removeOldestEntry() {
 	// If we found the oldest entry, remove it and return the name
 	if (!isFirst) {
 		String oldestName = oldestEntry.second.first;  // Extract the name to be removed
-		frameMap.erase(oldestKey);  // Remove the oldest entry from the map
+		deallocate(oldestName);
 		return oldestName;
 	}
 
 	return "";  // Return empty string if no entry was found
 }
-
 
