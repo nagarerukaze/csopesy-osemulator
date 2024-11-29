@@ -426,8 +426,8 @@ void ConsoleManager::vmstat() {
     //idleTicks = 0;
     //activeTicks = 0;
     //totalTicks = 0;
-    //pagedIn = PagingAllocator::getInstance()->getNumPagedIn();
-    //pagedOut = PagingAllocator::getInstance()->getNumPagedOut();
+    pagedIn = PagingAllocator::getInstance()->getNumPagedIn();
+    pagedOut = PagingAllocator::getInstance()->getNumPagedOut();
 
     std::cout << "Total Memory in KB: " << totalMem << std::endl;
     std::cout << "Used Memory: " << usedMem << std::endl;

@@ -80,6 +80,8 @@ size_t PagingAllocator::allocateFrames(size_t numFrames, String processName) {
 		freeFrameList.pop();
 	}
 
+	this->numPagedIn++;
+
 	return frameIndex;
 }
 
@@ -92,6 +94,8 @@ void PagingAllocator::deallocateFrames(size_t numFrames, size_t frameIndex) {
 	for (size_t i = 0; i < numFrames; ++i) {
 		freeFrameList.push(frameIndex + i);
 	}
+
+	this->numPagedOut++;
 }
 
 size_t PagingAllocator::getNumPagedIn() {
