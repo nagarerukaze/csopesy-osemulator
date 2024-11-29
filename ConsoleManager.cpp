@@ -423,6 +423,11 @@ void ConsoleManager::vmstat() {
     totalMem = MemoryManager::getInstance()->getMaximumMemory();
     usedMem = MemoryManager::getInstance()->getAllocatedSize();
     freeMem = totalMem - usedMem;
+    //idleTicks = 0;
+    //activeTicks = 0;
+    //totalTicks = 0;
+    //pagedIn = 0;
+    //pagedOut = 0;
 
     std::cout << "Total Memory in KB: " << totalMem << std::endl;
     std::cout << "Used Memory: " << usedMem << std::endl;
