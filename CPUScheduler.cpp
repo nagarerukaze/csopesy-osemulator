@@ -224,6 +224,7 @@ void CPUScheduler::RRScheduling() {
                             // get the process and allocated memory
                             process_in = processQueue.front();
                             processQueue.pop();
+                            allocatedMemory = process_in->getMemoryPointer();
 
                             // if process is not allocated in memory
                             if (allocatedMemory == nullptr) {
