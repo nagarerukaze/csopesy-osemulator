@@ -39,12 +39,12 @@ void* MemoryManager::allocate(size_t size, String process) {
     // Find the first available block that can accommodate the process
     for (size_t i = 0; i < maximumSize - size + 1; ++i) {
         if (!allocationMap[i] && canAllocateAt(i, size)) {
-            allocateAt(i, size);
+            allocateAt(i, size, process);
             // TODO: assign process name to strProcessesInMemory
             //////////////////////////////////////////////////
-            if (i != 0) {
+            /*if (i != 0) {
                 index = i / size;
-            }
+            }*/
             // this->strProcessesInMemory[index] = process;
             //////////////////////////////////////////////////
             return &memory[i];
@@ -95,9 +95,11 @@ bool MemoryManager::canAllocateAt(size_t index, size_t size) const {
     return (index + size <= maximumSize);
 }
 
-void MemoryManager::allocateAt(size_t index, size_t size) {
+void MemoryManager::allocateAt(size_t index, size_t size, String process) {
+    // MemoryEntry entry = { process, std::time(nullptr) };
     for (size_t i = index; i < index + size; ++i) {
         allocationMap[i] = true;  // Mark each block as allocated
+        // memoryDetails[i] = entry;
     }
     allocatedSize += size;
 }
@@ -105,6 +107,7 @@ void MemoryManager::allocateAt(size_t index, size_t size) {
 void MemoryManager::deallocateAt(size_t index, size_t size) {
     for (size_t i = index; i < index + size; ++i) {
         allocationMap[i] = false;  // Mark each block as allocated
+        // memoryDetails[i] = { "", 0 };
     }
     allocatedSize -= size;
 }

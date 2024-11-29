@@ -11,6 +11,11 @@
 
 typedef std::string String;
 
+struct MemoryEntry {
+	String processName;
+	std::time_t timestamp;
+};
+
 class MemoryManager
 {
 public:
@@ -40,12 +45,13 @@ private:
 	size_t maximumSize;
 	size_t allocatedSize;
 	std::vector<char> memory;
-	std::vector<String> strProcessesInMemory;
+	// std::vector<MemoryEntry> memoryDetails;
+	// std::vector<String> strProcessesInMemory;
 	std::unordered_map<size_t, bool> allocationMap;
 
 	void initializeMemory();
 	bool canAllocateAt(size_t index, size_t size) const;
-	void allocateAt(size_t index, size_t size);
+	void allocateAt(size_t index, size_t size, String process);
 	void deallocateAt(size_t index, size_t size);
 };
 

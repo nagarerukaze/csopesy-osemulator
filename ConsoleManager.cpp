@@ -374,9 +374,9 @@ void ConsoleManager::processSMI() {
     double cpuUtil = 0;
 
     // Memory usage and utilization
-    int usedMemory = 0;
-    int totalMemory = 1;
-    double memoryUtil = 0;
+    size_t usedMemory = 0;
+    size_t totalMemory = 1;
+    size_t memoryUtil = 0;
 
     coresUsed = CPUScheduler::getInstance()->getNumberOfCPUsUsed();
     totalCores = CPUScheduler::getInstance()->getNumberOfCores();
@@ -384,7 +384,7 @@ void ConsoleManager::processSMI() {
 
     usedMemory = MemoryManager::getInstance()->getAllocatedSize();
     totalMemory = MemoryManager::getInstance()->getMaximumMemory();
-    memoryUtil = ((double)usedMemory / (double)totalMemory) * 100;
+    memoryUtil = (usedMemory / totalMemory) * 100;
 
     std::cout << "----------------------------------------------" << std::endl;
     std::cout << "| PROCESS-SMI V01.00 Driver Version: 01.00 |" << std::endl;

@@ -232,11 +232,11 @@ void CPUScheduler::RRScheduling() {
                                     allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
                                 }
                                 else {
-                                    std::cout << "Before try to allocate:" << std::endl;
-                                    PagingAllocator::getInstance()->visualizeMemory();
+                                    // std::cout << "Before try to allocate:" << std::endl;
+                                    // PagingAllocator::getInstance()->visualizeMemory();
                                     allocatedMemory = PagingAllocator::getInstance()->allocate(process_in);
-                                    std::cout << "After try to allocate:" << std::endl;
-                                    PagingAllocator::getInstance()->visualizeMemory();
+                                    // std::cout << "After try to allocate:" << std::endl;
+                                    // PagingAllocator::getInstance()->visualizeMemory();
                                 }
 
                                 // allocatation failed, TODO: put in backing store
