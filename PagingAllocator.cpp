@@ -8,6 +8,8 @@ PagingAllocator::PagingAllocator(size_t maxMemorySize, size_t mem_per_frame)
 	for (size_t i = 0; i < numFrames; ++i) {
 		freeFrameList.push(i);
 	}
+	this->numPagedIn = 0;
+	this->numPagedOut = 0;
 }
 
 PagingAllocator* PagingAllocator::sharedInstance = nullptr;
