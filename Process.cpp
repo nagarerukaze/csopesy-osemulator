@@ -16,7 +16,7 @@ Process::Process(const String& name, long long totalLinesOfCode, size_t memoryRe
         this->numFrames = 1;
     }
     else {
-        this->numFrames = memoryRequired / memPerFrame;
+        this->numFrames = std::ceil(memoryRequired / memPerFrame);
     }
     // Flat Memory
     this->memoryPointer = nullptr;
