@@ -134,3 +134,8 @@ bool Process::getFramesInMemory() const {
 size_t Process::getNumPages() const {
     return this->numFrames;
 }
+
+size_t Process::getProcessMemUsage() const {
+    return this->framesInMemory * this->numFrames;
+}
+

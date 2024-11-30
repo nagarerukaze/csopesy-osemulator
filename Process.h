@@ -40,6 +40,7 @@ public:
 	int getCPUCoreID();
 	bool getFramesInMemory() const;
 	size_t getNumPages() const;
+	size_t getProcessMemUsage() const;
 
 	// Setters
 	void setState(ProcessState state);
