@@ -38,11 +38,7 @@ void ProcessManager::createProcess(const String& name) {
         rand() % (this->max_mem_per_proc - this->min_mem_per_proc + 1) + this->min_mem_per_proc, this->mem_per_frame);
 
     processesList.push_back(new_process);
-    //std::cout << "Process " << name << " created and added to activeProcesses." << std::endl;
-
-    // Enqueue the process into the CPU scheduler
     CPUScheduler::getInstance()->enqueueProcess(new_process);
-    //std::cout << "Process " << name << " enqueued in CPU scheduler." << std::endl;
 }
 
 

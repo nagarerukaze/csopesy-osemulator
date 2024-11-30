@@ -225,79 +225,81 @@ void CPUScheduler::RRScheduling() {
                         }
                     }
 
-                    {
-                        std::lock_guard<std::mutex> lock(mtx);
-                        if (!processQueue.empty()) {
-                            // get the process and allocated memory
-                            process_in = processQueue.front();
-                            processQueue.pop();
-                            //std::cout << "RQ: " << process_in->getName() << std::endl;
+                       
+                    if (!processQueue.empty()) {
+                        // get the process and allocated memory
+                        process_in = processQueue.front();
+                        processQueue.pop();
+                        //std::cout << "RQ: " << process_in->getName() << std::endl;
 
-                            if (!process_in) {
-                                // std::cerr << "Error: process_in is nullptr\n";
-                                continue; // Skip to the next iteration
+                        if (!process_in) {
+                            // std::cerr << "Error: process_in is nullptr\n";
+                            continue; // Skip to the next iteration
+                        }
+
+                        allocatedMemory = process_in->getMemoryPointer();
+
+
+                        // if process is not allocated in memory
+                        if (allocatedMemory == nullptr) {
+                            //std::cout << "allocatedMemory = null" << std::endl;
+                            if (allocator == "flat") {
+                                MemoryManager::getInstance()->removeProcessFromBS(process_in->getName()); // Remove if in backing store
+                                allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
+                            }
+                            else {
+                                PagingAllocator::getInstance()->removeProcessFromBS(process_in->getName()); // Remove if in backing store
+                                allocatedMemory = PagingAllocator::getInstance()->allocate(process_in);
                             }
 
-                            allocatedMemory = process_in->getMemoryPointer();
-
-                            // if process is not allocated in memory
+                            // allocatation failed
                             if (allocatedMemory == nullptr) {
-                                //std::cout << "allocatedMemory = null" << std::endl;
+                                // std::cout << "memory full" << std::endl;
+                                std::shared_ptr<Process> oldest_process = nullptr;
                                 if (allocator == "flat") {
-                                    MemoryManager::getInstance()->removeProcessFromBS(process_in->getName()); // Remove if in backing store
+                                    // oldest_process = MemoryManager::getInstance()->removeOldestEntry(); // Remove oldest process in memory
+                                    MemoryManager::getInstance()->saveProcessToBS(oldest_process->getMemoryPointer(), 
+                                                                                oldest_process->getMemoryRequired(), 
+                                                                                oldest_process->getName()); // Save process to backing store
                                     allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
                                 }
                                 else {
-                                    PagingAllocator::getInstance()->removeProcessFromBS(process_in->getName()); // Remove if in backing store
-                                    allocatedMemory = PagingAllocator::getInstance()->allocate(process_in);
-                                }
-
-                                // allocatation failed
-                                if (allocatedMemory == nullptr) {
-                                    // std::cout << "memory full" << std::endl;
-                                    std::shared_ptr<Process> oldest_process = nullptr;
-                                    if (allocator == "flat") {
-                                        // oldest_process = MemoryManager::getInstance()->removeOldestEntry(); // Remove oldest process in memory
-                                        MemoryManager::getInstance()->saveProcessToBS(oldest_process->getMemoryPointer(), 
-                                                                                    oldest_process->getMemoryRequired(), 
-                                                                                    oldest_process->getName()); // Save process to backing store
-                                        allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
-                                    }
-                                    else {
-                                        oldest_process = PagingAllocator::getInstance()->removeOldestEntry();
-                                        if (oldest_process != nullptr) {
-                                            PagingAllocator::getInstance()->saveProcessToBS(oldest_process->getName());
-                                            allocatedMemory = PagingAllocator::getInstance()->allocate(process_in);
-                                            // oldest_process = ProcessManager::getInstance()->findProcess(name);
-                                        }
-
-                                    }
-                                    // Find oldest process and push back in queue
-                                    //oldest_process->setCPUCoreID(NULL);
+                                    std::lock_guard<std::mutex> lock(mtx);
+                                    oldest_process = PagingAllocator::getInstance()->removeOldestEntry();
                                     if (oldest_process != nullptr) {
-                                        oldest_process->setMemoryPointer(nullptr);
-                                        process_in->setMemoryPointer(allocatedMemory);
-                                        processQueue.push(oldest_process);
+                                        PagingAllocator::getInstance()->deallocate(oldest_process->getName());
+                                        PagingAllocator::getInstance()->saveProcessToBS(oldest_process->getName());
+                                        allocatedMemory = PagingAllocator::getInstance()->allocate(process_in);
+                                        // oldest_process = ProcessManager::getInstance()->findProcess(name);
                                     }
-                                    else {
-                                        processQueue.push(process_in);
-                                    }
+
                                 }
-                                // set pointer if allocated
-                                else {
+                                // Find oldest process and push back in queue
+                                //oldest_process->setCPUCoreID(NULL);
+                                if (oldest_process != nullptr) {
+                                    oldest_process->setMemoryPointer(nullptr);
                                     process_in->setMemoryPointer(allocatedMemory);
+                                    processQueue.push(oldest_process);
+                                }
+                                else {
+                                    processQueue.push(process_in);
                                 }
                             }
-                            if (allocatedMemory != nullptr) {
-                                // std::cout << "allocated memory" << std::endl;
-                                worker->setProcess(process_in);  // Ensure that process_in is valid
-                                std::thread([worker, process_in = process_in]() {
-                                    worker->setProcess(process_in);  // Ensure that process_in is valid
-                                    worker->startWorker(); // Start worker with the shared_ptr process
-                                    }).detach();
+                            // set pointer if allocated
+                            else {
+                                process_in->setMemoryPointer(allocatedMemory);
                             }
                         }
+                        if (allocatedMemory != nullptr) {
+                            // std::cout << "allocated memory" << std::endl;
+                            worker->setProcess(process_in);  // Ensure that process_in is valid
+                            std::thread([worker, process_in = process_in]() {
+                                worker->setProcess(process_in);  // Ensure that process_in is valid
+                                worker->startWorker(); // Start worker with the shared_ptr process
+                                }).detach();
+                        }
                     }
+                    
 
                     this->idleCPUTicks++;
                 }/*

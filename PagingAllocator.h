@@ -6,6 +6,7 @@
 #include <queue>
 #include <ctime>
 #include "Process.h"
+#include <mutex>
  
  typedef std::string String;
 
@@ -34,6 +35,8 @@ public:
 private:
 	PagingAllocator& operator = (const PagingAllocator&);
 	static PagingAllocator* sharedInstance;
+
+	std::mutex mtx;
 
 	size_t maxMemorySize;
 	size_t numFrames;

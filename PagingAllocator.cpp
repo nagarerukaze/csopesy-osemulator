@@ -43,7 +43,7 @@ void* PagingAllocator::allocate(std::shared_ptr<Process> process) {
 }
 
 void PagingAllocator::deallocate(String processName) {
-	// Find frames allocated to the process and deallocate
+	 // Find frames allocated to the process and deallocate
 	auto it = std::find_if(frameMap.begin(), frameMap.end(),
 		[processName](const auto& entry) { return entry.second.first == processName; });
 
@@ -166,7 +166,7 @@ void PagingAllocator::removeProcessFromBS(String processName) {
 
 void PagingAllocator::saveProcessToBS(String process) {
 	std::ofstream outFile("backing_store.txt", std::ios::app); // Append mode
-	deallocate(process);
+	//deallocate(process);
 
 	if (outFile.is_open()) {
 		outFile << process << "\n";
@@ -184,14 +184,17 @@ std::shared_ptr<Process> PagingAllocator::removeOldestEntry() {
 	if (!frameMap.empty()) {
 		// Find the oldest entry
 		for (const auto& entry : frameMap) {
+			std::lock_guard<std::mutex> lock(mtx);
 			std::shared_ptr<Process> process = ProcessManager::getInstance()->findProcess(entry.second.first);
-			if (process->getState() != Process::ProcessState::TERMINATED && process->getState() != Process::ProcessState::RUNNING) {
-				if (isFirst || entry.second.second < oldestEntry.second.second) {
-					oldestEntry = entry;
-					oldestProcess = process;
-					isFirst = false;
-					// std::cout << "Oldest entry updated" << std::endl;
-					// std::cout << "State:" << process->getState() << std::endl;
+			if (process != nullptr) {
+				if (process->getState() != Process::ProcessState::TERMINATED && process->getState() != Process::ProcessState::RUNNING) {
+					if (isFirst || entry.second.second < oldestEntry.second.second) {
+						oldestEntry = entry;
+						oldestProcess = process;
+						isFirst = false;
+						// std::cout << "Oldest entry updated" << std::endl;
+						// std::cout << "State:" << process->getState() << std::endl;
+					}
 				}
 			}
 		}
@@ -202,7 +205,7 @@ std::shared_ptr<Process> PagingAllocator::removeOldestEntry() {
 		String oldestName = oldestProcess->getName();  // Extract the name to be removed
 		// std::cout << "Oldest process: " << oldestName << std::endl;
 		// std::cout << "State:" << oldestProcess->getState() << std::endl;
-		deallocate(oldestName);
+		//deallocate(oldestName);
 		return oldestProcess;
 	}
 
