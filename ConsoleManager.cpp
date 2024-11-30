@@ -431,9 +431,17 @@ void ConsoleManager::vmstat() {
     size_t pagedIn = 0;
     size_t pagedOut = 0;
 
-    totalMem = MemoryManager::getInstance()->getMaximumMemory();
-    usedMem = MemoryManager::getInstance()->getAllocatedSize();
-    freeMem = totalMem - usedMem;
+    if (CPUScheduler::getInstance()->getAllocator() == "flat") {
+        totalMem = MemoryManager::getInstance()->getMaximumMemory();
+        usedMem = MemoryManager::getInstance()->getAllocatedSize();
+        freeMem = totalMem - usedMem;
+    }
+    else if (CPUScheduler::getInstance()->getAllocator() == "paging") {
+        totalMem = this->memPerFrame * PagingAllocator::getInstance()->getNumOfFrames();
+        freeMem = this->memPerFrame * PagingAllocator::getInstance()->getFreeFrames();
+        usedMem = totalMem - freeMem;
+    }
+
     idleTicks = CPUScheduler::getInstance()->getIdleCPUTicks();
     activeTicks = CPUScheduler::getInstance()->getActiveCPUTicks();
     totalTicks = idleTicks + activeTicks;
