@@ -104,6 +104,13 @@ size_t PagingAllocator::getNumPagedOut() {
 	return this->numPagedOut;
 }
 
+size_t PagingAllocator::getNumOfFrames() {
+	return this->numFrames;
+}
+size_t PagingAllocator::getFreeFrames() {
+	return this->freeFrameList.size();
+}
+
 void PagingAllocator::removeProcessFromBS(String processName) {
 	std::ifstream inFile("backing_store.txt");  // Read
 	std::ofstream tempFile("temp.txt"); // Write

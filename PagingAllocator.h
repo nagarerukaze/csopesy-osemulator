@@ -26,6 +26,8 @@ public:
 	void saveProcessToBS(String process);
 	String removeOldestEntry();
 
+	size_t getNumOfFrames();
+	size_t getFreeFrames();
 	size_t getNumPagedIn();
 	size_t getNumPagedOut();
 
