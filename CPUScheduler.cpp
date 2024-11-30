@@ -167,6 +167,9 @@ void CPUScheduler::FCFSScheduling() {
                         }
                     }
                 }
+                else {
+                    this->activeCPUTicks++;
+                }
             }
         }
         else {
@@ -294,6 +297,9 @@ void CPUScheduler::RRScheduling() {
                     }
 
                     this->idleCPUTicks++;
+                }
+                else {
+                    this->activeCPUTicks++;
                 }
                 // std::cout << "Memory" << std::endl << MemoryManager::getInstance()->visualizeMemory() << std::endl;
             }
