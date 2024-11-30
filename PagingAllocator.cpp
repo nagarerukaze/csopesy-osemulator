@@ -1,4 +1,5 @@
 #include "PagingAllocator.h"
+#include "ProcessManager.h"
 
 PagingAllocator::PagingAllocator() {}
 
@@ -174,27 +175,40 @@ void PagingAllocator::saveProcessToBS(String process) {
 }
 
 // Function to find and remove the entry with the oldest time_t, and return the process name
-String PagingAllocator::removeOldestEntry() {
+std::shared_ptr<Process> PagingAllocator::removeOldestEntry() {
 	std::pair<size_t, std::pair<String, time_t>> oldestEntry;
 	bool isFirst = true;
 	size_t oldestKey = 0;
+	std::shared_ptr<Process> oldestProcess = nullptr;
 
-	// Find the oldest entry
-	for (const auto& entry : frameMap) {
-		if (isFirst || entry.second.second < oldestEntry.second.second) {
-			oldestEntry = entry;
-			oldestKey = entry.first;  // store the key of the oldest entry
-			isFirst = false;
+	if (!frameMap.empty()) {
+		// Find the oldest entry
+		for (const auto& entry : frameMap) {
+			std::shared_ptr<Process> process = ProcessManager::getInstance()->findProcess(entry.second.first);
+			if (process->getState() != Process::ProcessState::TERMINATED && process->getState() != Process::ProcessState::RUNNING) {
+				if (isFirst || entry.second.second < oldestEntry.second.second) {
+					oldestEntry = entry;
+					oldestProcess = process;
+					isFirst = false;
+					std::cout << "Oldest entry updated" << std::endl;
+					std::cout << "State:" << process->getState() << std::endl;
+				}
+			}
+			else {
+				std::cout << "Process is running or terminated" << std::endl;
+			}
 		}
 	}
 
 	// If we found the oldest entry, remove it and return the name
 	if (!isFirst) {
-		String oldestName = oldestEntry.second.first;  // Extract the name to be removed
+		String oldestName = oldestProcess->getName();  // Extract the name to be removed
+		std::cout << "Oldest process: " << oldestName << std::endl;
+		std::cout << "State:" << oldestProcess->getState() << std::endl;
 		deallocate(oldestName);
-		return oldestName;
+		return oldestProcess;
 	}
 
-	return "";  // Return empty string if no entry was found
+	return nullptr;  // Return empty string if no entry was found
 }
 

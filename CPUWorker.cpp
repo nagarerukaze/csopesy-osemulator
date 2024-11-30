@@ -72,7 +72,7 @@ void CPUWorker::startWorker() {
     }
 
     if (this->process->getCurrentInstructionLine() == this->process->getTotalLinesOfCode()) {
-        // this->process->setCPUCoreID(NULL);
+        this->process->setCPUCoreID(-1);
         this->process->setState(Process::ProcessState::TERMINATED);
         // Flat Memory Allocator
         if (allocator == "flat") {
@@ -88,7 +88,7 @@ void CPUWorker::startWorker() {
         this->process->setMemoryPointer(nullptr);
     }
     else {
-        this->process->setCPUCoreID(NULL);
+        // this->process->setCPUCoreID(-1);
         this->process->setState(Process::ProcessState::READY);
     }
     this->cpuCycles++;

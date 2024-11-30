@@ -24,7 +24,7 @@ public:
 	
 	void removeProcessFromBS(String processName);
 	void saveProcessToBS(String process);
-	String removeOldestEntry();
+	std::shared_ptr<Process> removeOldestEntry();
 
 	size_t getNumOfFrames();
 	size_t getFreeFrames();

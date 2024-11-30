@@ -29,7 +29,7 @@ public:
 	void removeProcessFromBS(String processName);
 	void saveProcessToBS(void* memoryPointer, size_t memRequired, String name);
 	String removeOldestEntry();
-
+	// std::shared_ptr<Process> removeOldestEntry();
 
 	String getCurrentTime();
 

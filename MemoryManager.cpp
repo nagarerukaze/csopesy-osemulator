@@ -229,3 +229,39 @@ String MemoryManager::removeOldestEntry() {
     processOrder.erase(oldest);
     return oldestProcessName;
 }
+
+/*
+
+std::shared_ptr<Process> MemoryManager::removeOldestEntry() {
+    if (processOrder.empty()) {
+        return nullptr; // No process to remove
+    }
+
+    auto oldest = processOrder.end();
+    std::shared_ptr<Process> oldestProcess = nullptr;
+
+    for (auto it = processOrder.begin(); it != processOrder.end(); ++it) {
+        // Fetch the process using its name
+        auto process = ProcessManager::getInstance()->findProcess(it->first);
+
+        // Skip processes that are TERMINATED or RUNNING
+        if (process && process->getState() != Process::ProcessState::TERMINATED &&
+            process->getState() != Process::ProcessState::RUNNING) {
+
+            // Check if this is the oldest entry
+            if (oldest == processOrder.end() || it->second < oldest->second) {
+                oldest = it;
+                oldestProcess = process;
+            }
+        }
+    }
+
+    if (oldest == processOrder.end()) {
+        return nullptr; // No valid process found
+    }
+
+    // Remove the oldest process from processOrder
+    deallocate(oldestProcess->getMemoryPointer(), oldestProcess->getMemoryRequired(), oldestProcess->getName());
+    return oldestProcess;
+}
+*/

@@ -254,31 +254,30 @@ void CPUScheduler::RRScheduling() {
 
                                 // allocatation failed
                                 if (allocatedMemory == nullptr) {
-                                    String name = "";
+                                    // std::cout << "memory full" << std::endl;
                                     std::shared_ptr<Process> oldest_process = nullptr;
                                     if (allocator == "flat") {
-                                        name = MemoryManager::getInstance()->removeOldestEntry(); // Remove oldest process in memory
-                                        oldest_process = ProcessManager::getInstance()->findProcess(name); // Get process
+                                        // oldest_process = MemoryManager::getInstance()->removeOldestEntry(); // Remove oldest process in memory
                                         MemoryManager::getInstance()->saveProcessToBS(oldest_process->getMemoryPointer(), 
                                                                                     oldest_process->getMemoryRequired(), 
                                                                                     oldest_process->getName()); // Save process to backing store
                                         allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
                                     }
                                     else {
-                                        name = PagingAllocator::getInstance()->removeOldestEntry();
-                                        PagingAllocator::getInstance()->saveProcessToBS(name);
-                                        allocatedMemory = PagingAllocator::getInstance()->allocate(process_in);
-                                        oldest_process = ProcessManager::getInstance()->findProcess(name);
+                                        oldest_process = PagingAllocator::getInstance()->removeOldestEntry();
+                                        if (oldest_process != nullptr) {
+                                            PagingAllocator::getInstance()->saveProcessToBS(oldest_process->getName());
+                                            allocatedMemory = PagingAllocator::getInstance()->allocate(process_in);
+                                            // oldest_process = ProcessManager::getInstance()->findProcess(name);
+                                        }
 
                                     }
                                     // Find oldest process and push back in queue
                                     //oldest_process->setCPUCoreID(NULL);
                                     if (oldest_process != nullptr) {
-                                        oldest_process->setState(Process::ProcessState::READY);
                                         oldest_process->setMemoryPointer(nullptr);
-
-                                        handleProcessOut(cpuWorkers[oldest_process->getCPUCoreID()], oldest_process);
                                         process_in->setMemoryPointer(allocatedMemory);
+                                        processQueue.push(oldest_process);
                                     }
                                 }
                                 // set pointer if allocated
@@ -287,6 +286,7 @@ void CPUScheduler::RRScheduling() {
                                 }
                             }
                             if (allocatedMemory != nullptr) {
+                                std::cout << "allocated memory" << std::endl;
                                 worker->setProcess(process_in);  // Ensure that process_in is valid
                                 std::thread([worker, process_in = process_in]() {
                                     worker->setProcess(process_in);  // Ensure that process_in is valid
