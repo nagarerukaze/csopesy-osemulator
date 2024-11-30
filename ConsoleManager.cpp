@@ -387,15 +387,22 @@ void ConsoleManager::processSMI() {
     // Memory usage and utilization
     size_t usedMemory = 0;
     size_t totalMemory = 1;
-    size_t memoryUtil = 0;
+    double memoryUtil = 0;
 
     coresUsed = CPUScheduler::getInstance()->getNumberOfCPUsUsed();
     totalCores = CPUScheduler::getInstance()->getNumberOfCores();
     cpuUtil = ((double)coresUsed / (double)totalCores) * 100;
 
-    usedMemory = MemoryManager::getInstance()->getAllocatedSize();
-    totalMemory = MemoryManager::getInstance()->getMaximumMemory();
-    memoryUtil = (usedMemory / totalMemory) * 100;
+    if (CPUScheduler::getInstance()->getAllocator() == "flat") {
+        totalMemory = MemoryManager::getInstance()->getMaximumMemory();
+        usedMemory = MemoryManager::getInstance()->getAllocatedSize();
+        memoryUtil = ((double)usedMemory / (double)totalMemory) * 100;
+    }
+    else if (CPUScheduler::getInstance()->getAllocator() == "paging") {
+        totalMemory = this->memPerFrame * PagingAllocator::getInstance()->getNumOfFrames();
+        usedMemory = this->memPerFrame * PagingAllocator::getInstance()->getFreeFrames();
+        memoryUtil = ((double)usedMemory / (double)totalMemory) * 100;
+    }
 
     std::cout << "----------------------------------------------" << std::endl;
     std::cout << "| PROCESS-SMI V01.00 Driver Version: 01.00 |" << std::endl;
