@@ -52,6 +52,7 @@ void CPUWorker::startWorker() {
                 this->cpuCycles = -1;
             }
             this->cpuCycles++;
+            this->activeCPUTicks++;
         }
     }
     // Round Robin
@@ -68,6 +69,7 @@ void CPUWorker::startWorker() {
                 this->cpuCycles = -1;
             }
             this->cpuCycles++;
+            this->activeCPUTicks++;
         }
     }
 
@@ -114,4 +116,8 @@ int CPUWorker::getID() {
 
 bool CPUWorker::isRunning() const {
     return this->running;
+}
+
+long long CPUWorker::getActiveCPUTicks() {
+    return this->activeCPUTicks;
 }

@@ -15,6 +15,7 @@
 #include "CPUScheduler.h"
 #include "MemoryManager.h"
 #include "PagingAllocator.h"
+#include "CPUWorker.h"
 
 typedef std::string String;
 

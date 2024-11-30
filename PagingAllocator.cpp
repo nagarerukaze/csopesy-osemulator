@@ -190,12 +190,9 @@ std::shared_ptr<Process> PagingAllocator::removeOldestEntry() {
 					oldestEntry = entry;
 					oldestProcess = process;
 					isFirst = false;
-					std::cout << "Oldest entry updated" << std::endl;
-					std::cout << "State:" << process->getState() << std::endl;
+					// std::cout << "Oldest entry updated" << std::endl;
+					// std::cout << "State:" << process->getState() << std::endl;
 				}
-			}
-			else {
-				std::cout << "Process is running or terminated" << std::endl;
 			}
 		}
 	}
@@ -203,8 +200,8 @@ std::shared_ptr<Process> PagingAllocator::removeOldestEntry() {
 	// If we found the oldest entry, remove it and return the name
 	if (!isFirst) {
 		String oldestName = oldestProcess->getName();  // Extract the name to be removed
-		std::cout << "Oldest process: " << oldestName << std::endl;
-		std::cout << "State:" << oldestProcess->getState() << std::endl;
+		// std::cout << "Oldest process: " << oldestName << std::endl;
+		// std::cout << "State:" << oldestProcess->getState() << std::endl;
 		deallocate(oldestName);
 		return oldestProcess;
 	}

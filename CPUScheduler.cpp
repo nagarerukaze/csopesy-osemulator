@@ -286,7 +286,7 @@ void CPUScheduler::RRScheduling() {
                                 }
                             }
                             if (allocatedMemory != nullptr) {
-                                std::cout << "allocated memory" << std::endl;
+                                // std::cout << "allocated memory" << std::endl;
                                 worker->setProcess(process_in);  // Ensure that process_in is valid
                                 std::thread([worker, process_in = process_in]() {
                                     worker->setProcess(process_in);  // Ensure that process_in is valid
@@ -297,10 +297,10 @@ void CPUScheduler::RRScheduling() {
                     }
 
                     this->idleCPUTicks++;
-                }
+                }/*
                 else {
                     this->activeCPUTicks++;
-                }
+                }*/
                 // std::cout << "Memory" << std::endl << MemoryManager::getInstance()->visualizeMemory() << std::endl;
             }
         }

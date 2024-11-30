@@ -22,6 +22,7 @@ public:
     void removeProcess();
     std::shared_ptr<Process> getProcess();  // Return shared_ptr
     bool isRunning() const;
+    long long getActiveCPUTicks();
     int getID();
 private:
     CPUWorker(const CPUWorker&);                    // Copy constructor
@@ -35,6 +36,7 @@ private:
     std::shared_ptr<Process> process;  // Changed to shared_ptr
     std::mutex mtx;
     std::condition_variable cv;
+    long long activeCPUTicks = 0;
     long long cpuCycles = 1;
     bool running = false;
 };
