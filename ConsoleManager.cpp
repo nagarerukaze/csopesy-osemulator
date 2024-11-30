@@ -400,7 +400,8 @@ void ConsoleManager::processSMI() {
     }
     else if (CPUScheduler::getInstance()->getAllocator() == "paging") {
         totalMemory = this->memPerFrame * PagingAllocator::getInstance()->getNumOfFrames();
-        usedMemory = this->memPerFrame * PagingAllocator::getInstance()->getFreeFrames();
+        size_t freeMemory = this->memPerFrame * PagingAllocator::getInstance()->getFreeFrames();
+        usedMemory = totalMemory - freeMemory;
         memoryUtil = ((double)usedMemory / (double)totalMemory) * 100;
     }
 

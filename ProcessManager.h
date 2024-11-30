@@ -18,7 +18,7 @@ public:
     void createProcess(const String& name);
     std::shared_ptr<Process> findProcess(const String& name) const;
     bool displayProcess(const String& name) const;
-    void displayActiveProcessesList();
+    void displayActiveProcessesList(std::unordered_map<int, std::shared_ptr<Process>> runningProcesses);
     void displayFinishedProcessesList();
     void printActiveProcessesList(std::ofstream& outFile);
     void printFinishedProcessesList(std::ofstream& outFile);

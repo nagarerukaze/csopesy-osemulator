@@ -27,6 +27,11 @@ public:
     int getNumberOfCores();
     bool getIsRunning();
     long long getQuantumCycles();
+    void decrementCores();
+    void incrementCores();
+    void removeFromRunning(int index);
+    void addToRunning(int index, std::shared_ptr<Process> process);
+    std::unordered_map<int, std::shared_ptr<Process>> getRunningProcesses();
     std::vector<CPUWorker*> getCPUWorkers();
     size_t getIdleCPUTicks() const;
     size_t getActiveCPUTicks() const;
@@ -51,12 +56,13 @@ private:
     long long delay_per_exec;
     size_t idleCPUTicks;
     size_t activeCPUTicks;
+    int activeCores;
 
     std::vector<CPUWorker*> cpuWorkers;
+    std::unordered_map<int, std::shared_ptr<Process>> runningProcesses;
     std::vector<std::thread> workerThreads;
     
     void FCFSScheduling();
     void RRScheduling();
-    void handleProcessOut(CPUWorker* worker, std::shared_ptr<Process>& process_out);
 };
 

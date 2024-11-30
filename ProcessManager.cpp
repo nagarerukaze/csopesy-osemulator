@@ -68,9 +68,8 @@ bool ProcessManager::displayProcess(const String& name) const {
 
     Display the activeProcesses (i.e., processes inside a CPU core).
 */
-void ProcessManager::displayActiveProcessesList() {
-    std::lock_guard<std::mutex> lock(mtx);
-    std::vector<CPUWorker*> workers = CPUScheduler::getInstance()->getCPUWorkers();
+void ProcessManager::displayActiveProcessesList(std::unordered_map<int, std::shared_ptr<Process>> runningProcesses) {
+    /*std::vector<CPUWorker*> workers = CPUScheduler::getInstance()->getCPUWorkers();
 
     for (const auto& worker : workers) {
         if (worker->getProcess() != nullptr) {
@@ -83,7 +82,26 @@ void ProcessManager::displayActiveProcessesList() {
                     << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
             }
         }
+    }*/
+    
+    if (!runningProcesses.empty()) {
+        std::vector<int> keys;
+        for (const auto& pair : runningProcesses) {
+            keys.push_back(pair.first);
+        }
+
+        std::sort(keys.begin(), keys.end());
+
+        // Step 3: Print the elements in the order of the sorted keys
+        for (int key : keys) {
+            std::shared_ptr<Process> processPtr = runningProcesses[key];  // Access process by key
+            std::cout << processPtr->getName() << "\t"
+                << "(" << processPtr->getTimestamp() << ") \t"
+                << "Core: " << key << "\t"
+                << processPtr->getCurrentInstructionLine() << "/" << processPtr->getTotalLinesOfCode() << std::endl;
+        }
     }
+
 }
 
 /*
@@ -93,7 +111,6 @@ void ProcessManager::displayActiveProcessesList() {
 */
 void ProcessManager::displayFinishedProcessesList() {
     if (!this->processesList.empty()) {
-        std::lock_guard<std::mutex> lock(mtx);
         auto processesCopy = processesList;
 
         for (const auto& process : processesCopy) {
@@ -172,11 +189,12 @@ void ProcessManager::printFinishedProcessesList(std::ofstream& outFile) {
             (4) Current line of instruction / total lines of code
 */
 void ProcessManager::displayAllProcesses() {
+    std::lock_guard<std::mutex> lock(mtx);
     int coresUsed = CPUScheduler::getInstance()->getNumberOfCPUsUsed();
     int totalCores = CPUScheduler::getInstance()->getNumberOfCores();
+    std::unordered_map<int, std::shared_ptr<Process>> runningProcesses = CPUScheduler::getInstance()->getRunningProcesses();
+    
     double cpuUtilization = ((double) coresUsed / (double) totalCores) * 100;
-
-
 
     std::cout << "CPU Utilization: " << cpuUtilization << "%" << std::endl;
 
@@ -186,7 +204,7 @@ void ProcessManager::displayAllProcesses() {
     std::cout << std::endl;
     std::cout << "--------------------------------------" << std::endl;
     std::cout << "Running processes:" << std::endl;
-    displayActiveProcessesList();
+    displayActiveProcessesList(runningProcesses);
 
     std::cout << std::endl;
 
@@ -194,31 +212,6 @@ void ProcessManager::displayAllProcesses() {
     displayFinishedProcessesList();
     std::cout << "--------------------------------------" << std::endl;
 }
-
-//void ProcessManager::moveToFinished(std::shared_ptr<Process> process) {
-//    std::lock_guard<std::mutex> lock(mtx);
-//    if (process != nullptr) {
-//        std::cout << "Process in movetofinished is not null" << std::endl;
-//        std::cout << "Process: " << process->getName();
-//    }
-//
-//    if (!activeProcesses.empty()) {
-//        auto it = std::find_if(activeProcesses.begin(), activeProcesses.end(),
-//            [&process](const std::shared_ptr<Process>& p) {
-//                return p.get() == process.get();  // Compare raw pointers
-//            });
-//
-//        if (it != activeProcesses.end()) {
-//            std::cout << "Process Found in Active Processes" << std::endl;
-//            std::cout << "Process: " << process->getName() << "& Process Found: " << (*it)->getName() << std::endl;
-//            // (*it)->setState(Process::ProcessState::TERMINATED);
-//            this->finishedProcesses.push_back(process);
-//            // Process found, move it to finished processes
-//            this->activeProcesses.erase(it);  // Erase from activeProcesses
-//            //std::cout << "Process removed successfully!" << std::endl;
-//        }
-//    }
-//}
 
 void ProcessManager::stop() {
     /*this->activeProcesses.clear();

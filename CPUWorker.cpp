@@ -31,7 +31,6 @@ void CPUWorker::removeProcess() {
 
 void CPUWorker::startWorker() {
     if (this->process != nullptr) {
-        //std::cout << "Inside worker: Process is not null" << std::endl;
         std::lock_guard<std::mutex> lock(mtx);
         this->process->setState(Process::ProcessState::RUNNING);
         this->process->setCPUCoreID(this->id);
@@ -72,27 +71,27 @@ void CPUWorker::startWorker() {
             this->activeCPUTicks++;
         }
     }
+    CPUScheduler::getInstance()->decrementCores();
+    CPUScheduler::getInstance()->removeFromRunning(this->id);
 
     if (this->process->getCurrentInstructionLine() == this->process->getTotalLinesOfCode()) {
-        this->process->setCPUCoreID(-1);
         this->process->setState(Process::ProcessState::TERMINATED);
         // Flat Memory Allocator
         if (allocator == "flat") {
             MemoryManager::getInstance()->deallocate(this->process->getMemoryPointer(), this->process->getMemoryRequired(), this->process->getName());
-            // MemoryManager::getInstance()->removeProcessFromBS(this->process->getName());
         }
 
         // Paging Allocator
         else {
             PagingAllocator::getInstance()->deallocate(this->process->getName());
-            // PagingAllocator::getInstance()->removeProcessFromBS(this->process->getName());
         }
         this->process->setMemoryPointer(nullptr);
     }
     else {
-        // this->process->setCPUCoreID(-1);
         this->process->setState(Process::ProcessState::READY);
+        CPUScheduler::getInstance()->enqueueProcess(this->process);
     }
+    this->process = nullptr;
     this->cpuCycles++;
     this->running = false;
 }
