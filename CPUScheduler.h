@@ -30,6 +30,7 @@ public:
     std::vector<CPUWorker*> getCPUWorkers();
     size_t getIdleCPUTicks() const;
     size_t getActiveCPUTicks() const;
+    String getAllocator() const;
 
 private:
     CPUScheduler();

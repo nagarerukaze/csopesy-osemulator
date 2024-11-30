@@ -328,3 +328,6 @@ size_t CPUScheduler::getActiveCPUTicks() const {
     return this->activeCPUTicks;
 }
 
+String CPUScheduler::getAllocator() const {
+    return this->allocator;
+}
