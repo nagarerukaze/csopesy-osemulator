@@ -53,5 +53,6 @@ private:
 	bool isRunning;
 	std::thread schedulerTestThread;
 	std::mutex mtx;
+	size_t memPerFrame;
 };
 

@@ -147,6 +147,8 @@ bool ConsoleManager::initialize() {
         allocator = "paging";
     }
 
+    this->memPerFrame = mem_per_frame;
+
     // Initialize ProcessManager and CPUScheduler
     ProcessManager::getInstance()->initialize(batch_process_freq, min_ins, max_ins, min_mem_per_proc, max_mem_per_proc, mem_per_frame);
     CPUScheduler::getInstance()->initialize(scheduler, num_cpu , quantum_cycles, delays_per_exec, allocator);
