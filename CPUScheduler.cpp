@@ -314,11 +314,11 @@ void CPUScheduler::RRScheduling() {
     }
 }
 
-size_t CPUScheduler::getIdleCPUTicks() {
+size_t CPUScheduler::getIdleCPUTicks() const {
     return this->idleCPUTicks;
 }
 
-size_t CPUScheduler::getActiveCPUTicks() {
+size_t CPUScheduler::getActiveCPUTicks() const {
     return this->activeCPUTicks;
 }
 

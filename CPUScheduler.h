@@ -28,8 +28,8 @@ public:
     bool getIsRunning();
     long long getQuantumCycles();
     std::vector<CPUWorker*> getCPUWorkers();
-    size_t getIdleCPUTicks();
-    size_t getActiveCPUTicks();
+    size_t getIdleCPUTicks() const;
+    size_t getActiveCPUTicks() const;
 
 private:
     CPUScheduler();
