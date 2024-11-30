@@ -270,6 +270,9 @@ void CPUScheduler::RRScheduling() {
                                             allocatedMemory = PagingAllocator::getInstance()->allocate(process_in);
                                             // oldest_process = ProcessManager::getInstance()->findProcess(name);
                                         }
+                                        else {
+                                            processQueue.push(process_in);
+                                        }
 
                                     }
                                     // Find oldest process and push back in queue
