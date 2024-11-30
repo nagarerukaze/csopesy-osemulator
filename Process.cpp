@@ -13,7 +13,6 @@ Process::Process(const String& name, long long totalLinesOfCode, size_t memoryRe
     // Paging Allocator
     this->framesInMemory = false;
     this->numFrames = memoryRequired / memPerFrame;
-    this->memoryFrames = std::vector<size_t>(numFrames, memPerFrame);
     // Flat Memory
     this->memoryPointer = nullptr;
 }

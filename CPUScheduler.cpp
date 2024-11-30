@@ -195,11 +195,13 @@ void CPUScheduler::RRScheduling() {
                             if (allocatedMemory == nullptr) {
                                 std::shared_ptr<Process> oldest_process = nullptr;
                                 if (allocator == "flat") {
-                                    //// oldest_process = MemoryManager::getInstance()->removeOldestEntry(); // Remove oldest process in memory
-                                    //MemoryManager::getInstance()->saveProcessToBS(oldest_process->getMemoryPointer(), 
-                                    //                                            oldest_process->getMemoryRequired(), 
-                                    //                                            oldest_process->getName()); // Save process to backing store
-                                    //allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
+                                    oldest_process = MemoryManager::getInstance()->removeOldestEntry(); // Remove oldest process in memory
+
+                                    MemoryManager::getInstance()->deallocate(oldest_process->getMemoryPointer(), oldest_process->getMemoryRequired(), oldest_process->getName());
+                                    MemoryManager::getInstance()->saveProcessToBS(oldest_process->getMemoryPointer(), 
+                                                                                oldest_process->getMemoryRequired(), 
+                                                                                oldest_process->getName()); // Save process to backing store
+                                    allocatedMemory = MemoryManager::getInstance()->allocate(process_in->getMemoryRequired(), process_in->getName());
                                 }
                                 else {
                                     oldest_process = PagingAllocator::getInstance()->removeOldestEntry();

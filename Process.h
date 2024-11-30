@@ -6,8 +6,6 @@
 #include <sstream>
 #include <iomanip>
 
-#include "MemoryManager.h"
-
 typedef std::string String;
 
 class Process
@@ -59,7 +57,6 @@ private:
 	int cpuCoreID;
 	size_t memoryRequired;
 	size_t numFrames;
-	std::vector<size_t> memoryFrames;
 	bool framesInMemory;
 	void* memoryPointer;
 	mutable std::mutex mtx;

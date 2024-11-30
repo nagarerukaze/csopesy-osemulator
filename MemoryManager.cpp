@@ -6,6 +6,7 @@
 
 #include "CPUScheduler.h"
 #include "CPUWorker.h"
+#include "ProcessManager.h"
 
 MemoryManager::MemoryManager() : maximumSize(0), allocatedSize(0) {}
 
@@ -196,18 +197,18 @@ void MemoryManager::removeProcessFromBS(String processName) {
             std::perror("Error renaming file");
         }
 
-        //std::cout << "Process " << processName << " removed from the backing store.\n";
+        // std::cout << "Process " << processName << " removed from the backing store.\n";
     }
     else {
         std::remove("temp.txt"); // Clean up the temporary file if not used
-        //std::cout << "Process " << processName << " not found in the backing store.\n";
+        // std::cout << "Process " << processName << " not found in the backing store.\n";
     }
 }
 
 
 void MemoryManager::saveProcessToBS(void* memoryPointer, size_t memRequired, String name) {
     std::ofstream outFile("backing_store.txt", std::ios::app); // Append mode
-    deallocate(memoryPointer, memRequired, name);
+    // deallocate(memoryPointer, memRequired, name);
 
     if (outFile.is_open()) {
         outFile << name << "\n";
@@ -215,22 +216,20 @@ void MemoryManager::saveProcessToBS(void* memoryPointer, size_t memRequired, Str
     }
 }
 
-String MemoryManager::removeOldestEntry() {
-    if (processOrder.empty()) {
-        return "";
-    }
-
-    auto oldest = std::min_element(
-        processOrder.begin(), processOrder.end(),
-        [](const auto& a, const auto& b) { return a.second < b.second; }
-    );
-
-    String oldestProcessName = oldest->first;
-    processOrder.erase(oldest);
-    return oldestProcessName;
-}
-
-/*
+//String MemoryManager::removeOldestEntry() {
+//    if (processOrder.empty()) {
+//        return "";
+//    }
+//
+//    auto oldest = std::min_element(
+//        processOrder.begin(), processOrder.end(),
+//        [](const auto& a, const auto& b) { return a.second < b.second; }
+//    );
+//
+//    String oldestProcessName = oldest->first;
+//    processOrder.erase(oldest);
+//    return oldestProcessName;
+//}
 
 std::shared_ptr<Process> MemoryManager::removeOldestEntry() {
     if (processOrder.empty()) {
@@ -241,6 +240,7 @@ std::shared_ptr<Process> MemoryManager::removeOldestEntry() {
     std::shared_ptr<Process> oldestProcess = nullptr;
 
     for (auto it = processOrder.begin(); it != processOrder.end(); ++it) {
+        std::lock_guard<std::mutex> lock(mtx);
         // Fetch the process using its name
         auto process = ProcessManager::getInstance()->findProcess(it->first);
 
@@ -261,7 +261,6 @@ std::shared_ptr<Process> MemoryManager::removeOldestEntry() {
     }
 
     // Remove the oldest process from processOrder
-    deallocate(oldestProcess->getMemoryPointer(), oldestProcess->getMemoryRequired(), oldestProcess->getName());
+    // deallocate(oldestProcess->getMemoryPointer(), oldestProcess->getMemoryRequired(), oldestProcess->getName());
     return oldestProcess;
 }
-*/

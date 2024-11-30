@@ -1,5 +1,8 @@
 #include "PagingAllocator.h"
 #include "ProcessManager.h"
+#include <fstream>
+#include <iostream>
+#include <filesystem>
 
 PagingAllocator::PagingAllocator() {}
 
@@ -114,53 +117,53 @@ size_t PagingAllocator::getFreeFrames() {
 
 void PagingAllocator::removeProcessFromBS(String processName) {
 	std::ifstream inFile("backing_store.txt");  // Read
-	std::ofstream tempFile("temp.txt"); // Write
+    std::ofstream tempFile("temp.txt"); // Write
 
-	tempFile.open("temp.txt", std::ofstream::out);
+    tempFile.open("temp.txt", std::ofstream::out);
 
-	if (!inFile.is_open()) {
-		std::cerr << "Failed to open backing store for reading.\n";
-		return;
-	}
+    if (!inFile.is_open()) {
+        std::cerr << "Failed to open backing store for reading.\n";
+        return;
+    }
 
-	if (!tempFile.is_open()) {
-		std::cerr << "Failed to open temporary file for writing.\n";
-		std::perror("Error");
-		return;
-	}
+    if (!tempFile.is_open()) {
+        std::cerr << "Failed to open temporary file for writing.\n";
+        std::perror("Error");
+        return;
+    }
 
-	String line;
-	bool processFound = false;
+    String line;
+    bool processFound = false;
 
-	while (std::getline(inFile, line)) {
-		if (line.empty()) {
-			break;
-		}
+    while (std::getline(inFile, line)) {
+        if (line.empty()) {
+            break;
+        }
 
-		if (line.find(processName) == std::string::npos) {
-			tempFile << line << "\n";
-		}
-		else {
-			processFound = true;
-		}
-	}
+        if (line.find(processName) == std::string::npos) {
+            tempFile << line << "\n";
+        }
+        else {
+            processFound = true;
+        }
+    }
 
-	inFile.close();
-	tempFile.close();
+    inFile.close();
+    tempFile.close();
 
-	// If the process was found, replace the original file with the temporary file
-	if (processFound) {
-		std::remove("backing_store.txt"); // Delete the original file
-		if (std::rename("temp.txt", "backing_store.txt") != 0) {
-			std::perror("Error renaming file");
-		}
+    // If the process was found, replace the original file with the temporary file
+    if (processFound) {
+        std::remove("backing_store.txt"); // Delete the original file
+        if (std::rename("temp.txt", "backing_store.txt") != 0) {
+            std::perror("Error renaming file");
+        }
 
-		// std::cout << "Process " << processName << " removed from the backing store.\n";
-	}
-	else {
-		std::remove("temp.txt"); // Clean up the temporary file if not used
-		// std::cout << "Process " << processName << " not found in the backing store.\n";
-	}
+        // std::cout << "Process " << processName << " removed from the backing store.\n";
+    }
+    else {
+        std::remove("temp.txt"); // Clean up the temporary file if not used
+        // std::cout << "Process " << processName << " not found in the backing store.\n";
+    }
 }
 
 

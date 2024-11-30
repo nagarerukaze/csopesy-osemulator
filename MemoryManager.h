@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <chrono>
+#include <mutex>
 #include <memory>
 #include <ctime>
 
@@ -28,7 +29,7 @@ public:
 
 	void removeProcessFromBS(String processName);
 	void saveProcessToBS(void* memoryPointer, size_t memRequired, String name);
-	String removeOldestEntry();
+	std::shared_ptr<Process> removeOldestEntry();
 	// std::shared_ptr<Process> removeOldestEntry();
 
 	String getCurrentTime();
@@ -42,7 +43,7 @@ private:
 	MemoryManager& operator = (const MemoryManager&);
 	~MemoryManager();
 	static MemoryManager* sharedInstance;
-
+	std::mutex mtx;
 	size_t maximumSize;
 	size_t allocatedSize;
 	std::vector<char> memory;
