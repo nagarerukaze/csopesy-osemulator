@@ -114,7 +114,7 @@ void MemoryManager::displayRunningProcsAndMemUsage() {
 
             if (process->getState() == Process::ProcessState::RUNNING) {
                 std::cout << process->getName() << "\t"
-                    << "<memory usage>" << "MiB" << std::endl;
+                    << process->getProcessMemUsage() << "MiB" << std::endl;
             }
         }
     }
