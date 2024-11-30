@@ -12,7 +12,12 @@ Process::Process(const String& name, long long totalLinesOfCode, size_t memoryRe
     this->cpuCoreID = NULL;
     // Paging Allocator
     this->framesInMemory = false;
-    this->numFrames = memoryRequired / memPerFrame;
+    if (memoryRequired < memPerFrame) {
+        this->numFrames = 1;
+    }
+    else {
+        this->numFrames = memoryRequired / memPerFrame;
+    }
     // Flat Memory
     this->memoryPointer = nullptr;
 }
