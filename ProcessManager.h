@@ -47,8 +47,7 @@ private:
     size_t min_mem_per_proc;
     size_t max_mem_per_proc;
     size_t mem_per_frame;
-    //std::vector<std::shared_ptr<Process>> activeProcesses;
-    //std::vector<std::shared_ptr<Process>> finishedProcesses;
     std::vector<std::shared_ptr<Process>> processesList;
     std::mutex mtx;
 };
+

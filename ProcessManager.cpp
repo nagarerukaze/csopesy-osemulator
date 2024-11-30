@@ -69,21 +69,6 @@ bool ProcessManager::displayProcess(const String& name) const {
     Display the activeProcesses (i.e., processes inside a CPU core).
 */
 void ProcessManager::displayActiveProcessesList(std::unordered_map<int, std::shared_ptr<Process>> runningProcesses) {
-    /*std::vector<CPUWorker*> workers = CPUScheduler::getInstance()->getCPUWorkers();
-
-    for (const auto& worker : workers) {
-        if (worker->getProcess() != nullptr) {
-            std::shared_ptr<Process> process = worker->getProcess();
-
-            if (process->getState() == Process::ProcessState::RUNNING) {
-                std::cout << process->getName() << "\t"
-                    << "(" << process->getTimestamp() << ") \t"
-                    << "Core: " << std::to_string(process->getCPUCoreID()) << "\t"
-                    << process->getCurrentInstructionLine() << "/" << process->getTotalLinesOfCode() << std::endl;
-            }
-        }
-    }*/
-    
     if (!runningProcesses.empty()) {
         std::vector<int> keys;
         for (const auto& pair : runningProcesses) {
@@ -238,3 +223,4 @@ bool ProcessManager::getIsGeneratingProcesses() const {
 void ProcessManager::setIsGeneratingProcesses(bool val) {
     this->isGeneratingProcesses = val;
 }
+

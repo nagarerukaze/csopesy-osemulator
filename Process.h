@@ -61,3 +61,4 @@ private:
 	void* memoryPointer;
 	mutable std::mutex mtx;
 };
+

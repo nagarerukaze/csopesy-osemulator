@@ -40,3 +40,4 @@ private:
     long long cpuCycles = 1;
     bool running = false;
 };
+

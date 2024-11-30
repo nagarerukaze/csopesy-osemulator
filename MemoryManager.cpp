@@ -216,21 +216,6 @@ void MemoryManager::saveProcessToBS(void* memoryPointer, size_t memRequired, Str
     }
 }
 
-//String MemoryManager::removeOldestEntry() {
-//    if (processOrder.empty()) {
-//        return "";
-//    }
-//
-//    auto oldest = std::min_element(
-//        processOrder.begin(), processOrder.end(),
-//        [](const auto& a, const auto& b) { return a.second < b.second; }
-//    );
-//
-//    String oldestProcessName = oldest->first;
-//    processOrder.erase(oldest);
-//    return oldestProcessName;
-//}
-
 std::shared_ptr<Process> MemoryManager::removeOldestEntry() {
     if (processOrder.empty()) {
         return nullptr; // No process to remove
@@ -264,3 +249,4 @@ std::shared_ptr<Process> MemoryManager::removeOldestEntry() {
     // deallocate(oldestProcess->getMemoryPointer(), oldestProcess->getMemoryRequired(), oldestProcess->getName());
     return oldestProcess;
 }
+

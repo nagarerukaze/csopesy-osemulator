@@ -120,3 +120,4 @@ bool CPUWorker::isRunning() const {
 long long CPUWorker::getActiveCPUTicks() {
     return this->activeCPUTicks;
 }
+
